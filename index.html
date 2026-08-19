@@ -147,7 +147,7 @@ const TONE = {
    STATE
    ============================================================================ */
 let DATA = null;            // { asOf, dates, series:{id:[...]}, stats:{id:{...}} }
-let BRIEF = null;          // data/brief.json, written by the daily Actions run
+let FC = null;             // data/forecast.json, written by the daily Actions run
 let view = 'brief';
 let selected = 'dxy';
 let status = 'loading';     // loading | live | cached | error
@@ -351,17 +351,35 @@ function autoEvents(todayISO) {
   return list;
 }
 
-function eventsFor(dateISO) {
-  const auto = autoEvents(dateISO).filter(e => e.date === dateISO);
-  const user = (S.events || []).filter(e => e.date === dateISO);
-  return [...auto, ...user];
+/* The ForexFactory feed is the real calendar. The first-Friday NFP rule survives only
+   as a fallback for opening this file locally with no forecast.json alongside it. */
+function calendarEvents() {
+  const feed = (FC && Array.isArray(FC.calendar) ? FC.calendar : []).map(e => ({
+    id: e.id,
+    date: e.when_utc.slice(0, 10),
+    when_utc: e.when_utc,
+    hours_until: e.hours_until,
+    name: `${e.currency} · ${e.title}`,
+    currency: e.currency,
+    impact: (e.impact || '').toLowerCase(),
+    consensus: e.consensus,
+    previous: e.previous,
+    feed: true
+  }));
+  const user = (S.events || []).map(e => ({ ...e, impact: (e.impact || 'high').toLowerCase() }));
+  const fallback = feed.length ? [] : autoEvents(ymd(new Date()));
+  return [...feed, ...fallback, ...user];
 }
-function upcoming(dateISO, days = 10) {
-  const all = [...autoEvents(dateISO), ...(S.events || [])];
+
+/* Only High-impact events gate a trade. Medium ones are shown, not blocking. */
+function eventsFor(dateISO) {
+  return calendarEvents().filter(e => e.date === dateISO && e.impact === 'high');
+}
+function upcoming(dateISO, days = 8) {
   const t = new Date(dateISO + 'T00:00:00Z').getTime();
-  return all
+  return calendarEvents()
     .filter(e => { const d = new Date(e.date + 'T00:00:00Z').getTime(); return d >= t && d <= t + days * 864e5; })
-    .sort((a, b) => a.date.localeCompare(b.date));
+    .sort((a, b) => (a.when_utc || a.date).localeCompare(b.when_utc || b.date));
 }
 
 /* ============================================================================
@@ -461,12 +479,12 @@ async function fetchData() {
 /* The narrative layer is produced out-of-band by scripts/build_brief.py and
    committed as data/brief.json. Absent locally — that is fine, the page degrades
    to the facts-only view rather than pretending it has a story. */
-async function fetchBrief() {
+async function fetchForecast() {
   try {
-    const res = await fetch('data/brief.json', { cache: 'no-store' });
+    const res = await fetch('data/forecast.json', { cache: 'no-store' });
     if (!res.ok) throw new Error('HTTP ' + res.status);
-    BRIEF = await res.json();
-  } catch (e) { BRIEF = null; }
+    FC = await res.json();
+  } catch (e) { FC = null; }
 }
 
 function readCache() {
@@ -516,144 +534,181 @@ function spark(series, tone, n = 120) {
 }
 
 /* ============================================================================
-   NARRATIVE BRIEF — rendered from data/brief.json
+   PRE-EVENT FORECASTS — rendered from data/forecast.json
    ============================================================================ */
-const LIKELIHOOD_TONE = { 'more likely':'emerald', 'possible':'amber', 'less likely':'slate' };
+const LEAN_TONE = { 'above consensus':'emerald', 'below consensus':'rose',
+                    'in line':'slate', 'no clear lean':'slate' };
 const CONF_TONE = { high:'emerald', medium:'amber', low:'rose' };
-const TAPE_TONE = { consistent:'emerald', contradicts:'rose', 'insufficient evidence':'amber' };
-const DIR_TONE = { supportive:'emerald', negative:'rose', mixed:'slate' };
+const LIKELIHOOD_TONE = { 'more likely':'emerald', 'possible':'amber', 'less likely':'slate' };
+const POINTS_TONE = { 'above consensus':'emerald', 'below consensus':'rose', neutral:'slate' };
+const OUTCOME_TONE = { hit:'emerald', miss:'rose', unclear:'slate' };
 
-function briefPanel() {
-  if (!BRIEF || !BRIEF.story) {
-    const why = BRIEF && BRIEF.story_error ? BRIEF.story_error : 'data/brief.json not found';
+function countdown(h) {
+  if (h === null || h === undefined) return '';
+  if (h < 1) return Math.max(0, Math.round(h * 60)) + 'm';
+  if (h < 48) return h.toFixed(h < 10 ? 1 : 0) + 'h';
+  return Math.round(h / 24) + 'd';
+}
+
+function recordPanel() {
+  const r = FC && FC.record;
+  if (!r || !r.scored) {
+    return `<span class="text-[11px] text-slate-500">Track record — no calls scored yet. It fills in as events print and the next run looks up what they actually showed.</span>`;
+  }
+  const rate = Math.round(r.hits / r.scored * 100);
+  const t = TONE[rate >= 60 ? 'emerald' : rate >= 45 ? 'amber' : 'rose'];
+  return `
+    <div class="flex items-center gap-3 flex-wrap">
+      <span class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold">Track record</span>
+      <span class="num text-lg font-bold ${t.text}">${r.hits}/${r.scored}</span>
+      <span class="text-[11px] text-slate-400">leans on the right side of consensus (${rate}%)</span>
+      <span class="num text-[10px] text-slate-600">${r.unclear} unclear · ${r.pending} pending</span>
+    </div>`;
+}
+
+function forecastPanel() {
+  if (!FC || !FC.forecast) {
+    const why = FC && FC.forecast_error ? FC.forecast_error : 'data/forecast.json not found';
+    const cal = FC && FC.calendar ? FC.calendar.filter(e => e.is_g4) : [];
     return `
       <article class="panel rounded-xl overflow-hidden">
         <div class="px-5 py-4 border-b hairline">
-          <p class="text-base font-semibold text-slate-50">Why The Market Is Moving</p>
+          <h2 class="text-[11px] uppercase tracking-[0.22em] text-slate-500 font-semibold">Pre-Event Forecasts</h2>
+          <p class="text-base font-semibold text-slate-50 mt-0.5">What The Evidence Says Before The Print</p>
         </div>
         <div class="p-5">
           <p class="text-[13px] text-slate-400 leading-relaxed">
-            No narrative brief loaded — showing computed figures only.
+            Forecast layer not loaded — showing the live calendar and computed levels only.
             <span class="text-slate-500">(${esc(why)})</span>
           </p>
-          <p class="text-[12px] text-slate-500 mt-2 leading-relaxed">
-            The narrative layer is produced once a day by <span class="text-slate-400">scripts/build_brief.py</span>,
-            which searches the web and writes <span class="text-slate-400">data/brief.json</span>.
-            Run it locally with an <span class="text-slate-400">ANTHROPIC_API_KEY</span> set, or let the
-            scheduled GitHub Action do it.
+          ${cal.length ? `
+          <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold mt-4 mb-2">G4 Events In The Window</p>
+          <div class="space-y-1.5">
+            ${cal.slice(0, 10).map(e => `
+              <div class="flex items-center gap-2.5 rounded-md border hairline bg-slate-950/50 px-3 py-2 flex-wrap">
+                <span class="num text-[11px] font-bold text-sky-300 w-[3.2rem] shrink-0">${countdown(e.hours_until)}</span>
+                <span class="rounded border ${e.impact === 'High' ? 'border-rose-500/30 bg-rose-500/10 text-rose-300' : 'border-amber-500/30 bg-amber-500/10 text-amber-300'} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider">${esc(e.impact)}</span>
+                <span class="text-[12px] text-slate-200 flex-1 min-w-[10rem]">${esc(e.currency)} · ${esc(e.title)}</span>
+                <span class="num text-[10px] text-slate-500">cons ${esc(e.consensus || '—')} · prev ${esc(e.previous || '—')}</span>
+              </div>`).join('')}
+          </div>` : ''}
+          <p class="text-[12px] text-slate-500 mt-3 leading-relaxed">
+            The forecast layer runs daily via <span class="text-slate-400">scripts/build_forecast.py</span>, which researches
+            each upcoming release and writes a lean versus consensus. It needs <span class="text-slate-400">ANTHROPIC_API_KEY</span> set.
           </p>
         </div>
       </article>`;
   }
 
-  const st = BRIEF.story;
-  const stamp = new Date(BRIEF.generated_at).toLocaleString();
+  const f = FC.forecast;
+  const stamp = new Date(FC.generated_at).toLocaleString();
+  const byId = Object.fromEntries((FC.calendar || []).map(e => [e.id, e]));
 
   return `
     <article class="panel rounded-xl overflow-hidden">
       <div class="px-5 py-4 border-b hairline flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h2 class="text-[11px] uppercase tracking-[0.22em] text-slate-500 font-semibold">Narrative Layer</h2>
-          <p class="text-base font-semibold text-slate-50 mt-0.5">Why The Market Is Moving</p>
+          <h2 class="text-[11px] uppercase tracking-[0.22em] text-slate-500 font-semibold">Pre-Event Forecasts</h2>
+          <p class="text-base font-semibold text-slate-50 mt-0.5">What The Evidence Says Before The Print</p>
         </div>
         <span class="num text-[10px] text-slate-500">built ${esc(stamp)}</span>
       </div>
 
+      <div class="px-5 py-3 border-b hairline">${recordPanel()}</div>
+
       <div class="p-5 space-y-4">
-        <p class="text-[13.5px] leading-relaxed text-slate-300">${esc(st.market_summary)}</p>
-        ${st.regime_note ? `<p class="text-[12.5px] leading-relaxed text-slate-400 border-l-2 border-slate-700 pl-3">${esc(st.regime_note)}</p>` : ''}
+        <p class="text-[13.5px] leading-relaxed text-slate-300">${esc(f.session_note)}</p>
 
-        <div class="space-y-3">
-          ${(st.currencies || []).map(c => {
-            const tt = TONE[TAPE_TONE[c.tape_check] || 'slate'];
-            const cf = TONE[CONF_TONE[c.confidence] || 'slate'];
-            const pid = { USD:'dxy', EUR:'eur', GBP:'gbp', JPY:'jpy' }[c.code];
-            const f = DATA && pid ? DATA.stats[pid] : null;
-            const mvTone = f && f.chg1 >= 0 ? 'text-emerald-300' : 'text-rose-300';
-            return `
-            <details class="rounded-lg border hairline bg-slate-950/40" open>
-              <summary class="flex items-center gap-2.5 px-4 py-3 hover:bg-slate-800/30 rounded-lg transition-colors flex-wrap">
-                <svg class="chev h-3 w-3 shrink-0 text-slate-500" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                  <path d="M4 2.5L8 6L4 9.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <span class="text-sm font-bold text-slate-50">${esc(c.code)}</span>
-                ${f ? `<span class="num text-[12px] font-semibold ${mvTone}">${pct(f.chg1)}</span>` : ''}
-                <span class="rounded border ${tt.border} ${tt.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${tt.text}">Tape: ${esc(c.tape_check)}</span>
-                <span class="rounded border ${cf.border} ${cf.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${cf.text}">Confidence ${esc(c.confidence)}</span>
-              </summary>
+        ${(f.forecasts || []).map(fc => {
+          const ev = byId[fc.event_id] || {};
+          const lt = TONE[LEAN_TONE[fc.lean] || 'slate'];
+          const cf = TONE[CONF_TONE[fc.confidence] || 'slate'];
+          return `
+          <details class="rounded-lg border hairline bg-slate-950/40" open>
+            <summary class="flex items-center gap-2.5 px-4 py-3 hover:bg-slate-800/30 rounded-lg transition-colors flex-wrap">
+              <svg class="chev h-3 w-3 shrink-0 text-slate-500" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="M4 2.5L8 6L4 9.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="num text-[11px] font-bold text-sky-300 w-[3.2rem] shrink-0">${countdown(ev.hours_until)}</span>
+              <span class="text-[13px] font-bold text-slate-50">${esc(fc.currency)}</span>
+              <span class="text-[12.5px] text-slate-200 flex-1 min-w-[9rem]">${esc(fc.event)}</span>
+              <span class="num text-[10px] text-slate-500">cons ${esc(fc.consensus || '—')}</span>
+              <span class="rounded border ${lt.border} ${lt.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${lt.text}">Lean: ${esc(fc.lean)}</span>
+              <span class="rounded border ${cf.border} ${cf.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${cf.text}">${esc(fc.confidence)}</span>
+            </summary>
 
-              <div class="px-4 pb-4 pl-[2.1rem] space-y-3 fade-in">
-                <div>
-                  <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold mb-1">What happened</p>
-                  <p class="text-[12.5px] leading-relaxed text-slate-300">${esc(c.what_happened)}</p>
-                </div>
-                <div>
-                  <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold mb-1">Why</p>
-                  <p class="text-[12.5px] leading-relaxed text-slate-300">${esc(c.why)}</p>
-                </div>
-
-                ${(c.drivers || []).length ? `
-                <div>
-                  <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold mb-1.5">Drivers</p>
-                  <div class="space-y-1">
-                    ${c.drivers.map(d => {
-                      const dt2 = TONE[DIR_TONE[d.direction] || 'slate'];
-                      return `<div class="flex items-start gap-2">
-                        <span class="mt-[3px] shrink-0 rounded border ${dt2.border} ${dt2.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${dt2.text} w-[5.4rem] text-center">${esc(d.direction)}</span>
-                        <span class="text-[12px] leading-relaxed text-slate-300 flex-1">${esc(d.factor)}</span>
-                        <span class="text-[9px] uppercase tracking-wider text-slate-600 shrink-0">${esc(d.weight)}</span>
-                      </div>`;
-                    }).join('')}
-                  </div>
-                </div>` : ''}
-
-                ${(c.scenarios || []).length ? `
-                <div>
-                  <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold mb-1.5">If / Then</p>
-                  <div class="space-y-1.5">
-                    ${c.scenarios.map(sc => {
-                      const lt = TONE[LIKELIHOOD_TONE[sc.likelihood] || 'slate'];
-                      return `<div class="rounded-md border hairline bg-slate-900/50 px-3 py-2">
-                        <div class="flex items-start gap-2 flex-wrap">
-                          <span class="rounded border ${lt.border} ${lt.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${lt.text}">${esc(sc.likelihood)}</span>
-                          <span class="text-[12px] leading-relaxed text-slate-200 flex-1 min-w-[12rem]"><span class="text-slate-400">${esc(sc.condition)}</span> → ${esc(sc.implication)}</span>
-                        </div>
-                      </div>`;
-                    }).join('')}
-                  </div>
-                </div>` : ''}
-
-                <div class="rounded-md border ${tt.border} ${tt.bg} px-3 py-2">
-                  <p class="text-[10px] uppercase tracking-[0.16em] ${tt.text} font-bold mb-0.5">Tape check — ${esc(c.tape_check)}</p>
-                  <p class="text-[12px] leading-relaxed text-slate-300">${esc(c.tape_check_note)}</p>
-                </div>
-                <p class="text-[11px] text-slate-500">Confidence <span class="${cf.text} font-semibold">${esc(c.confidence)}</span> — ${esc(c.confidence_reason)}</p>
+            <div class="px-4 pb-4 pl-[2.1rem] space-y-3 fade-in">
+              <div>
+                <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold mb-1">Why this lean</p>
+                <p class="text-[12.5px] leading-relaxed text-slate-300">${esc(fc.lean_rationale)}</p>
               </div>
-            </details>`;
-          }).join('')}
-        </div>
 
-        ${(st.data_expectations || []).length ? `
-        <div class="pt-3 border-t hairline">
-          <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold mb-2">Upcoming Data — What The Evidence Leans Toward</p>
-          <div class="space-y-2">
-            ${st.data_expectations.map(d => `
-              <div class="rounded-md border hairline bg-slate-950/50 px-3 py-2.5">
-                <div class="flex items-baseline gap-2 flex-wrap">
-                  <span class="text-[12.5px] font-semibold text-slate-100">${esc(d.release)}</span>
-                  <span class="num text-[10px] text-slate-500">${esc(d.when)}</span>
+              ${(fc.evidence || []).length ? `
+              <div>
+                <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold mb-1.5">Evidence available now</p>
+                <div class="space-y-1">
+                  ${fc.evidence.map(e => {
+                    const pt = TONE[POINTS_TONE[e.points] || 'slate'];
+                    return `<div class="flex items-start gap-2">
+                      <span class="mt-[3px] shrink-0 rounded border ${pt.border} ${pt.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${pt.text} w-[6.4rem] text-center">${esc(e.points)}</span>
+                      <span class="text-[12px] leading-relaxed text-slate-300 flex-1">${esc(e.fact)}</span>
+                      <span class="text-[9px] uppercase tracking-wider text-slate-600 shrink-0">${esc(e.weight)}</span>
+                    </div>`;
+                  }).join('')}
                 </div>
-                <p class="text-[12px] leading-relaxed text-slate-300 mt-1">${esc(d.evidence_so_far)}</p>
-                <p class="text-[11.5px] leading-relaxed text-amber-300/90 mt-1"><span class="uppercase tracking-wider text-[9px] font-bold">Surprise would be ·</span> ${esc(d.what_would_surprise)}</p>
-              </div>`).join('')}
+              </div>` : ''}
+
+              <div class="rounded-md border border-sky-500/25 bg-sky-500/[0.06] px-3 py-2">
+                <p class="text-[10px] uppercase tracking-[0.16em] text-sky-300 font-bold mb-0.5">Already priced</p>
+                <p class="text-[12px] leading-relaxed text-slate-300">${esc(fc.whats_priced)}</p>
+              </div>
+
+              ${(fc.reactions || []).length ? `
+              <div>
+                <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold mb-1.5">If / Then</p>
+                <div class="space-y-1.5">
+                  ${fc.reactions.map(r => {
+                    const rt = TONE[LIKELIHOOD_TONE[r.likelihood] || 'slate'];
+                    return `<div class="rounded-md border hairline bg-slate-900/50 px-3 py-2">
+                      <div class="flex items-start gap-2 flex-wrap">
+                        <span class="rounded border ${rt.border} ${rt.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${rt.text}">${esc(r.likelihood)}</span>
+                        <span class="text-[12px] leading-relaxed text-slate-200 flex-1 min-w-[12rem]"><span class="text-slate-400">${esc(r.if_outcome)}</span> → ${esc(r.then_currency)}</span>
+                      </div>
+                    </div>`;
+                  }).join('')}
+                </div>
+              </div>` : ''}
+
+              <div class="rounded-md border border-amber-500/25 bg-amber-500/[0.06] px-3 py-2">
+                <p class="text-[10px] uppercase tracking-[0.16em] text-amber-300 font-bold mb-0.5">Asymmetry</p>
+                <p class="text-[12px] leading-relaxed text-slate-300">${esc(fc.asymmetry)}</p>
+              </div>
+
+              <p class="text-[11px] text-slate-500">Confidence <span class="${cf.text} font-semibold">${esc(fc.confidence)}</span> — ${esc(fc.confidence_reason)}</p>
+            </div>
+          </details>`;
+        }).join('')}
+
+        ${(f.resolutions || []).length ? `
+        <div class="pt-3 border-t hairline">
+          <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold mb-2">Scored This Run</p>
+          <div class="space-y-1.5">
+            ${f.resolutions.map(r => {
+              const ot = TONE[OUTCOME_TONE[r.outcome] || 'slate'];
+              return `<div class="flex items-start gap-2.5 rounded-md border hairline bg-slate-950/50 px-3 py-2 flex-wrap">
+                <span class="rounded border ${ot.border} ${ot.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${ot.text}">${esc(r.outcome)}</span>
+                <span class="num text-[11px] text-slate-300">actual ${esc(r.actual)}</span>
+                <span class="text-[12px] text-slate-400 flex-1 min-w-[12rem]">${esc(r.note)}</span>
+              </div>`;
+            }).join('')}
           </div>
         </div>` : ''}
 
-        ${(st.sources || []).length ? `
+        ${(f.sources || []).length ? `
         <div class="pt-3 border-t hairline">
-          <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold mb-2">Sources Read (${st.sources.length})</p>
+          <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold mb-2">Sources Read (${f.sources.length})</p>
           <div class="space-y-1">
-            ${st.sources.map(s2 => `
+            ${f.sources.map(s2 => `
               <a href="${esc(s2.url)}" target="_blank" rel="noopener noreferrer"
                  class="flex items-baseline gap-2 text-[11.5px] hover:bg-slate-800/40 rounded px-2 py-1 -mx-2 transition-colors">
                 <span class="text-slate-600 shrink-0">${esc(s2.publisher)}</span>
@@ -661,7 +716,7 @@ function briefPanel() {
               </a>`).join('')}
           </div>
           <p class="text-[10.5px] text-slate-600 mt-2 leading-relaxed">
-            Every causal claim above should trace to one of these. If a claim has no source behind it, treat it as the model's inference, not reporting.
+            Every lean above should trace to these. A claim with no source behind it is the model's inference, not reporting.
           </p>
         </div>` : ''}
       </div>
@@ -737,7 +792,7 @@ function renderBrief() {
           </div>
         </article>
 
-        ${briefPanel()}
+        ${forecastPanel()}
 
         <!-- the four pairs at a glance -->
         <article class="panel rounded-xl overflow-hidden">
@@ -780,29 +835,30 @@ function renderBrief() {
         <article class="panel rounded-xl overflow-hidden">
           <div class="px-5 py-4 border-b hairline">
             <p class="text-base font-semibold text-slate-50">Event Risk</p>
-            <p class="text-xs text-slate-500 mt-1">Non-Farm Payrolls is derived from the BLS rule (first Friday). Add CPI, FOMC and your own dates below.</p>
+            <p class="text-xs text-slate-500 mt-1">Live ForexFactory feed — High and Medium impact, with consensus and previous. Add your own dates below.</p>
           </div>
           <div class="p-5 space-y-3">
             ${todays.length
               ? `<div class="rounded-lg border border-rose-500/30 bg-rose-500/10 p-3">
                    <p class="text-[10px] uppercase tracking-wider text-rose-300 font-bold mb-1">Today — Blackout In Force</p>
-                   ${todays.map(e => `<p class="text-[13px] text-slate-200 font-medium">${esc(e.name)}</p><p class="text-[11px] text-slate-400">${esc(e.note || '')}</p>`).join('')}
+                   ${todays.map(e => `<p class="text-[13px] text-slate-200 font-medium">${esc(e.name)}${e.feed ? ` <span class="num text-[11px] text-rose-300">in ${countdown(e.hours_until)}</span>` : ''}</p>
+                     <p class="text-[11px] text-slate-400">${e.consensus ? `Consensus ${esc(e.consensus)} · previous ${esc(e.previous || '—')}` : esc(e.note || '')}</p>`).join('')}
                  </div>`
               : `<div class="rounded-lg border border-emerald-500/25 bg-emerald-500/[0.07] p-3">
                    <p class="text-[10px] uppercase tracking-wider text-emerald-300 font-bold mb-0.5">Today — Clear</p>
-                   <p class="text-[12px] text-slate-400">No high-impact event recorded for today. This only covers what the rule knows plus what you have entered — always confirm against a live calendar.</p>
+                   <p class="text-[12px] text-slate-400">No High-impact event on the calendar for today.</p>
                  </div>`}
 
             <div>
               <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold mb-2">Next 10 Days</p>
               <div class="space-y-1.5">
                 ${upcoming(ymd(new Date())).length
-                  ? upcoming(ymd(new Date())).map(e => `
-                    <div class="flex items-center gap-2.5 rounded-md border hairline bg-slate-950/50 px-3 py-2">
-                      <span class="num text-[11px] text-slate-400 w-[5.5rem] shrink-0">${e.date}</span>
-                      <span class="text-[12px] text-slate-200 flex-1 min-w-0 truncate">${esc(e.name)}</span>
-                      ${e.auto ? '<span class="text-[9px] uppercase tracking-wider text-slate-600">rule</span>'
-                               : `<button data-delevent="${esc(e.date)}|${esc(e.name)}" class="text-[10px] text-slate-500 hover:text-rose-300 transition">remove</button>`}
+                  ? upcoming(ymd(new Date())).slice(0, 12).map(e => `
+                    <div class="flex items-center gap-2 rounded-md border ${e.impact === 'high' ? 'border-rose-500/25 bg-rose-500/[0.05]' : 'hairline bg-slate-950/50'} px-3 py-2 flex-wrap">
+                      <span class="num text-[11px] font-bold ${e.impact === 'high' ? 'text-rose-300' : 'text-sky-300'} w-[3rem] shrink-0">${e.feed ? countdown(e.hours_until) : e.date.slice(5)}</span>
+                      <span class="text-[12px] text-slate-200 flex-1 min-w-[8rem] truncate">${esc(e.name)}</span>
+                      ${e.consensus ? `<span class="num text-[10px] text-slate-500">cons ${esc(e.consensus)}</span>` : ''}
+                      ${e.feed ? '' : `<button data-delevent="${esc(e.date)}|${esc(e.name)}" class="text-[10px] text-slate-500 hover:text-rose-300 transition">remove</button>`}
                     </div>`).join('')
                   : '<p class="text-[12px] text-slate-500">Nothing scheduled in the window.</p>'}
               </div>
@@ -855,7 +911,7 @@ function renderGate() {
       evidence: st.rsi === null ? 'No RSI yet.' : `RSI(14) is <span class="num text-slate-200">${st.rsi.toFixed(1)}</span>. ${st.rsi > 70 ? 'Overbought — exhaustion risk.' : st.rsi < 30 ? 'Oversold — exhaustion risk.' : 'Inside the 30–70 band.'}` },
     { id:'cal', n:'03', title:'Economic Calendar Blackout', hazard:'Volatility Hazard',
       auto:true, pass: todays.length === 0,
-      evidence: todays.length ? `<span class="text-rose-300">${todays.map(e => esc(e.name)).join(', ')}</span> lands today. Stay flat within two hours either side.` : 'No high-impact event recorded for today in this tool. Confirm against a live calendar before you rely on it.' },
+      evidence: todays.length ? `<span class="text-rose-300">${todays.map(e => esc(e.name)).join(', ')}</span> lands today. Stay flat within two hours either side.` : (FC && FC.calendar ? 'No High-impact event on the ForexFactory calendar for today.' : 'Calendar feed not loaded — confirm against a live calendar before relying on this.') },
     { id:'carry', n:'04', title:'Carry / Rate-Differential Alignment', hazard:'Structural Alignment',
       auto:false, pass: !!S.carryOK[selected],
       evidence: 'This tool has no yield feed, so it cannot answer this one. Confirm from your own source that the trade direction agrees with the front-end rate differential — then tick it.' }
@@ -1294,7 +1350,7 @@ document.addEventListener('click', e => {
   if (!el) return;
 
   if (el.dataset.view) { view = el.dataset.view; render(); return; }
-  if (el.id === 'refresh' || el.id === 'retry') { fetchData(); fetchBrief().then(render); return; }
+  if (el.id === 'refresh' || el.id === 'retry') { fetchData(); fetchForecast().then(render); return; }
 
   if (el.dataset.goto) { selected = el.dataset.goto; view = 'matrix'; render();
     const c = document.querySelector(`[data-card="${selected}"]`);
@@ -1343,7 +1399,7 @@ document.addEventListener('change', e => {
 loadState();
 render();
 fetchData();
-fetchBrief().then(render);
+fetchForecast().then(render);
 </script>
 </body>
 </html>

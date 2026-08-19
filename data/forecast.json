@@ -1,0 +1,231 @@
+{
+  "generated_at": "2026-08-19T16:33:02+00:00",
+  "data_as_of": "2026-08-19",
+  "facts": {
+    "dxy": {
+      "code": "USD",
+      "label": "DXY (reconstructed)",
+      "dp": 2,
+      "last": 99.41,
+      "chg_1d_pct": -0.24,
+      "chg_5d_pct": -0.371,
+      "chg_20d_pct": -1.71,
+      "rsi_14": 36.3,
+      "sma_200": 99.2,
+      "dist_from_200sma_pct": 0.2,
+      "sma_location": "testing",
+      "realised_vol_20d_pct": 4.4,
+      "daily_range_1sd_pct": 0.28,
+      "range_20d": [
+        99.41,
+        101.55
+      ]
+    },
+    "eur": {
+      "code": "EUR",
+      "label": "EUR/USD",
+      "dp": 4,
+      "last": 1.1605,
+      "chg_1d_pct": 0.251,
+      "chg_5d_pct": 0.52,
+      "chg_20d_pct": 1.727,
+      "rsi_14": 65.8,
+      "sma_200": 1.1626,
+      "dist_from_200sma_pct": -0.18,
+      "sma_location": "testing",
+      "realised_vol_20d_pct": 4.1,
+      "daily_range_1sd_pct": 0.26,
+      "range_20d": [
+        1.1367,
+        1.1605
+      ]
+    },
+    "gbp": {
+      "code": "GBP",
+      "label": "GBP/USD",
+      "dp": 4,
+      "last": 1.3556,
+      "chg_1d_pct": 0.224,
+      "chg_5d_pct": 0.226,
+      "chg_20d_pct": 1.408,
+      "rsi_14": 62.2,
+      "sma_200": 1.3411,
+      "dist_from_200sma_pct": 1.08,
+      "sma_location": "above",
+      "realised_vol_20d_pct": 4.3,
+      "daily_range_1sd_pct": 0.27,
+      "range_20d": [
+        1.3287,
+        1.3559
+      ]
+    },
+    "jpy": {
+      "code": "JPY",
+      "label": "USD/JPY",
+      "dp": 2,
+      "last": 159.09,
+      "chg_1d_pct": -0.382,
+      "chg_5d_pct": 0.0,
+      "chg_20d_pct": -2.441,
+      "rsi_14": 42.5,
+      "sma_200": 158.17,
+      "dist_from_200sma_pct": 0.58,
+      "sma_location": "above",
+      "realised_vol_20d_pct": 10.8,
+      "daily_range_1sd_pct": 0.68,
+      "range_20d": [
+        156.68,
+        163.91
+      ]
+    }
+  },
+  "calendar": [
+    {
+      "id": "USD|FOMC Meeting Minutes|2026-08-19T14:00",
+      "title": "FOMC Meeting Minutes",
+      "currency": "USD",
+      "when_utc": "2026-08-19T18:00+00:00",
+      "hours_until": 1.4,
+      "impact": "High",
+      "consensus": null,
+      "previous": null,
+      "is_g4": true
+    },
+    {
+      "id": "USD|President Trump Speaks|2026-08-19T14:30",
+      "title": "President Trump Speaks",
+      "currency": "USD",
+      "when_utc": "2026-08-19T18:30+00:00",
+      "hours_until": 1.9,
+      "impact": "Medium",
+      "consensus": null,
+      "previous": null,
+      "is_g4": true
+    },
+    {
+      "id": "AUD|Employment Change|2026-08-19T21:30",
+      "title": "Employment Change",
+      "currency": "AUD",
+      "when_utc": "2026-08-20T01:30+00:00",
+      "hours_until": 8.9,
+      "impact": "High",
+      "consensus": "11.7K",
+      "previous": "76.3K",
+      "is_g4": false
+    },
+    {
+      "id": "AUD|Unemployment Rate|2026-08-19T21:30",
+      "title": "Unemployment Rate",
+      "currency": "AUD",
+      "when_utc": "2026-08-20T01:30+00:00",
+      "hours_until": 8.9,
+      "impact": "High",
+      "consensus": "4.4%",
+      "previous": "4.4%",
+      "is_g4": false
+    },
+    {
+      "id": "USD|Philly Fed Manufacturing Index|2026-08-20T08:30",
+      "title": "Philly Fed Manufacturing Index",
+      "currency": "USD",
+      "when_utc": "2026-08-20T12:30+00:00",
+      "hours_until": 19.9,
+      "impact": "Medium",
+      "consensus": "24.1",
+      "previous": "41.4",
+      "is_g4": true
+    },
+    {
+      "id": "USD|Unemployment Claims|2026-08-20T08:30",
+      "title": "Unemployment Claims",
+      "currency": "USD",
+      "when_utc": "2026-08-20T12:30+00:00",
+      "hours_until": 19.9,
+      "impact": "Medium",
+      "consensus": "210K",
+      "previous": "209K",
+      "is_g4": true
+    },
+    {
+      "id": "GBP|Retail Sales m/m|2026-08-21T02:00",
+      "title": "Retail Sales m/m",
+      "currency": "GBP",
+      "when_utc": "2026-08-21T06:00+00:00",
+      "hours_until": 37.4,
+      "impact": "Medium",
+      "consensus": "-0.5%",
+      "previous": "1.0%",
+      "is_g4": true
+    },
+    {
+      "id": "EUR|French Flash Manufacturing PMI|2026-08-21T03:15",
+      "title": "French Flash Manufacturing PMI",
+      "currency": "EUR",
+      "when_utc": "2026-08-21T07:15+00:00",
+      "hours_until": 38.7,
+      "impact": "Medium",
+      "consensus": "50.1",
+      "previous": "50.0",
+      "is_g4": true
+    },
+    {
+      "id": "EUR|French Flash Services PMI|2026-08-21T03:15",
+      "title": "French Flash Services PMI",
+      "currency": "EUR",
+      "when_utc": "2026-08-21T07:15+00:00",
+      "hours_until": 38.7,
+      "impact": "Medium",
+      "consensus": "49.4",
+      "previous": "49.8",
+      "is_g4": true
+    },
+    {
+      "id": "EUR|German Flash Manufacturing PMI|2026-08-21T03:30",
+      "title": "German Flash Manufacturing PMI",
+      "currency": "EUR",
+      "when_utc": "2026-08-21T07:30+00:00",
+      "hours_until": 38.9,
+      "impact": "Medium",
+      "consensus": "52.1",
+      "previous": "52.2",
+      "is_g4": true
+    },
+    {
+      "id": "EUR|German Flash Services PMI|2026-08-21T03:30",
+      "title": "German Flash Services PMI",
+      "currency": "EUR",
+      "when_utc": "2026-08-21T07:30+00:00",
+      "hours_until": 38.9,
+      "impact": "Medium",
+      "consensus": "50.1",
+      "previous": "49.6",
+      "is_g4": true
+    },
+    {
+      "id": "GBP|Flash Manufacturing PMI|2026-08-21T04:30",
+      "title": "Flash Manufacturing PMI",
+      "currency": "GBP",
+      "when_utc": "2026-08-21T08:30+00:00",
+      "hours_until": 39.9,
+      "impact": "Medium",
+      "consensus": "51.6",
+      "previous": "52.8",
+      "is_g4": true
+    },
+    {
+      "id": "GBP|Flash Services PMI|2026-08-21T04:30",
+      "title": "Flash Services PMI",
+      "currency": "GBP",
+      "when_utc": "2026-08-21T08:30+00:00",
+      "hours_until": 39.9,
+      "impact": "Medium",
+      "consensus": "51.8",
+      "previous": "51.8",
+      "is_g4": true
+    }
+  ],
+  "calendar_error": null,
+  "forecast": null,
+  "forecast_error": "skipped (--facts-only)",
+  "record": null
+}
