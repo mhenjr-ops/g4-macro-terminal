@@ -39,7 +39,8 @@ LEDGER = os.path.join(HERE, "..", "data", "ledger.json")
 
 MODEL = "claude-opus-5"
 MAX_CONTINUATIONS = 5
-MAX_EVENTS = 6            # forecasts per run; each one costs real output tokens
+MAX_EVENTS = int(os.environ.get("MAX_EVENTS") or 6)   # each forecast costs real output tokens
+FOCUS = (os.environ.get("FOCUS") or "").strip()       # e.g. "Non-Farm" for a pre-NFP run
 MAX_TOKENS = 32000        # streaming, so a long structured answer is not truncated
 G4 = {"USD", "EUR", "GBP", "JPY"}
 
@@ -204,6 +205,27 @@ def pending_resolution(ledger):
     return out[:8]
 
 
+def select_events(calendar):
+    """Which events this run forecasts.
+
+    High impact before Medium, capped at MAX_EVENTS — eleven full write-ups is what
+    overran the output budget on the first live run. When FOCUS is set (a manual
+    pre-NFP style run) the whole budget goes to matching events instead.
+    """
+    g4 = [e for e in calendar if e["is_g4"]]
+    if FOCUS:
+        needle = FOCUS.lower()
+        matched = [e for e in g4
+                   if needle in e["title"].lower() or needle == e["currency"].lower()]
+        if matched:
+            g4 = matched
+        else:
+            print(f"  focus '{FOCUS}' matched nothing — forecasting the full week instead",
+                  file=sys.stderr, flush=True)
+    return ([e for e in g4 if e["impact"] == "High"]
+            + [e for e in g4 if e["impact"] != "High"])[:MAX_EVENTS]
+
+
 # ---------------------------------------------------------------- claude layer
 FORECAST_SCHEMA = {
     "type": "object",
@@ -349,11 +371,7 @@ def call_claude(as_of, facts, calendar, pending):
     if not (os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_AUTH_TOKEN")):
         return None, "no ANTHROPIC_API_KEY in environment"
 
-    # High impact first, then Medium, capped. Eleven events of full prose is what
-    # overran the output budget on the first run.
-    g4 = [e for e in calendar if e["is_g4"]]
-    focus = ([e for e in g4 if e["impact"] == "High"]
-             + [e for e in g4 if e["impact"] != "High"])[:MAX_EVENTS]
+    focus = select_events(calendar)
     if not focus and not pending:
         return None, "no upcoming G4 events in the horizon and nothing to resolve"
 
@@ -375,7 +393,9 @@ def call_claude(as_of, facts, calendar, pending):
         for p in pending) or "  (nothing awaiting resolution)"
 
     now = dt.datetime.now(dt.timezone.utc).isoformat(timespec="minutes")
-    prompt = f"""Current time: {now}. Latest FX close: {as_of}.
+    focus_line = (f"\nFOCUSED RUN — the desk asked specifically about: {FOCUS}. Spend your research "
+                  f"budget on the event(s) below rather than surveying the week.\n" if FOCUS else "")
+    prompt = f"""Current time: {now}. Latest FX close: {as_of}.{focus_line}
 
 UPCOMING G4 EVENTS — these are what you are forecasting. Use the exact event_id in your output:
 
@@ -457,26 +477,50 @@ def update_ledger(ledger, story, calendar):
         return ledger, 0, 0
 
     by_id = {e["id"]: e for e in calendar}
-    known = {e["event_id"] for e in ledger["entries"]}
-    added = 0
+    idx0 = {e["event_id"]: e for e in ledger["entries"]}
+    now = dt.datetime.now(dt.timezone.utc)
+    stamp = now.isoformat(timespec="seconds")
+    added = revised = 0
+
     for f in story.get("forecasts", []):
-        if f["event_id"] in known:
-            continue
         ev = by_id.get(f["event_id"], {})
-        ledger["entries"].append({
-            "event_id": f["event_id"],
-            "event": f["event"],
-            "currency": f["currency"],
-            "when_utc": ev.get("when_utc", ""),
-            "consensus": f.get("consensus"),
-            "lean": f["lean"],
-            "confidence": f["confidence"],
-            "called_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
-            "outcome": None,
-            "actual": None,
-            "note": None,
-        })
-        added += 1
+        prior = idx0.get(f["event_id"])
+
+        if prior is None:
+            ledger["entries"].append({
+                "event_id": f["event_id"],
+                "event": f["event"],
+                "currency": f["currency"],
+                "when_utc": ev.get("when_utc", ""),
+                "consensus": f.get("consensus"),
+                "lean": f["lean"],
+                "confidence": f["confidence"],
+                "called_at": stamp,
+                "revisions": [{"lean": f["lean"], "confidence": f["confidence"], "at": stamp}],
+                "outcome": None, "actual": None, "note": None,
+            })
+            added += 1
+            continue
+
+        # A later run re-forecasting the same event supersedes the earlier call —
+        # that is the point of a pre-NFP run. But NEVER after the event has printed:
+        # revising a call once the answer is known would make the scoreboard a lie.
+        try:
+            when = dt.datetime.fromisoformat(prior.get("when_utc") or ev.get("when_utc", ""))
+        except ValueError:
+            when = None
+        if prior.get("outcome") or (when and now >= when):
+            continue
+
+        prior.setdefault("revisions", [{"lean": prior["lean"],
+                                        "confidence": prior["confidence"],
+                                        "at": prior.get("called_at", "")}])
+        if (f["lean"], f["confidence"]) != (prior["lean"], prior["confidence"]):
+            prior["revisions"].append({"lean": f["lean"], "confidence": f["confidence"], "at": stamp})
+            prior["lean"] = f["lean"]
+            prior["confidence"] = f["confidence"]
+            prior["consensus"] = f.get("consensus", prior.get("consensus"))
+            revised += 1
 
     resolved = 0
     idx = {e["event_id"]: e for e in ledger["entries"]}
@@ -500,12 +544,14 @@ def update_ledger(ledger, story, calendar):
         "unclear": sum(1 for e in ledger["entries"] if e.get("outcome") == "unclear"),
         "pending": sum(1 for e in ledger["entries"] if not e.get("outcome")),
     }
-    return ledger, added, resolved
+    return ledger, added, resolved, revised
 
 
 def main():
     facts_only = "--facts-only" in sys.argv
 
+    if FOCUS:
+        print(f"FOCUSED RUN — '{FOCUS}' (max {MAX_EVENTS} events)", flush=True)
     print("fetching rates…", flush=True)
     as_of, facts = build_facts()
     print(f"  as of {as_of}", flush=True)
@@ -534,9 +580,9 @@ def main():
               f"{len(story['resolutions'])} resolutions, "
               f"{u['input_tokens']} in / {u['output_tokens']} out", flush=True)
 
-    ledger, added, resolved = update_ledger(ledger, story, calendar)
+    ledger, added, resolved, revised = update_ledger(ledger, story, calendar)
     if story:
-        print(f"ledger: +{added} new call(s), {resolved} resolved, "
+        print(f"ledger: +{added} new, {revised} revised, {resolved} resolved, "
               f"record {ledger.get('record')}", flush=True)
 
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
@@ -550,6 +596,7 @@ def main():
             "forecast": story,
             "forecast_error": err,
             "record": ledger.get("record"),
+            "focus": FOCUS or None,
         }, fh, indent=2)
     with open(LEDGER, "w") as fh:
         json.dump(ledger, fh, indent=2)

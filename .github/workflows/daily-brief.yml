@@ -1,24 +1,37 @@
-name: G4 Macro Forecast (Tue/Thu)
+name: G4 Macro Forecast
 
 on:
   schedule:
-    # Tuesday and Thursday at 10:00 UTC — ahead of the 12:30/13:30 UTC US data
-    # window, so the pre-event calls publish BEFORE the prints they forecast.
-    # Two runs a week keeps spend near $14/month at observed token usage.
-    - cron: "0 10 * * 2,4"
-  workflow_dispatch:        # lets you run it by hand from the Actions tab
+    # Monday 06:00 UTC — the ForexFactory feed runs Sunday→Friday and rolls over the
+    # weekend, so Monday morning is the first moment the whole week is visible. Early
+    # enough to publish before the EU (07:00–09:00 UTC) and US (12:30 UTC) windows.
+    - cron: "0 6 * * 1"
+
+  # Manual runs: use this ahead of a specific event — the day before NFP, CPI, or an
+  # FOMC decision — to re-forecast with the evidence that has landed since Monday.
+  workflow_dispatch:
+    inputs:
+      focus:
+        description: 'Narrow to matching events, e.g. "Non-Farm" or "CPI" or "USD". Blank = whole week.'
+        required: false
+        type: string
+      max_events:
+        description: 'How many events to forecast (fewer = cheaper, more detail each).'
+        required: false
+        default: '6'
+        type: string
 
 permissions:
-  contents: write           # needed to commit the regenerated brief
+  contents: write
 
 concurrency:
-  group: daily-brief
+  group: g4-forecast
   cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
 
@@ -32,6 +45,8 @@ jobs:
       - name: Build forecast
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FOCUS: ${{ inputs.focus }}
+          MAX_EVENTS: ${{ inputs.max_events }}
         run: python scripts/build_forecast.py
 
       - name: Commit if changed
@@ -40,8 +55,10 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/forecast.json data/ledger.json
           if git diff --staged --quiet; then
-            echo "No change — nothing to commit."
+            echo "No change."
           else
-            git commit -m "Forecast $(date -u +%Y-%m-%d)"
+            git commit -m "Forecast $(date -u +%Y-%m-%d)${FOCUS:+ (focus: $FOCUS)}"
             git push
           fi
+        env:
+          FOCUS: ${{ inputs.focus }}

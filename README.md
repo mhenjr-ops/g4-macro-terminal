@@ -34,22 +34,37 @@ The dashboard alone needs nothing — open `index.html`.
 For the daily brief:
 
 1. Add an Anthropic API key at **Settings → Secrets and variables → Actions** as `ANTHROPIC_API_KEY`.
-2. The workflow runs **Tuesday and Thursday at 10:00 UTC** — deliberately ahead of the
-   12:30/13:30 UTC US data window, so calls publish before the prints they forecast. Run it on
-   demand any time from the **Actions** tab.
+2. The workflow runs **Monday at 06:00 UTC**, covering the week ahead. The ForexFactory feed
+   runs Sunday→Friday and rolls over the weekend, so Monday morning is the first moment the whole
+   week is visible — and it publishes before the EU (07:00–09:00 UTC) and US (12:30 UTC) windows.
+
+### Manual runs — the pre-NFP pattern
+
+The Monday call is made with Monday's evidence. For a Friday release that misses ADP, claims and
+ISM services. So the day before a big print, run it again from **Actions → Run workflow** with:
+
+- **focus** — `Non-Farm`, `CPI`, `FOMC`, or a currency like `USD`. Narrows the run to matching
+  events so the whole research budget goes to the one you care about. Blank = the whole week.
+- **max_events** — fewer events, more depth each, lower cost.
+
+Re-forecasting an event already called **supersedes** the earlier lean and records both, so the
+page shows how the view moved as evidence arrived. A call can never be revised after the event has
+printed or been scored — otherwise the track record would be a lie.
 
 ### Cost
 
-Observed: ~211k input / ~26k output tokens per run ≈ **$1.71** at Claude Opus 5 pricing, so about
-**$14/month** on the Tue/Thu schedule. Web search dominates the input side. Levers if you want it
-cheaper: fewer runs, lower `MAX_EVENTS`, or `output_config={"effort": "medium"}` in the call.
+Observed on a full 6-event week: ~211k input / ~26k output tokens ≈ **$1.71**. On the weekly
+schedule that is about **$7/month**, plus roughly **$0.30–0.60** for each focused manual run.
+Web search dominates the input side. Further levers: lower `MAX_EVENTS`, or
+`output_config={"effort": "medium"}` in the call.
 
-### Coverage gap worth knowing
+### Known limits
 
-The ForexFactory feed carries the **current week only**, so a Thursday run can see at most through
-the weekend. Events landing on a **Monday** are not forecast by either run — Monday is usually the
-lightest day for G4 data (NFP is Friday, CPI and FOMC mid-week), but it is a real gap. Add a
-Monday run, or shift to Mon/Wed, if that matters to you.
+The ForexFactory feed carries the **current week only** — there is no next-week endpoint — so the
+horizon is at most Monday to Friday. Nothing further out can be forecast.
+
+A Monday lean on a Friday release is made without the week's own evidence. That is what the
+focused manual run is for; use it, or treat late-week Monday calls as provisional.
 
 Run it locally:
 

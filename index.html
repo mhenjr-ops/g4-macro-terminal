@@ -147,7 +147,8 @@ const TONE = {
    STATE
    ============================================================================ */
 let DATA = null;            // { asOf, dates, series:{id:[...]}, stats:{id:{...}} }
-let FC = null;             // data/forecast.json, written by the daily Actions run
+let FC = null;             // data/forecast.json, written by the scheduled Actions run
+let LEDGER = null;         // data/ledger.json — every call and how it scored
 let view = 'brief';
 let selected = 'dxy';
 let status = 'loading';     // loading | live | cached | error
@@ -485,6 +486,10 @@ async function fetchForecast() {
     if (!res.ok) throw new Error('HTTP ' + res.status);
     FC = await res.json();
   } catch (e) { FC = null; }
+  try {
+    const res = await fetch('data/ledger.json', { cache: 'no-store' });
+    LEDGER = res.ok ? await res.json() : null;
+  } catch (e) { LEDGER = null; }
 }
 
 function readCache() {
@@ -557,13 +562,32 @@ function recordPanel() {
   }
   const rate = Math.round(r.hits / r.scored * 100);
   const t = TONE[rate >= 60 ? 'emerald' : rate >= 45 ? 'amber' : 'rose'];
+  const scored = (LEDGER && LEDGER.entries ? LEDGER.entries : [])
+    .filter(e => e.outcome && e.outcome !== 'unclear')
+    .slice(-6).reverse();
   return `
     <div class="flex items-center gap-3 flex-wrap">
       <span class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold">Track record</span>
       <span class="num text-lg font-bold ${t.text}">${r.hits}/${r.scored}</span>
       <span class="text-[11px] text-slate-400">leans on the right side of consensus (${rate}%)</span>
       <span class="num text-[10px] text-slate-600">${r.unclear} unclear · ${r.pending} pending</span>
-    </div>`;
+    </div>
+    ${scored.length ? `
+    <div class="mt-2 flex flex-wrap gap-1.5">
+      ${scored.map(e => {
+        const ot = TONE[e.outcome === 'hit' ? 'emerald' : 'rose'];
+        return `<span class="rounded border ${ot.border} ${ot.bg} px-1.5 py-0.5 text-[9px] font-semibold ${ot.text}"
+                      title="${esc(e.event)} — called ${esc(e.lean)}, actual ${esc(e.actual || '?')}">
+          ${esc(e.currency)} ${e.outcome === 'hit' ? '✓' : '✕'}
+        </span>`;
+      }).join('')}
+      <span class="text-[10px] text-slate-600 self-center">most recent first · hover for detail</span>
+    </div>` : ''}`;
+}
+
+function revisionsFor(eventId) {
+  const e = (LEDGER && LEDGER.entries ? LEDGER.entries : []).find(x => x.event_id === eventId);
+  return (e && e.revisions) || [];
 }
 
 function forecastPanel() {
@@ -635,6 +659,8 @@ function forecastPanel() {
               <span class="num text-[10px] text-slate-500">cons ${esc(fc.consensus || '—')}</span>
               <span class="rounded border ${lt.border} ${lt.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${lt.text}">Lean: ${esc(fc.lean)}</span>
               <span class="rounded border ${cf.border} ${cf.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${cf.text}">${esc(fc.confidence)}</span>
+              ${revisionsFor(fc.event_id).length > 1
+                ? '<span class="rounded border border-violet-500/30 bg-violet-500/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-violet-300">Revised</span>' : ''}
             </summary>
 
             <div class="px-4 pb-4 pl-[2.1rem] space-y-3 fade-in">
@@ -685,6 +711,17 @@ function forecastPanel() {
               </div>
 
               <p class="text-[11px] text-slate-500">Confidence <span class="${cf.text} font-semibold">${esc(fc.confidence)}</span> — ${esc(fc.confidence_reason)}</p>
+
+              ${revisionsFor(fc.event_id).length > 1 ? `
+              <div class="rounded-md border border-violet-500/25 bg-violet-500/[0.06] px-3 py-2">
+                <p class="text-[10px] uppercase tracking-[0.16em] text-violet-300 font-bold mb-1">How the call moved as evidence arrived</p>
+                ${revisionsFor(fc.event_id).map((rv, i) => `
+                  <p class="text-[11.5px] text-slate-300">
+                    <span class="num text-slate-500">${new Date(rv.at).toLocaleDateString(undefined,{month:'short',day:'numeric'})}</span>
+                    · ${esc(rv.lean)} <span class="text-slate-500">(${esc(rv.confidence)})</span>
+                    ${i === 0 ? '<span class="text-slate-600">— first call</span>' : ''}
+                  </p>`).join('')}
+              </div>` : ''}
             </div>
           </details>`;
         }).join('')}
