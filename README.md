@@ -34,9 +34,22 @@ The dashboard alone needs nothing — open `index.html`.
 For the daily brief:
 
 1. Add an Anthropic API key at **Settings → Secrets and variables → Actions** as `ANTHROPIC_API_KEY`.
-2. The workflow runs weekdays at 10:00 UTC — deliberately ahead of the 12:30/13:30 UTC US data
-   window, so calls are published before the prints they forecast. Or run it on demand from the
-   **Actions** tab.
+2. The workflow runs **Tuesday and Thursday at 10:00 UTC** — deliberately ahead of the
+   12:30/13:30 UTC US data window, so calls publish before the prints they forecast. Run it on
+   demand any time from the **Actions** tab.
+
+### Cost
+
+Observed: ~211k input / ~26k output tokens per run ≈ **$1.71** at Claude Opus 5 pricing, so about
+**$14/month** on the Tue/Thu schedule. Web search dominates the input side. Levers if you want it
+cheaper: fewer runs, lower `MAX_EVENTS`, or `output_config={"effort": "medium"}` in the call.
+
+### Coverage gap worth knowing
+
+The ForexFactory feed carries the **current week only**, so a Thursday run can see at most through
+the weekend. Events landing on a **Monday** are not forecast by either run — Monday is usually the
+lightest day for G4 data (NFP is Friday, CPI and FOMC mid-week), but it is a real gap. Add a
+Monday run, or shift to Mon/Wed, if that matters to you.
 
 Run it locally:
 

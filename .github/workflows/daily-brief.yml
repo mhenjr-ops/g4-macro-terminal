@@ -1,10 +1,11 @@
-name: Daily G4 Macro Brief
+name: G4 Macro Forecast (Tue/Thu)
 
 on:
   schedule:
-    # 10:00 UTC weekdays — ahead of the 12:30/13:30 UTC US data window, so the
-    # pre-event calls are published BEFORE the prints they forecast.
-    - cron: "0 10 * * 1-5"
+    # Tuesday and Thursday at 10:00 UTC — ahead of the 12:30/13:30 UTC US data
+    # window, so the pre-event calls publish BEFORE the prints they forecast.
+    # Two runs a week keeps spend near $14/month at observed token usage.
+    - cron: "0 10 * * 2,4"
   workflow_dispatch:        # lets you run it by hand from the Actions tab
 
 permissions:
@@ -28,7 +29,7 @@ jobs:
       - name: Install SDK
         run: pip install --quiet anthropic
 
-      - name: Build brief
+      - name: Build forecast
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scripts/build_forecast.py
