@@ -1,3 +1,89 @@
 {
-  "entries": []
+  "entries": [
+    {
+      "event_id": "USD|FOMC Meeting Minutes|2026-08-19T14:00",
+      "event": "FOMC Minutes of the 28\u201329 July 2026 meeting",
+      "currency": "USD",
+      "when_utc": "2026-08-19T18:00+00:00",
+      "consensus": "No numeric consensus. Market benchmark is ~25\u201331% implied probability of a 25bp hike at the 15\u201316 Sep meeting, down from ~60% on 1 Aug and a ~82% late-July peak. For this entry read 'above consensus' as 'more hawkish than that pricing implies'.",
+      "lean": "above consensus",
+      "confidence": "low",
+      "called_at": "2026-08-19T16:55:49+00:00",
+      "outcome": null,
+      "actual": null,
+      "note": null
+    },
+    {
+      "event_id": "USD|President Trump Speaks|2026-08-19T14:30",
+      "event": "President Trump speaks (30 minutes after the FOMC minutes)",
+      "currency": "USD",
+      "when_utc": "2026-08-19T18:30+00:00",
+      "consensus": "No consensus; unscripted headline risk. Topic set most likely centres on the Canada tariff pause, Iran/Hormuz, and possibly monetary policy.",
+      "lean": "no clear lean",
+      "confidence": "low",
+      "called_at": "2026-08-19T16:55:49+00:00",
+      "outcome": null,
+      "actual": null,
+      "note": null
+    },
+    {
+      "event_id": "USD|Philly Fed Manufacturing Index|2026-08-20T08:30",
+      "event": "Philadelphia Fed Manufacturing Business Outlook Survey, August 2026",
+      "currency": "USD",
+      "when_utc": "2026-08-20T12:30+00:00",
+      "consensus": "24.1 (previous 41.4)",
+      "lean": "above consensus",
+      "confidence": "low",
+      "called_at": "2026-08-19T16:55:49+00:00",
+      "outcome": null,
+      "actual": null,
+      "note": null
+    },
+    {
+      "event_id": "USD|Unemployment Claims|2026-08-20T08:30",
+      "event": "US initial jobless claims, week ending 15 August 2026",
+      "currency": "USD",
+      "when_utc": "2026-08-20T12:30+00:00",
+      "consensus": "210K (previous 209K)",
+      "lean": "below consensus",
+      "confidence": "low",
+      "called_at": "2026-08-19T16:55:49+00:00",
+      "outcome": null,
+      "actual": null,
+      "note": null
+    },
+    {
+      "event_id": "GBP|Retail Sales m/m|2026-08-21T02:00",
+      "event": "UK retail sales volumes m/m, July 2026 (ONS)",
+      "currency": "GBP",
+      "when_utc": "2026-08-21T06:00+00:00",
+      "consensus": "-0.5% m/m (previous +1.0%)",
+      "lean": "above consensus",
+      "confidence": "low",
+      "called_at": "2026-08-19T16:55:49+00:00",
+      "outcome": null,
+      "actual": null,
+      "note": null
+    },
+    {
+      "event_id": "EUR|French Flash Manufacturing PMI|2026-08-21T03:15",
+      "event": "HCOB France flash manufacturing PMI, August 2026",
+      "currency": "EUR",
+      "when_utc": "2026-08-21T07:15+00:00",
+      "consensus": "50.1 (previous flash 50.0; July final 49.8)",
+      "lean": "below consensus",
+      "confidence": "low",
+      "called_at": "2026-08-19T16:55:49+00:00",
+      "outcome": null,
+      "actual": null,
+      "note": null
+    }
+  ],
+  "record": {
+    "scored": 0,
+    "hits": 0,
+    "misses": 0,
+    "unclear": 0,
+    "pending": 6
+  }
 }
