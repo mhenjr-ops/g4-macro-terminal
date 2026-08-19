@@ -39,6 +39,8 @@ LEDGER = os.path.join(HERE, "..", "data", "ledger.json")
 
 MODEL = "claude-opus-5"
 MAX_CONTINUATIONS = 5
+MAX_EVENTS = 6            # forecasts per run; each one costs real output tokens
+MAX_TOKENS = 32000        # streaming, so a long structured answer is not truncated
 G4 = {"USD", "EUR", "GBP", "JPY"}
 
 PAIRS = [
@@ -347,7 +349,11 @@ def call_claude(as_of, facts, calendar, pending):
     if not (os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_AUTH_TOKEN")):
         return None, "no ANTHROPIC_API_KEY in environment"
 
-    focus = [e for e in calendar if e["is_g4"]][:10]
+    # High impact first, then Medium, capped. Eleven events of full prose is what
+    # overran the output budget on the first run.
+    g4 = [e for e in calendar if e["is_g4"]]
+    focus = ([e for e in g4 if e["impact"] == "High"]
+             + [e for e in g4 if e["impact"] != "High"])[:MAX_EVENTS]
     if not focus and not pending:
         return None, "no upcoming G4 events in the horizon and nothing to resolve"
 
@@ -402,14 +408,17 @@ confidence rather than inventing a view."""
     messages = [{"role": "user", "content": prompt}]
     resp = None
     for _ in range(MAX_CONTINUATIONS + 1):
-        resp = client.messages.create(
+        # Streaming: web research runs for minutes and the structured answer is long.
+        # A non-streaming call risks both an HTTP timeout and a truncated body.
+        with client.messages.stream(
             model=MODEL,
-            max_tokens=16000,
+            max_tokens=MAX_TOKENS,
             system=SYSTEM,
             messages=messages,
             tools=tools,
             output_config={"format": {"type": "json_schema", "schema": FORECAST_SCHEMA}},
-        )
+        ) as stream:
+            resp = stream.get_final_message()
         if resp.stop_reason != "pause_turn":
             break
         # Server-side tool loop hit its cap; resend with the paused turn appended.
@@ -426,7 +435,16 @@ confidence rather than inventing a view."""
     if not text:
         return None, "no text block in response"
 
-    out = json.loads(text)
+    # 3. Fail with a diagnosis rather than an opaque JSONDecodeError. Truncation at
+    #    the token ceiling is the one way this JSON can be malformed.
+    if resp.stop_reason == "max_tokens":
+        return None, (f"output truncated at max_tokens={MAX_TOKENS} "
+                      f"({resp.usage.output_tokens} tokens, {len(text)} chars) — "
+                      f"lower MAX_EVENTS or raise MAX_TOKENS")
+    try:
+        out = json.loads(text)
+    except json.JSONDecodeError as err:
+        return None, f"model returned malformed JSON ({err}); stop_reason={resp.stop_reason}"
     out["_usage"] = {"input_tokens": resp.usage.input_tokens,
                      "output_tokens": resp.usage.output_tokens, "model": MODEL}
     return out, None
