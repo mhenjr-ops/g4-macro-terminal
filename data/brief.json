@@ -1,0 +1,84 @@
+{
+  "generated_at": "2026-08-19T16:12:12+00:00",
+  "data_as_of": "2026-08-19",
+  "facts": {
+    "dxy": {
+      "code": "USD",
+      "label": "DXY (reconstructed)",
+      "dp": 2,
+      "last": 99.41,
+      "chg_1d_pct": -0.24,
+      "chg_5d_pct": -0.371,
+      "chg_20d_pct": -1.71,
+      "rsi_14": 36.3,
+      "sma_200": 99.2,
+      "sma_50": 100.59,
+      "dist_from_200sma_pct": 0.2,
+      "sma_location": "testing",
+      "realised_vol_20d_pct": 4.4,
+      "range_20d": [
+        99.41,
+        101.55
+      ]
+    },
+    "eur": {
+      "code": "EUR",
+      "label": "EUR/USD",
+      "dp": 4,
+      "last": 1.1605,
+      "chg_1d_pct": 0.251,
+      "chg_5d_pct": 0.52,
+      "chg_20d_pct": 1.727,
+      "rsi_14": 65.8,
+      "sma_200": 1.1626,
+      "sma_50": 1.1467,
+      "dist_from_200sma_pct": -0.18,
+      "sma_location": "testing",
+      "realised_vol_20d_pct": 4.1,
+      "range_20d": [
+        1.1367,
+        1.1605
+      ]
+    },
+    "gbp": {
+      "code": "GBP",
+      "label": "GBP/USD",
+      "dp": 4,
+      "last": 1.3556,
+      "chg_1d_pct": 0.224,
+      "chg_5d_pct": 0.226,
+      "chg_20d_pct": 1.408,
+      "rsi_14": 62.2,
+      "sma_200": 1.3411,
+      "sma_50": 1.3379,
+      "dist_from_200sma_pct": 1.08,
+      "sma_location": "above",
+      "realised_vol_20d_pct": 4.3,
+      "range_20d": [
+        1.3287,
+        1.3559
+      ]
+    },
+    "jpy": {
+      "code": "JPY",
+      "label": "USD/JPY",
+      "dp": 2,
+      "last": 159.09,
+      "chg_1d_pct": -0.382,
+      "chg_5d_pct": 0.0,
+      "chg_20d_pct": -2.441,
+      "rsi_14": 42.5,
+      "sma_200": 158.17,
+      "sma_50": 161.11,
+      "dist_from_200sma_pct": 0.58,
+      "sma_location": "above",
+      "realised_vol_20d_pct": 10.8,
+      "range_20d": [
+        156.68,
+        163.91
+      ]
+    }
+  },
+  "story": null,
+  "story_error": "skipped (--facts-only)"
+}

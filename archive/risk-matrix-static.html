@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Institutional Currency &amp; Risk Intelligence Matrix</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
+          mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Consolas', 'monospace']
+        }
+      }
+    }
+  }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: dark; }
+  body {
+    background-color: #020617;
+    background-image:
+      radial-gradient(900px 500px at 12% -10%, rgba(16,185,129,.07), transparent 60%),
+      radial-gradient(900px 500px at 92% -5%, rgba(56,189,248,.07), transparent 60%);
+    background-attachment: fixed;
+  }
+  ::selection { background: #14532d; color: #ecfdf5; }
+  .num { font-variant-numeric: tabular-nums; }
+  .hairline { border-color: rgba(148,163,184,.14); }
+  .panel {
+    background: linear-gradient(180deg, rgba(15,23,42,.82) 0%, rgba(2,6,23,.72) 100%);
+    border: 1px solid rgba(148,163,184,.14);
+    backdrop-filter: blur(6px);
+  }
+  .panel:hover { border-color: rgba(148,163,184,.24); }
+  /* RSI range input */
+  input[type=range].rsi {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 22px; background: transparent; cursor: ew-resize; margin: 0;
+  }
+  input[type=range].rsi::-webkit-slider-runnable-track {
+    height: 6px; border-radius: 999px; background: transparent;
+  }
+  input[type=range].rsi::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    height: 20px; width: 8px; border-radius: 3px; margin-top: -7px;
+    background: #f8fafc; border: 1px solid #0f172a;
+    box-shadow: 0 0 0 1px rgba(15,23,42,.9), 0 2px 8px rgba(0,0,0,.6);
+  }
+  input[type=range].rsi::-moz-range-track { height: 6px; border-radius: 999px; background: transparent; }
+  input[type=range].rsi::-moz-range-thumb {
+    height: 20px; width: 8px; border-radius: 3px; border: 1px solid #0f172a;
+    background: #f8fafc; box-shadow: 0 2px 8px rgba(0,0,0,.6);
+  }
+  input[type=range].rsi:focus-visible::-webkit-slider-thumb { outline: 2px solid #38bdf8; outline-offset: 2px; }
+  details > summary { list-style: none; cursor: pointer; }
+  details > summary::-webkit-details-marker { display: none; }
+  details[open] .chev { transform: rotate(90deg); }
+  .chev { transition: transform .18s ease; }
+  .fade-in { animation: fade .22s ease-out; }
+  @keyframes fade { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; transform: none; } }
+  .tick-pulse { animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: .35 } }
+  @media print { body { background: #fff } }
+</style>
+</head>
+<body class="font-sans text-slate-300 antialiased min-h-screen">
+
+<!-- ============================ HEADER ============================ -->
+<header class="sticky top-0 z-40 border-b hairline bg-slate-950/85 backdrop-blur-md">
+  <div class="mx-auto max-w-[1700px] px-4 sm:px-6 py-3">
+    <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="h-9 w-9 shrink-0 rounded-md border border-emerald-500/30 bg-emerald-500/10 grid place-items-center">
+          <span class="text-emerald-400 font-bold text-sm tracking-tight">FX</span>
+        </div>
+        <div class="min-w-0">
+          <h1 class="text-[15px] sm:text-base font-semibold text-slate-50 tracking-tight truncate">
+            Institutional Currency &amp; Risk Intelligence Matrix
+          </h1>
+          <p class="text-[11px] text-slate-500 tracking-wide truncate">
+            Systematic Macro Desk · G4 Structural Bias, Exhaustion &amp; Trend-Location Diagnostics
+          </p>
+        </div>
+      </div>
+
+      <nav class="flex items-center gap-1 rounded-lg border hairline bg-slate-900/60 p-1">
+        <span class="rounded-md bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1 text-[11px] font-semibold text-emerald-300">Risk Matrix</span>
+        <a href="narrative-engine.html" class="rounded-md px-2.5 py-1 text-[11px] font-semibold text-slate-500 hover:text-slate-200 transition">Narrative Engine</a>
+      </nav>
+
+      <div class="ml-auto flex flex-wrap items-center gap-2 sm:gap-3">
+        <div class="hidden sm:flex flex-col items-end leading-tight">
+          <span class="text-[10px] uppercase tracking-[0.18em] text-slate-500">Session Clock (UTC)</span>
+          <span id="clock" class="num text-sm font-medium text-slate-200">--:--:--</span>
+        </div>
+        <div class="h-8 w-px bg-slate-800 hidden sm:block"></div>
+        <div class="flex flex-col items-end leading-tight">
+          <span class="text-[10px] uppercase tracking-[0.18em] text-slate-500">Risk Regime</span>
+          <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-amber-300">
+            <span class="h-1.5 w-1.5 rounded-full bg-amber-400 tick-pulse"></span>Carry-Dominant / Fat Left Tail
+          </span>
+        </div>
+        <button id="resetAll" type="button"
+          class="ml-1 rounded-md border hairline bg-slate-900/70 px-3 py-1.5 text-[11px] font-medium text-slate-300 hover:text-white hover:border-slate-600 transition">
+          Reset Session
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============================ DISCLAIMER STRIP ============================ -->
+<div class="border-b hairline bg-slate-900/40">
+  <div class="mx-auto max-w-[1700px] px-4 sm:px-6 py-2">
+    <p class="text-[11px] leading-relaxed text-slate-500">
+      <span class="font-semibold text-slate-400 uppercase tracking-wider">Notice ·</span>
+      This terminal is an <span class="text-slate-400">offline analytical framework</span>. Levels, RSI values and SMA
+      locations are desk-set defaults for process rehearsal — <span class="text-slate-400">not a live market feed</span>.
+      Overwrite every input with your own broker/terminal data before it informs a decision. Nothing here is investment advice.
+    </p>
+  </div>
+</div>
+
+<!-- ============================ MAIN GRID ============================ -->
+<main class="mx-auto max-w-[1700px] px-4 sm:px-6 py-6">
+  <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-6">
+
+    <!-- ================= LEFT COLUMN ================= -->
+    <section class="space-y-6">
+
+      <!-- ---------- GLOBAL MACRO NARRATIVE ---------- -->
+      <article class="panel rounded-xl overflow-hidden transition-colors">
+        <div class="px-5 py-4 border-b hairline flex items-start justify-between gap-4">
+          <div>
+            <h2 class="text-[11px] uppercase tracking-[0.22em] text-slate-500 font-semibold">Section 01</h2>
+            <p class="text-base font-semibold text-slate-50 mt-0.5">Global Situation &amp; Capital Flow Narrative</p>
+          </div>
+          <span class="shrink-0 rounded border border-sky-500/30 bg-sky-500/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-sky-300">
+            Desk View
+          </span>
+        </div>
+
+        <div class="p-5 space-y-3">
+          <p class="text-sm leading-relaxed text-slate-400">
+            Three forces are currently setting the direction of cross-border capital: the
+            <span class="text-slate-200 font-medium">front-end yield differential</span> between the G4 central banks,
+            a <span class="text-slate-200 font-medium">geopolitical risk premium</span> that is being expressed through
+            energy and the haven ladder rather than through classic risk-off, and
+            <span class="text-slate-200 font-medium">crude anchored in the $80–$90 band</span>, which sits directly on
+            the terms-of-trade pivot for every energy importer in the complex. Expand each driver for the flow mechanics.
+          </p>
+
+          <div id="narrative" class="space-y-2.5"></div>
+
+          <div class="mt-4 rounded-lg border border-emerald-500/20 bg-emerald-500/[0.06] p-4">
+            <h4 class="text-[10px] uppercase tracking-[0.2em] text-emerald-400 font-semibold mb-2">Net Flow Conclusion</h4>
+            <p class="text-sm leading-relaxed text-slate-300">
+              Capital is being paid to stay <span class="text-emerald-300 font-medium">long carry and long dollars</span>,
+              but it is being paid <em>less</em> each month as the differential compresses — while the tail risk of a
+              disorderly carry unwind grows with the crowd. The desk's posture is therefore
+              <span class="text-slate-100 font-medium">participate with the differential, size for the unwind</span>:
+              full-size trades only where trend location, momentum and carry all agree, and half-size or flat everywhere else.
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- ---------- RISK FRAMEWORK CHECKLIST ---------- -->
+      <article class="panel rounded-xl overflow-hidden transition-colors">
+        <div class="px-5 py-4 border-b hairline flex items-start justify-between gap-4">
+          <div>
+            <h2 class="text-[11px] uppercase tracking-[0.22em] text-slate-500 font-semibold">Section 02</h2>
+            <p class="text-base font-semibold text-slate-50 mt-0.5">Institutional Risk Framework — Pre-Trade Gate</p>
+            <p class="text-xs text-slate-500 mt-1">Four mandatory clearances. Capital is not committed until the gate reads green.</p>
+          </div>
+          <div class="shrink-0 text-right">
+            <div class="num text-2xl font-bold text-slate-100"><span id="gateCount">0</span><span class="text-slate-600 text-base">/4</span></div>
+            <div class="text-[10px] uppercase tracking-wider text-slate-500">Cleared</div>
+          </div>
+        </div>
+
+        <!-- progress -->
+        <div class="h-1 w-full bg-slate-800/70">
+          <div id="gateBar" class="h-full w-0 bg-emerald-500 transition-all duration-300"></div>
+        </div>
+
+        <div class="p-5 space-y-3">
+          <div id="checklist" class="space-y-3"></div>
+
+          <!-- verdict -->
+          <div id="gateVerdict" class="mt-4 rounded-lg border p-4 transition-colors"></div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- ================= RIGHT COLUMN ================= -->
+    <section class="space-y-6">
+
+      <article class="panel rounded-xl overflow-hidden transition-colors">
+        <div class="px-5 py-4 border-b hairline flex items-start justify-between gap-4">
+          <div>
+            <h2 class="text-[11px] uppercase tracking-[0.22em] text-slate-500 font-semibold">Section 03</h2>
+            <p class="text-base font-semibold text-slate-50 mt-0.5">Four Major Currencies — Intensity Panel</p>
+            <p class="text-xs text-slate-500 mt-1">Drag the RSI tracker or set the 200-SMA location to re-run each diagnostic live.</p>
+          </div>
+          <span class="shrink-0 rounded border border-slate-600/40 bg-slate-800/60 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+            USD · EUR · GBP · JPY
+          </span>
+        </div>
+        <div class="px-5 py-3 grid grid-cols-2 sm:grid-cols-4 gap-3 border-b hairline" id="miniMatrix"></div>
+      </article>
+
+      <div id="cards" class="grid grid-cols-1 2xl:grid-cols-2 gap-6"></div>
+
+    </section>
+  </div>
+
+  <footer class="mt-10 border-t hairline pt-5 pb-8">
+    <p class="text-[11px] text-slate-600 leading-relaxed max-w-4xl">
+      Institutional Currency &amp; Risk Intelligence Matrix · Single-file client-side terminal. All state is held in your
+      browser (localStorage) and never transmitted. Figures are illustrative desk defaults, not market data. FX and
+      derivatives carry substantial risk of loss; this tool is a process checklist, not a recommendation to buy or sell
+      any instrument.
+    </p>
+  </footer>
+</main>
+
+<script>
+/* ============================================================
+   DATA LAYER
+   ============================================================ */
+
+const NARRATIVE = [
+  {
+    id: 'rates',
+    tag: 'Driver 01',
+    title: 'Central Bank Yield Differentials',
+    tone: 'sky',
+    lead: 'The front end still sets the direction; the back end sets the size of the move.',
+    body: [
+      'The dominant G4 spread remains the US–Japan front-end differential, which is wide enough that the carry alone pays a holder of USD/JPY a positive daily accrual. That accrual is the reason trend has persisted through repeated overbought readings — momentum is being subsidised by the swap.',
+      'Against the euro and sterling the differential is <span class="text-slate-200">compressing, not reversing</span>. Markets are discounting a faster US easing path than the ECB or BoE path, which erodes the dollar\'s carry advantage at the margin without yet flipping its sign. That is a headwind to USD longs, not a reason to be short.',
+      '<span class="text-slate-200 font-medium">Flow mechanic that matters most:</span> European and Japanese real-money investors hold enormous unhedged US asset stacks. When the cost of hedging falls (short-end US rates down) or the perceived FX risk rises, they raise hedge ratios. Raising a hedge ratio <em>sells dollars forward without selling a single US asset</em> — this is the single largest latent dollar-negative flow in the system, and it triggers on rate differentials, not on equity direction.'
+    ]
+  },
+  {
+    id: 'geo',
+    tag: 'Driver 02',
+    title: 'Geopolitical Conflict &amp; the Haven Ladder',
+    tone: 'rose',
+    lead: 'The risk premium is real, but it is no longer routing through the yen.',
+    body: [
+      'Conflict-driven risk premium is currently being expressed through <span class="text-slate-200">energy, gold, the dollar and the Swiss franc</span> — in roughly that order. The yen, historically the reflex haven, has been decoupled by the carry trade: a shock that widens risk premia also tends to firm the dollar leg, so USD/JPY frequently rises on bad news instead of falling.',
+      'The practical consequence is that the classical correlation playbook breaks. You can get a session that is simultaneously <span class="text-slate-200">risk-off in equities and yen-negative</span>. Any risk model that assumes short USD/JPY is a hedge for an equity book is mispricing its tail.',
+      '<span class="text-slate-200 font-medium">Where the yen does bite:</span> a genuine disorderly unwind — triggered by a policy surprise or a volatility spike large enough to force leverage down — produces a violent, gap-driven JPY rally that ignores technicals entirely. That is a fat left tail for the most crowded trade in G10, and it is the reason position size, not entry price, is the controlling variable in this regime.'
+    ]
+  },
+  {
+    id: 'energy',
+    tag: 'Driver 03',
+    title: 'Energy Volatility — Crude in the $80–$90 Band',
+    tone: 'amber',
+    lead: 'Crude is not a commodity sidebar here; it is a direct FX input.',
+    body: [
+      'The $80–$90 range sits on the terms-of-trade pivot for the bloc. The eurozone, the UK and Japan are all structural net energy importers; the US is not. Every dollar of crude above the band is a direct transfer of national income away from EUR, GBP and JPY and toward the dollar.',
+      '<span class="text-slate-200">Above ~$90:</span> import bills deteriorate, headline inflation re-accelerates, and the easing paths at the ECB and BoE get pushed out — a rare configuration where <em>higher</em> foreign rates are currency-negative, because they arrive via a terms-of-trade shock rather than growth. Expect EUR and GBP to weaken even as their yields back up.',
+      '<span class="text-slate-200">Below ~$80:</span> the disinflation impulse restores real income to importers and is cleanly EUR-, GBP- and JPY-supportive. This is the level that would most plausibly end the dollar\'s trend.',
+      '<span class="text-slate-200 font-medium">Operationally:</span> quote crude on the same screen as your FX book. A $6 intraday move in Brent is an FX event, and it will invalidate a technical setup faster than any chart pattern will warn you.'
+    ]
+  }
+];
+
+const CHECKS = [
+  {
+    id: 'sma',
+    n: '01',
+    title: '200-Day Moving Average Proximity',
+    hazard: 'High Risk of Reversal',
+    tone: 'rose',
+    q: 'Is the asset trading directly into its 200-day moving average?',
+    detail: 'The 200-DMA is where the two largest pools of systematic capital collide: trend-followers defend it, mean-reversion desks fade it. Price arriving <span class="text-slate-200">into</span> the line from either side is the single lowest-expectancy entry location on the chart, because the immediate path is decided by order flow you cannot see.',
+    rule: 'If price is within ~0.5% of the 200-DMA: <span class="text-rose-300 font-medium">do not initiate.</span> Require a daily close through the line, then a retest that holds, before treating the level as support/resistance rather than a coin flip.'
+  },
+  {
+    id: 'rsi',
+    n: '02',
+    title: '14-Day RSI Extremes',
+    hazard: 'High Risk of Exhaustion',
+    tone: 'amber',
+    q: 'Is the 14-day RSI above 70 or below 30?',
+    detail: 'An RSI extreme is <span class="text-slate-200">not a reversal signal</span> — in a strong trend it is a continuation signal, and fading it is how retail books die. What it reliably tells you is that the move is mature and that the distance to a mean-reversion air pocket has shortened.',
+    rule: 'Treat an extreme reading as a <span class="text-amber-300 font-medium">position-sizing input, not a direction input</span>: halve the clip, widen the stop to survive the shakeout, or stand aside and wait for RSI to cool back inside 40–60 before adding to the trend.'
+  },
+  {
+    id: 'cal',
+    n: '03',
+    title: 'Economic Calendar Blackout',
+    hazard: 'Volatility Hazard',
+    tone: 'sky',
+    q: 'Is the book clear of high-impact releases for the next 2 hours?',
+    detail: 'CPI, Non-Farm Payrolls, central bank decisions and their press conferences are <span class="text-slate-200">liquidity events, not information events</span>. Top-of-book depth collapses seconds before the print; spreads widen by multiples; stops are filled far beyond their trigger. Your risk is defined by the slippage, not by your stop distance.',
+    rule: 'No new position inside a <span class="text-sky-300 font-medium">2-hour window</span> either side of a high-impact release. If an existing position must be carried through, reduce it in advance and accept that the stop is now indicative rather than guaranteed.'
+  },
+  {
+    id: 'carry',
+    n: '04',
+    title: 'Carry / Rate-Differential Alignment',
+    hazard: 'Structural Alignment',
+    tone: 'emerald',
+    q: 'Does the direction of the trade agree with the underlying interest rate differential?',
+    detail: 'Over any horizon longer than a session, the front-end differential is the tide. A trade aligned with the differential is <span class="text-slate-200">paid to wait</span>; a trade against it pays a daily toll and needs to be right quickly to survive.',
+    rule: 'Aligned with carry → eligible for full size and a multi-day horizon. Against carry → <span class="text-emerald-300 font-medium">explicitly flag it as counter-carry</span>, cut the horizon to intraday, tighten the stop, and never let it become an accidental swing position.'
+  }
+];
+
+const CURRENCIES = [
+  {
+    id: 'usd',
+    code: 'USD',
+    name: 'US Dollar Index',
+    pair: 'DXY',
+    proxy: 'Trade-weighted basket',
+    bias: 'bullish',
+    biasLabel: 'Structurally Bullish',
+    thesis: 'Widest real-yield support in the complex and the reserve bid on any geopolitical escalation. The threat is not a rival currency — it is the compression of its own carry advantage as the US easing path is priced forward.',
+    rsi: 63,
+    sma: 'above',
+    rules: [
+      { k: 'Do not', v: 'Do not initiate fresh dollar shorts while the index holds above its 200-SMA — counter-trend and counter-carry simultaneously.' },
+      { k: 'Buy plan', v: 'Buy weakness only into a prior consolidation shelf, and only while RSI has cooled back under 60. Chasing a >70 print is paying the trend tax.' },
+      { k: 'Invalidation', v: 'A daily close beneath the 200-SMA that survives a retest flips the structural bias to neutral. Cut, do not average.' },
+      { k: 'Event risk', v: 'US CPI and NFP are the two prints that repriced this trade all year. Flat or half-size into both — no exceptions.' }
+    ]
+  },
+  {
+    id: 'eur',
+    code: 'EUR',
+    name: 'Euro',
+    pair: 'EUR/USD',
+    proxy: 'vs. US Dollar',
+    bias: 'bearish',
+    biasLabel: 'Structurally Bearish',
+    thesis: 'Negative carry against the dollar plus a direct terms-of-trade hit from crude in the upper half of the $80–$90 band. Rallies are a funding-currency squeeze, not a trend change, until the differential actually narrows.',
+    rsi: 42,
+    sma: 'below',
+    rules: [
+      { k: 'Do not', v: 'Do not short into 1.0850 support without a confirmed break — that shelf has absorbed three attempts and is where stops are stacked.' },
+      { k: 'Sell plan', v: 'Sell rallies into the falling 200-SMA while RSI recovers into the 50–60 band. That is the highest-expectancy short location in a downtrend.' },
+      { k: 'Do not', v: 'Do not buy dips purely on an oversold RSI. In a carry-negative currency, oversold is the default state, not a signal.' },
+      { k: 'Escalation', v: 'Brent through $90 is an additional short catalyst — add on the energy print, not on the chart.' }
+    ]
+  },
+  {
+    id: 'gbp',
+    code: 'GBP',
+    name: 'British Pound',
+    pair: 'GBP/USD',
+    proxy: 'vs. US Dollar',
+    bias: 'neutral',
+    biasLabel: 'Neutral / Two-Way',
+    thesis: 'Caught between a still-elevated BoE policy rate that supports carry and a growth-plus-fiscal picture that punishes it on any risk-off day. Highest realised volatility per unit of directional conviction in the G4 — a range trade until proven otherwise.',
+    rsi: 55,
+    sma: 'testing',
+    rules: [
+      { k: 'Do not', v: 'Do not carry a directional position through the 200-SMA test. Price is inside the trap zone — trade the resolution, not the anticipation.' },
+      { k: 'Trigger', v: 'Wait for a daily close either side of the 200-SMA, then trade the retest with the stop on the far side of the line.' },
+      { k: 'Sizing', v: 'Half-size until structure resolves. Neutral bias means the market is not paying you for conviction here.' },
+      { k: 'Event risk', v: 'UK CPI and BoE guidance move this pair more than the US calendar does. Blackout both.' }
+    ]
+  },
+  {
+    id: 'jpy',
+    code: 'JPY',
+    name: 'Japanese Yen',
+    pair: 'USD/JPY',
+    proxy: 'Quoted USD/JPY — a rising print is a weaker yen',
+    bias: 'bearish',
+    biasLabel: 'Structurally Bearish (Yen)',
+    thesis: 'The widest differential in the complex keeps the yen the funding currency of choice, and the carry accrual has sustained the trend through repeated overbought readings. This is also the most crowded position in G10 — the payoff is a slow grind with a violent, gap-shaped left tail.',
+    rsi: 71,
+    sma: 'above',
+    rules: [
+      { k: 'Do not', v: 'Do not short USD/JPY as a "cheap hedge" for an equity book. The correlation has decoupled — you will be wrong on both legs at once.' },
+      { k: 'Wait', v: 'Wait for RSI to cool below 65 before adding to the long side. Buying a >70 print here is buying the crowd\'s inventory.' },
+      { k: 'Sizing', v: 'Intervention and policy-surprise risk are non-linear: assume the stop gaps through. Size the position on the assumption that the stop does not fill where you placed it.' },
+      { k: 'Exit', v: 'A break of the 200-SMA in this pair is not a level to fade — it is the signature of a leverage unwind. Reduce first, analyse second.' }
+    ]
+  }
+];
+
+/* ============================================================
+   PRESENTATION HELPERS
+   ============================================================ */
+
+const TONE = {
+  emerald: { text: 'text-emerald-300', border: 'border-emerald-500/30', bg: 'bg-emerald-500/10', dot: 'bg-emerald-400', bar: 'bg-emerald-500' },
+  rose:    { text: 'text-rose-300',    border: 'border-rose-500/30',    bg: 'bg-rose-500/10',    dot: 'bg-rose-400',    bar: 'bg-rose-500' },
+  amber:   { text: 'text-amber-300',   border: 'border-amber-500/30',   bg: 'bg-amber-500/10',   dot: 'bg-amber-400',   bar: 'bg-amber-500' },
+  sky:     { text: 'text-sky-300',     border: 'border-sky-500/30',     bg: 'bg-sky-500/10',     dot: 'bg-sky-400',     bar: 'bg-sky-500' },
+  slate:   { text: 'text-slate-300',   border: 'border-slate-600/40',   bg: 'bg-slate-700/30',   dot: 'bg-slate-400',   bar: 'bg-slate-500' }
+};
+
+const BIAS = {
+  bullish: { tone: 'emerald', label: 'BULLISH' },
+  bearish: { tone: 'rose',    label: 'BEARISH' },
+  neutral: { tone: 'slate',   label: 'NEUTRAL' }
+};
+
+function rsiZone(v) {
+  if (v >= 80) return {
+    key: 'extreme-ob', tone: 'rose', label: 'Extreme Overbought', short: 'EXT OB', risk: 3,
+    warn: 'RSI ' + v + ' is a statistically rare, late-stage reading. The move is mature and the distance to a mean-reversion air pocket is minimal. <span class="text-rose-300 font-medium">No new longs at market.</span> Existing longs: trail the stop up aggressively and take partial profit into strength — do not add.'
+  };
+  if (v > 70) return {
+    key: 'ob', tone: 'rose', label: 'Overbought', short: 'OB', risk: 2,
+    warn: 'RSI ' + v + ' is in overbought territory — <span class="text-slate-200">high risk of exhaustion</span>. This is not a sell signal in a trending market, it is a sizing signal. <span class="text-rose-300 font-medium">Halve the clip on any new long, or wait for a cool-off below 65.</span> Fading it outright without a bearish divergence is a low-expectancy trade.'
+  };
+  if (v >= 60) return {
+    key: 'elev', tone: 'amber', label: 'Elevated / Trend-Strong', short: 'ELEV', risk: 1,
+    warn: 'RSI ' + v + ' shows genuine trend strength without exhaustion. This is the healthy zone for trend continuation, but the entry is no longer cheap. <span class="text-amber-300 font-medium">Add on pullbacks into structure, not at market.</span> Reassess if the reading pushes through 70.'
+  };
+  if (v > 40) return {
+    key: 'neutral', tone: 'slate', label: 'Neutral', short: 'NEUT', risk: 0,
+    warn: 'RSI ' + v + ' is neutral — momentum is giving you no edge in either direction. <span class="text-slate-200">Defer to trend location and carry alignment</span> for the decision. This is the correct zone in which to add to an existing, structurally aligned position.'
+  };
+  if (v >= 30) return {
+    key: 'soft', tone: 'amber', label: 'Soft / Losing Momentum', short: 'SOFT', risk: 1,
+    warn: 'RSI ' + v + ' shows momentum rolling over. In a downtrend this is continuation; in an uptrend it is a warning that the impulse has stalled. <span class="text-amber-300 font-medium">Do not add to longs here</span> — require a momentum reset above 45 first.'
+  };
+  if (v >= 20) return {
+    key: 'os', tone: 'rose', label: 'Oversold', short: 'OS', risk: 2,
+    warn: 'RSI ' + v + ' is oversold — <span class="text-slate-200">high risk of exhaustion to the downside</span>. In a carry-negative currency, oversold is the resting state and not a buy signal. <span class="text-rose-300 font-medium">Halve any new short; do not buy the dip without a bullish divergence plus a reclaimed level.</span>'
+  };
+  return {
+    key: 'extreme-os', tone: 'rose', label: 'Extreme Oversold', short: 'EXT OS', risk: 3,
+    warn: 'RSI ' + v + ' is a capitulation-grade reading. Downside continuation is possible but the risk/reward on fresh shorts is poor and the snapback risk is severe. <span class="text-rose-300 font-medium">No new shorts at market.</span> Manage existing shorts with a trailing stop only.'
+  };
+}
+
+function smaMeta(state) {
+  if (state === 'above') return {
+    tone: 'emerald', label: 'Above 200-SMA', sub: 'Bullish Trend Area', risk: 0,
+    note: 'Price is trading above the 200-day SMA: the long-term trend filter is <span class="text-emerald-300 font-medium">constructive</span>. Systematic trend capital is positioned long. Dips toward the line are the higher-probability buy location; the line itself is the invalidation, not a target.'
+  };
+  if (state === 'below') return {
+    tone: 'rose', label: 'Below 200-SMA', sub: 'Bearish Trend Area', risk: 0,
+    note: 'Price is trading below the 200-day SMA: the long-term trend filter is <span class="text-rose-300 font-medium">negative</span>. Systematic trend capital is positioned short. Rallies into the falling line are the higher-probability sell location; buying dips here is fighting the dominant flow.'
+  };
+  return {
+    tone: 'amber', label: 'Testing 200-SMA', sub: 'High-Volatility Trap Zone', risk: 3,
+    note: 'Price is engaged directly with the 200-day SMA — <span class="text-amber-300 font-medium">the trap zone</span>. Trend-followers defend the line and mean-reversion desks fade it, so the immediate path is decided by order flow you cannot observe. <span class="text-slate-200">Stand aside.</span> Require a daily close through the line plus a retest that holds before assigning it as support or resistance.'
+  };
+}
+
+function composite(rsiRisk, smaRisk) {
+  const s = rsiRisk + smaRisk;
+  if (s >= 3) return { tone: 'rose', label: 'Hazard — No New Risk', copy: 'Trend location and/or momentum rule out a clean entry. Manage existing exposure only; do not initiate new risk until the structure resolves.' };
+  if (s >= 2) return { tone: 'amber', label: 'Elevated — Half Size', copy: 'Tradeable, but not at full clip. Half size, wait for a lower-timeframe confirmation, and keep the stop outside the noise band.' };
+  if (s === 1) return { tone: 'sky',  label: 'Standard — Confirm Entry', copy: 'Conditions are workable. Execute the written plan on a pullback into structure rather than at market.' };
+  return { tone: 'emerald', label: 'Clean — Plan Eligible', copy: 'Trend location and momentum agree. Full-size eligible provided the pre-trade gate is fully cleared and carry is aligned.' };
+}
+
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* ============================================================
+   STATE
+   ============================================================ */
+
+const STORE_KEY = 'icrim.v1';
+const DEFAULTS = () => ({
+  checks: CHECKS.reduce((a, c) => (a[c.id] = false, a), {}),
+  fx: CURRENCIES.reduce((a, c) => (a[c.id] = { rsi: c.rsi, sma: c.sma }, a), {})
+});
+let state = DEFAULTS();
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (!raw) return;
+    const p = JSON.parse(raw);
+    if (p && p.checks && p.fx) {
+      CHECKS.forEach(c => { if (typeof p.checks[c.id] === 'boolean') state.checks[c.id] = p.checks[c.id]; });
+      CURRENCIES.forEach(c => {
+        const v = p.fx[c.id];
+        if (!v) return;
+        if (Number.isFinite(v.rsi)) state.fx[c.id].rsi = Math.min(100, Math.max(0, v.rsi));
+        if (['above','below','testing'].includes(v.sma)) state.fx[c.id].sma = v.sma;
+      });
+    }
+  } catch (e) { /* corrupt or unavailable storage — fall back to defaults */ }
+}
+function save() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+/* ============================================================
+   RENDER — NARRATIVE
+   ============================================================ */
+
+function renderNarrative() {
+  document.getElementById('narrative').innerHTML = NARRATIVE.map((d, i) => {
+    const t = TONE[d.tone];
+    return `
+      <details class="group rounded-lg border hairline bg-slate-900/50 open:bg-slate-900/70 transition-colors" ${i === 0 ? 'open' : ''}>
+        <summary class="flex items-start gap-3 px-4 py-3 hover:bg-slate-800/40 rounded-lg transition-colors">
+          <svg class="chev mt-1 h-3.5 w-3.5 shrink-0 text-slate-500" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M4 2.5L8 6L4 9.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="rounded border ${t.border} ${t.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${t.text}">${d.tag}</span>
+              <h3 class="text-sm font-semibold text-slate-100">${d.title}</h3>
+            </div>
+            <p class="text-xs text-slate-500 mt-1 italic">${d.lead}</p>
+          </div>
+        </summary>
+        <div class="px-4 pb-4 pl-[2.15rem] space-y-2.5 fade-in">
+          ${d.body.map(p => `<p class="text-[13px] leading-relaxed text-slate-400">${p}</p>`).join('')}
+        </div>
+      </details>`;
+  }).join('');
+}
+
+/* ============================================================
+   RENDER — CHECKLIST
+   ============================================================ */
+
+const checkWrapCls  = on => `rounded-lg border transition-colors ${on ? 'border-emerald-500/35 bg-emerald-500/[0.05]' : 'hairline bg-slate-900/50'}`;
+const checkBoxCls   = on => `mt-0.5 h-5 w-5 shrink-0 rounded border grid place-items-center transition-colors ${on ? 'border-emerald-400 bg-emerald-500 text-slate-950' : 'border-slate-600 bg-slate-800/60 text-transparent hover:border-slate-400'}`;
+const checkTitleCls = on => `text-sm font-semibold ${on ? 'text-emerald-200' : 'text-slate-100'}`;
+
+/* Patch a single gate in place so open <details> and keyboard focus survive a toggle. */
+function paintCheck(id) {
+  const on = state.checks[id];
+  const wrap = document.querySelector(`[data-check-item="${id}"]`);
+  if (!wrap) return;
+  wrap.className = checkWrapCls(on);
+  const box = wrap.querySelector('[data-check]');
+  box.className = checkBoxCls(on);
+  box.setAttribute('aria-checked', String(on));
+  wrap.querySelector('h4').className = checkTitleCls(on);
+  renderGate();
+}
+
+function renderChecklist() {
+  document.getElementById('checklist').innerHTML = CHECKS.map(c => {
+    const on = state.checks[c.id];
+    const t = TONE[c.tone];
+    return `
+      <div data-check-item="${c.id}" class="${checkWrapCls(on)}">
+        <div class="flex items-start gap-3 p-4">
+          <button type="button" data-check="${c.id}" role="checkbox" aria-checked="${on}"
+            aria-label="Clear step ${c.n}: ${esc(c.title)}"
+            class="${checkBoxCls(on)}">
+            <svg viewBox="0 0 14 14" class="h-3 w-3" fill="none" aria-hidden="true">
+              <path d="M2.5 7.5L5.5 10.5L11.5 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+
+          <div class="min-w-0 flex-1">
+            <div class="flex items-start justify-between gap-3 flex-wrap">
+              <div class="min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="num text-[10px] font-bold text-slate-600">${c.n}</span>
+                  <h4 class="${checkTitleCls(on)}">${c.title}</h4>
+                </div>
+                <p class="text-[13px] text-slate-400 mt-1">${c.q}</p>
+              </div>
+              <span class="shrink-0 rounded border ${t.border} ${t.bg} px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${t.text}">${c.hazard}</span>
+            </div>
+
+            <details class="mt-2.5">
+              <summary class="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-500 hover:text-slate-300 transition-colors">
+                <svg class="chev h-3 w-3" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                  <path d="M4 2.5L8 6L4 9.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Why this gate exists &amp; how to clear it
+              </summary>
+              <div class="mt-2 space-y-2 fade-in">
+                <p class="text-[12.5px] leading-relaxed text-slate-400">${c.detail}</p>
+                <div class="rounded border-l-2 ${t.border} bg-slate-950/50 px-3 py-2">
+                  <p class="text-[12.5px] leading-relaxed text-slate-300"><span class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold block mb-0.5">Desk rule</span>${c.rule}</p>
+                </div>
+              </div>
+            </details>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+  renderGate();
+}
+
+function renderGate() {
+  const n = CHECKS.filter(c => state.checks[c.id]).length;
+  document.getElementById('gateCount').textContent = n;
+  document.getElementById('gateBar').style.width = (n / CHECKS.length * 100) + '%';
+
+  let v;
+  if (n === 4) v = {
+    tone: 'emerald', title: 'GATE CLEARED — Capital Deployment Authorised',
+    copy: 'All four clearances are green. The trade may be taken at <span class="text-emerald-300 font-medium">full planned size</span>, at the written entry, with the stop placed before the order is sent. Log the thesis now — not after the outcome is known.'
+  };
+  else if (n === 3) v = {
+    tone: 'amber', title: 'CONDITIONAL — Reduced Size Only',
+    copy: 'One clearance is outstanding. Proceed at <span class="text-amber-300 font-medium">half planned size at most</span>, and write down explicitly which gate you are overriding and why. An unrecorded override becomes an unexamined habit.'
+  };
+  else if (n >= 1) v = {
+    tone: 'rose', title: 'STAND DOWN — Gate Not Satisfied',
+    copy: `${4 - n} clearances outstanding. <span class="text-rose-300 font-medium">No capital is committed.</span> Resolve the open gates, or wait for conditions to resolve them for you. There is no penalty for missing a trade; there is a compounding one for taking a bad one.`
+  };
+  else v = {
+    tone: 'slate', title: 'AWAITING PRE-TRADE REVIEW',
+    copy: 'Work each clearance against your live chart and calendar before any order is staged. The gate is the process — the trade is only its output.'
+  };
+
+  const t = TONE[v.tone];
+  document.getElementById('gateVerdict').className = `mt-4 rounded-lg border ${t.border} ${t.bg} p-4 transition-colors fade-in`;
+  document.getElementById('gateVerdict').innerHTML = `
+    <div class="flex items-center gap-2 mb-1.5">
+      <span class="h-2 w-2 rounded-full ${t.dot} ${n === 4 ? '' : 'tick-pulse'}"></span>
+      <h4 class="text-[12px] font-bold uppercase tracking-[0.14em] ${t.text}">${v.title}</h4>
+    </div>
+    <p class="text-[13px] leading-relaxed text-slate-300">${v.copy}</p>`;
+}
+
+/* ============================================================
+   RENDER — CURRENCY CARDS
+   ============================================================ */
+
+const SMA_OPTIONS = [
+  { key: 'above',   label: 'Above',   tone: 'emerald' },
+  { key: 'testing', label: 'Testing', tone: 'amber'   },
+  { key: 'below',   label: 'Below',   tone: 'rose'    }
+];
+
+const rsiBadgeCls  = t => `rounded border ${t.border} ${t.bg} px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${t.text}`;
+const rsiValueCls  = t => `num text-xl font-bold ${t.text} w-[3ch] text-right`;
+const warnBoxCls   = t => `rounded-lg border ${t.border} ${t.bg} p-3`;
+const warnTitleCls = t => `text-[10px] uppercase tracking-[0.16em] font-bold mb-1 ${t.text}`;
+const pillCls      = t => `inline-flex items-center gap-1.5 rounded-md border ${t.border} ${t.bg} px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${t.text}`;
+const smaBtnCls    = (on, t) => `rounded-md px-3 py-1.5 text-[11px] font-semibold transition-colors ${on ? `${t.bg} ${t.text} border ${t.border}` : 'text-slate-500 hover:text-slate-200 border border-transparent'}`;
+
+function cardHTML(c) {
+  const s = state.fx[c.id];
+  const z = rsiZone(s.rsi);
+  const m = smaMeta(s.sma);
+  const comp = composite(z.risk, m.risk);
+  const b = BIAS[c.bias], bt = TONE[b.tone];
+  const zt = TONE[z.tone], mt = TONE[m.tone], ct = TONE[comp.tone];
+
+  return `
+  <article class="panel rounded-xl overflow-hidden transition-colors" data-card="${c.id}">
+    <!-- header -->
+    <div class="px-5 py-4 border-b hairline">
+      <div class="flex items-start justify-between gap-3 flex-wrap">
+        <div class="min-w-0">
+          <div class="flex items-baseline gap-2.5 flex-wrap">
+            <h3 class="text-lg font-bold text-slate-50 tracking-tight">${c.code}</h3>
+            <span class="num text-sm font-medium text-slate-400">${c.pair}</span>
+          </div>
+          <p class="text-[11px] text-slate-500 mt-0.5">${c.name} · ${c.proxy}</p>
+        </div>
+        <span class="shrink-0 inline-flex items-center gap-1.5 rounded-md border ${bt.border} ${bt.bg} px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${bt.text}">
+          <span class="h-1.5 w-1.5 rounded-full ${bt.dot}"></span>${b.label} · ${c.biasLabel}
+        </span>
+      </div>
+      <p class="text-[12.5px] leading-relaxed text-slate-400 mt-3">${c.thesis}</p>
+    </div>
+
+    <!-- RSI tracker -->
+    <div class="px-5 py-4 border-b hairline">
+      <div class="flex items-center justify-between gap-3 mb-3 flex-wrap">
+        <h4 class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-semibold">14-Day RSI Tracker</h4>
+        <div class="flex items-center gap-2">
+          <span data-rsi-badge class="${rsiBadgeCls(zt)}">${z.label}</span>
+          <span data-rsi-value class="${rsiValueCls(zt)}">${s.rsi}</span>
+        </div>
+      </div>
+
+      <!-- zone bar -->
+      <div class="relative h-1.5 w-full rounded-full overflow-hidden flex mb-1" aria-hidden="true">
+        <div class="h-full bg-rose-500/45" style="width:30%"></div>
+        <div class="h-full bg-slate-600/50" style="width:40%"></div>
+        <div class="h-full bg-rose-500/45" style="width:30%"></div>
+      </div>
+      <input class="rsi -mt-[14px] relative z-10" type="range" min="0" max="100" step="1" value="${s.rsi}"
+             data-rsi="${c.id}" aria-label="${esc(c.code)} 14-day RSI value" />
+      <div class="num flex justify-between text-[10px] text-slate-600 -mt-1 mb-3">
+        <span>0</span><span>30 · Oversold</span><span>70 · Overbought</span><span>100</span>
+      </div>
+
+      <div class="flex flex-wrap gap-2 mb-3">
+        ${[['Oversold', 22], ['Neutral', 50], ['Overbought', 78], ['Reset', c.rsi]].map(([lbl, val]) => `
+          <button type="button" data-preset="${c.id}" data-val="${val}"
+            class="rounded-md border hairline bg-slate-900/70 px-2.5 py-1 text-[11px] font-medium text-slate-400 hover:text-white hover:border-slate-500 transition">
+            ${lbl}${lbl === 'Reset' ? ' · ' + c.rsi : ''}
+          </button>`).join('')}
+      </div>
+
+      <div data-rsi-warn class="${warnBoxCls(zt)}" role="status" aria-live="polite">
+        <h5 data-rsi-warn-title class="${warnTitleCls(zt)}">Technical Risk Warning</h5>
+        <p data-rsi-warn-body class="text-[12.5px] leading-relaxed text-slate-300">${z.warn}</p>
+      </div>
+    </div>
+
+    <!-- SMA location -->
+    <div class="px-5 py-4 border-b hairline">
+      <div class="flex items-center justify-between gap-3 mb-3 flex-wrap">
+        <h4 class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-semibold">200-Day SMA Location</h4>
+        <span data-sma-badge class="${pillCls(mt)}">
+          <span class="h-1.5 w-1.5 rounded-full ${mt.dot}"></span>${m.label} · ${m.sub}
+        </span>
+      </div>
+
+      <div class="inline-flex rounded-lg border hairline bg-slate-950/60 p-1 mb-3" role="group" aria-label="${esc(c.code)} 200-day SMA location">
+        ${SMA_OPTIONS.map(o => {
+          const on = s.sma === o.key, ot = TONE[o.tone];
+          return `<button type="button" data-sma="${c.id}" data-val="${o.key}" aria-pressed="${on}"
+            class="${smaBtnCls(on, ot)}">${o.label} 200-SMA</button>`;
+        }).join('')}
+      </div>
+
+      <p data-sma-note class="text-[12.5px] leading-relaxed text-slate-400">${m.note}</p>
+    </div>
+
+    <!-- composite -->
+    <div class="px-5 py-3 border-b hairline flex items-center gap-3 flex-wrap">
+      <span class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-semibold">Composite Execution State</span>
+      <span data-comp-badge class="${pillCls(ct)}">
+        <span class="h-1.5 w-1.5 rounded-full ${ct.dot}"></span>${comp.label}
+      </span>
+      <p data-comp-copy class="text-[12px] text-slate-400 basis-full sm:basis-auto sm:flex-1 min-w-[14rem]">${comp.copy}</p>
+    </div>
+
+    <!-- rules -->
+    <div class="px-5 py-4">
+      <h4 class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-semibold mb-3">Daily Operational Rules &amp; Predictions</h4>
+      <ul class="space-y-2">
+        ${c.rules.map(r => {
+          const isDont = /^do not$/i.test(r.k);
+          const tag = isDont ? TONE.rose : (r.k === 'Invalidation' || r.k === 'Exit' ? TONE.amber : TONE.sky);
+          return `
+          <li class="flex items-start gap-2.5">
+            <span class="mt-[3px] shrink-0 rounded border ${tag.border} ${tag.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${tag.text} w-[5.6rem] text-center">${r.k}</span>
+            <span class="text-[12.5px] leading-relaxed text-slate-300">${r.v}</span>
+          </li>`;
+        }).join('')}
+      </ul>
+    </div>
+  </article>`;
+}
+
+function renderCards() {
+  document.getElementById('cards').innerHTML = CURRENCIES.map(cardHTML).join('');
+  renderMini();
+}
+
+/* Patch one card in place. The range input is never rebuilt, so an in-flight
+   drag keeps its pointer capture and focus is never stolen. */
+function updateCard(id, syncSlider) {
+  const el = document.querySelector(`[data-card="${id}"]`);
+  if (!el) return;
+  const s = state.fx[id];
+  const z = rsiZone(s.rsi), m = smaMeta(s.sma), comp = composite(z.risk, m.risk);
+  const zt = TONE[z.tone], mt = TONE[m.tone], ct = TONE[comp.tone];
+  const q = sel => el.querySelector(sel);
+
+  const badge = q('[data-rsi-badge]');
+  badge.className = rsiBadgeCls(zt); badge.textContent = z.label;
+  const val = q('[data-rsi-value]');
+  val.className = rsiValueCls(zt); val.textContent = s.rsi;
+  q('[data-rsi-warn]').className = warnBoxCls(zt);
+  q('[data-rsi-warn-title]').className = warnTitleCls(zt);
+  q('[data-rsi-warn-body]').innerHTML = z.warn;
+  if (syncSlider) q(`[data-rsi="${id}"]`).value = s.rsi;
+
+  const sb = q('[data-sma-badge]');
+  sb.className = pillCls(mt);
+  sb.innerHTML = `<span class="h-1.5 w-1.5 rounded-full ${mt.dot}"></span>${m.label} · ${m.sub}`;
+  q('[data-sma-note]').innerHTML = m.note;
+  el.querySelectorAll('[data-sma]').forEach(b => {
+    const on = b.dataset.val === s.sma;
+    const ot = TONE[SMA_OPTIONS.find(o => o.key === b.dataset.val).tone];
+    b.setAttribute('aria-pressed', String(on));
+    b.className = smaBtnCls(on, ot);
+  });
+
+  const cb = q('[data-comp-badge]');
+  cb.className = pillCls(ct);
+  cb.innerHTML = `<span class="h-1.5 w-1.5 rounded-full ${ct.dot}"></span>${comp.label}`;
+  q('[data-comp-copy]').innerHTML = comp.copy;
+
+  renderMini();
+}
+
+function renderMini() {
+  document.getElementById('miniMatrix').innerHTML = CURRENCIES.map(c => {
+    const s = state.fx[c.id], z = rsiZone(s.rsi), m = smaMeta(s.sma);
+    const comp = composite(z.risk, m.risk), ct = TONE[comp.tone];
+    const bt = TONE[BIAS[c.bias].tone];
+    return `
+      <div class="rounded-lg border hairline bg-slate-950/50 px-3 py-2.5">
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-sm font-bold text-slate-100">${c.code}</span>
+          <span class="h-1.5 w-1.5 rounded-full ${bt.dot}" title="${BIAS[c.bias].label}"></span>
+        </div>
+        <div class="num mt-1 flex items-baseline gap-1.5">
+          <span class="text-lg font-bold ${TONE[z.tone].text}">${s.rsi}</span>
+          <span class="text-[10px] uppercase tracking-wider text-slate-500">${z.short}</span>
+        </div>
+        <div class="mt-1.5 text-[10px] font-semibold uppercase tracking-wider ${ct.text} truncate" title="${esc(comp.label)}">${comp.label}</div>
+        <div class="text-[10px] text-slate-500 truncate">${m.label}</div>
+      </div>`;
+  }).join('');
+}
+
+/* ============================================================
+   EVENTS
+   ============================================================ */
+
+document.addEventListener('input', e => {
+  const id = e.target.dataset && e.target.dataset.rsi;
+  if (!id) return;
+  state.fx[id].rsi = Number(e.target.value);
+  save();
+  updateCard(id, false);
+});
+
+document.addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+
+  if (btn.dataset.check) {
+    state.checks[btn.dataset.check] = !state.checks[btn.dataset.check];
+    save(); paintCheck(btn.dataset.check); return;
+  }
+  if (btn.dataset.preset) {
+    state.fx[btn.dataset.preset].rsi = Number(btn.dataset.val);
+    save(); updateCard(btn.dataset.preset, true); return;
+  }
+  if (btn.dataset.sma) {
+    state.fx[btn.dataset.sma].sma = btn.dataset.val;
+    save(); updateCard(btn.dataset.sma, false); return;
+  }
+  if (btn.id === 'resetAll') {
+    state = DEFAULTS(); save();
+    renderChecklist(); renderCards(); return;
+  }
+});
+
+/* clock */
+function tick() {
+  const d = new Date();
+  const p = n => String(n).padStart(2, '0');
+  document.getElementById('clock').textContent =
+    `${p(d.getUTCHours())}:${p(d.getUTCMinutes())}:${p(d.getUTCSeconds())}`;
+}
+
+/* boot */
+load();
+renderNarrative();
+renderChecklist();
+renderCards();
+tick();
+setInterval(tick, 1000);
+</script>
+</body>
+</html>

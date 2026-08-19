@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Institutional Macro Terminal — Live G4 Desk</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = { theme: { extend: { fontFamily: {
+    sans: ['Inter','ui-sans-serif','system-ui','-apple-system','Segoe UI','sans-serif'],
+    mono: ['ui-monospace','SFMono-Regular','Menlo','Consolas','monospace'] }}}}
+</script>
+<style>
+  :root { color-scheme: dark; }
+  body {
+    background-color:#020617;
+    background-image:
+      radial-gradient(900px 500px at 10% -10%, rgba(16,185,129,.07), transparent 60%),
+      radial-gradient(900px 500px at 92% -5%, rgba(56,189,248,.07), transparent 60%);
+    background-attachment: fixed;
+  }
+  ::selection { background:#14532d; color:#ecfdf5; }
+  .num { font-variant-numeric: tabular-nums; }
+  .hairline { border-color: rgba(148,163,184,.14); }
+  .panel { background: linear-gradient(180deg, rgba(15,23,42,.82) 0%, rgba(2,6,23,.72) 100%);
+           border:1px solid rgba(148,163,184,.14); backdrop-filter: blur(6px); }
+  .scroller { scrollbar-width: thin; scrollbar-color: rgba(100,116,139,.5) transparent; }
+  .scroller::-webkit-scrollbar { width:8px }
+  .scroller::-webkit-scrollbar-thumb { background: rgba(100,116,139,.4); border-radius:8px }
+  .fade-in { animation: fade .25s ease-out }
+  @keyframes fade { from {opacity:0; transform:translateY(3px)} to {opacity:1; transform:none} }
+  .tick-pulse { animation: pulse 1.6s ease-in-out infinite }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+  .skel { background: linear-gradient(90deg, rgba(30,41,59,.6) 25%, rgba(51,65,85,.6) 37%, rgba(30,41,59,.6) 63%);
+          background-size:400% 100%; animation: shimmer 1.4s ease infinite; }
+  @keyframes shimmer { 0%{background-position:100% 0} 100%{background-position:0 0} }
+  details > summary { list-style:none; cursor:pointer }
+  details > summary::-webkit-details-marker { display:none }
+  details[open] .chev { transform: rotate(90deg) }
+  .chev { transition: transform .18s ease }
+  mark.hawk { background: rgba(16,185,129,.18); color:#6ee7b7; border-radius:3px; padding:0 2px }
+  mark.dove { background: rgba(244,63,94,.16);  color:#fda4af; border-radius:3px; padding:0 2px }
+  mark.risk { background: rgba(245,158,11,.16); color:#fcd34d; border-radius:3px; padding:0 2px }
+  input[type=range].rsi { -webkit-appearance:none; appearance:none; width:100%; height:22px; background:transparent; cursor:ew-resize; margin:0 }
+  input[type=range].rsi::-webkit-slider-runnable-track { height:6px; border-radius:999px; background:transparent }
+  input[type=range].rsi::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; height:20px; width:8px; border-radius:3px;
+    margin-top:-7px; background:#f8fafc; border:1px solid #0f172a; box-shadow:0 0 0 1px rgba(15,23,42,.9), 0 2px 8px rgba(0,0,0,.6) }
+  input[type=range].rsi::-moz-range-track { height:6px; border-radius:999px; background:transparent }
+  input[type=range].rsi::-moz-range-thumb { height:20px; width:8px; border-radius:3px; border:1px solid #0f172a; background:#f8fafc }
+  .spark { display:block; width:100%; height:38px }
+</style>
+</head>
+<body class="font-sans text-slate-300 antialiased min-h-screen">
+
+<!-- ===================== HEADER ===================== -->
+<header class="sticky top-0 z-40 border-b hairline bg-slate-950/85 backdrop-blur-md">
+  <div class="mx-auto max-w-[1700px] px-4 sm:px-6 py-3">
+    <div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="h-9 w-9 shrink-0 rounded-md border border-emerald-500/30 bg-emerald-500/10 grid place-items-center">
+          <span class="text-emerald-400 font-bold text-sm tracking-tight">G4</span>
+        </div>
+        <div class="min-w-0">
+          <h1 class="text-[15px] sm:text-base font-semibold text-slate-50 tracking-tight truncate">Institutional Macro Terminal</h1>
+          <p class="text-[11px] text-slate-500 tracking-wide truncate">Live ECB Reference Data · Wilder RSI · 200-Day Trend Location · Pre-Trade Risk Gate</p>
+        </div>
+      </div>
+
+      <nav id="tabs" class="flex items-center gap-1 rounded-lg border hairline bg-slate-900/60 p-1"></nav>
+
+      <div class="ml-auto flex flex-wrap items-center gap-2 sm:gap-3">
+        <div class="hidden sm:flex flex-col items-end leading-tight">
+          <span class="text-[10px] uppercase tracking-[0.18em] text-slate-500">Data As Of</span>
+          <span id="asOf" class="num text-sm font-medium text-slate-200">—</span>
+        </div>
+        <div class="h-8 w-px bg-slate-800 hidden sm:block"></div>
+        <div id="statusPill" class="flex items-center gap-1.5 rounded-md border hairline bg-slate-900/70 px-2.5 py-1.5">
+          <span id="statusDot" class="h-1.5 w-1.5 rounded-full bg-amber-400 tick-pulse"></span>
+          <span id="statusText" class="text-[11px] font-semibold text-slate-300">Loading…</span>
+        </div>
+        <button id="refresh" type="button"
+          class="rounded-md border hairline bg-slate-900/70 px-3 py-1.5 text-[11px] font-medium text-slate-300 hover:text-white hover:border-slate-600 transition">
+          Refresh
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div id="banner"></div>
+
+<!-- ===================== VIEWS ===================== -->
+<main class="mx-auto max-w-[1700px] px-4 sm:px-6 py-6">
+  <section id="view-brief"></section>
+  <section id="view-matrix" class="hidden"></section>
+  <section id="view-narrative" class="hidden"></section>
+
+  <footer class="mt-10 border-t hairline pt-5 pb-8 space-y-2">
+    <p class="text-[11px] text-slate-500 leading-relaxed max-w-4xl">
+      <span class="font-semibold text-slate-400">Data provenance ·</span>
+      Spot rates are <span class="text-slate-300">ECB daily reference rates</span> via the Frankfurter API, published each
+      TARGET business day around 16:00 CET. RSI(14) is Wilder's smoothing on daily closes; SMA(200) is a simple mean of the
+      last 200 published closes. The dollar index is reconstructed from the six ICE component rates using the published
+      weights — it tracks DXY closely but is not the exchange-traded index. There is no intraday data here: every reading is
+      an end-of-day close, so this is a <span class="text-slate-300">daily planning tool, not an execution screen</span>.
+    </p>
+    <p class="text-[11px] text-slate-600 leading-relaxed max-w-4xl">
+      Nothing on this page is investment advice. FX carries substantial risk of loss. Verify every level against your own
+      broker feed before it informs an order.
+    </p>
+  </footer>
+</main>
+
+<script>
+/* ============================================================================
+   CONFIG
+   ============================================================================ */
+const API = 'https://api.frankfurter.dev/v1';
+const SYMBOLS = 'EUR,JPY,GBP,CAD,SEK,CHF';
+const CACHE_KEY = 'imt.cache.v1';
+const STATE_KEY = 'imt.state.v1';
+
+const PAIRS = [
+  { id:'dxy', code:'USD', label:'US Dollar Index', pair:'DXY (reconstructed)', dp:2,
+    note:'Trade-weighted dollar. Rising = broad dollar strength.' },
+  { id:'eur', code:'EUR', label:'Euro',            pair:'EUR/USD', dp:4,
+    note:'Rising = stronger euro, weaker dollar.' },
+  { id:'gbp', code:'GBP', label:'British Pound',   pair:'GBP/USD', dp:4,
+    note:'Rising = stronger sterling, weaker dollar.' },
+  { id:'jpy', code:'JPY', label:'Japanese Yen',    pair:'USD/JPY', dp:2,
+    note:'Rising = WEAKER yen. Read this card inverted from the others.' }
+];
+
+const TONE = {
+  emerald:{ text:'text-emerald-300', border:'border-emerald-500/30', bg:'bg-emerald-500/10', dot:'bg-emerald-400', bar:'bg-emerald-500', stroke:'#10b981' },
+  rose:   { text:'text-rose-300',    border:'border-rose-500/30',    bg:'bg-rose-500/10',    dot:'bg-rose-400',    bar:'bg-rose-500',    stroke:'#f43f5e' },
+  amber:  { text:'text-amber-300',   border:'border-amber-500/30',   bg:'bg-amber-500/10',   dot:'bg-amber-400',   bar:'bg-amber-500',   stroke:'#f59e0b' },
+  sky:    { text:'text-sky-300',     border:'border-sky-500/30',     bg:'bg-sky-500/10',     dot:'bg-sky-400',     bar:'bg-sky-500',     stroke:'#38bdf8' },
+  violet: { text:'text-violet-300',  border:'border-violet-500/30',  bg:'bg-violet-500/10',  dot:'bg-violet-400',  bar:'bg-violet-500',  stroke:'#a78bfa' },
+  slate:  { text:'text-slate-300',   border:'border-slate-600/40',   bg:'bg-slate-700/30',   dot:'bg-slate-400',   bar:'bg-slate-500',   stroke:'#94a3b8' }
+};
+
+/* ============================================================================
+   STATE
+   ============================================================================ */
+let DATA = null;            // { asOf, dates, series:{id:[...]}, stats:{id:{...}} }
+let BRIEF = null;          // data/brief.json, written by the daily Actions run
+let view = 'brief';
+let selected = 'dxy';
+let status = 'loading';     // loading | live | cached | error
+let statusMsg = '';
+
+const defaultState = () => ({
+  carryOK: {},              // per pair: the one gate the data cannot answer
+  overrides: {},            // manual RSI / SMA overrides per pair
+  events: [],               // user-entered calendar events
+  journal: []               // scored narrative entries
+});
+let S = defaultState();
+
+function loadState() {
+  try { const raw = localStorage.getItem(STATE_KEY); if (raw) S = { ...defaultState(), ...JSON.parse(raw) }; }
+  catch (e) {}
+}
+function saveState() { try { localStorage.setItem(STATE_KEY, JSON.stringify(S)); } catch (e) {} }
+
+/* ============================================================================
+   MATH — indicators computed from real closes
+   ============================================================================ */
+function sma(s, n) { return s.length < n ? null : s.slice(-n).reduce((a, b) => a + b, 0) / n; }
+
+/* Wilder's RSI: seed with a simple mean of the first n changes, then smooth. */
+function rsi(s, n = 14) {
+  if (s.length < n + 1) return null;
+  const ch = [];
+  for (let i = 1; i < s.length; i++) ch.push(s[i] - s[i - 1]);
+  let g = 0, l = 0;
+  for (let i = 0; i < n; i++) { g += Math.max(ch[i], 0); l += Math.max(-ch[i], 0); }
+  g /= n; l /= n;
+  for (let i = n; i < ch.length; i++) {
+    g = (g * (n - 1) + Math.max(ch[i], 0)) / n;
+    l = (l * (n - 1) + Math.max(-ch[i], 0)) / n;
+  }
+  if (l === 0) return 100;
+  return 100 - 100 / (1 + g / l);
+}
+
+function pctChange(s, back) { return s.length > back ? (s[s.length - 1] / s[s.length - 1 - back] - 1) * 100 : null; }
+
+/* Annualised realised volatility from the last `n` daily log returns. */
+function realisedVol(s, n = 20) {
+  if (s.length < n + 1) return null;
+  const r = [];
+  for (let i = s.length - n; i < s.length; i++) r.push(Math.log(s[i] / s[i - 1]));
+  const m = r.reduce((a, b) => a + b, 0) / r.length;
+  const v = r.reduce((a, b) => a + (b - m) ** 2, 0) / (r.length - 1);
+  return Math.sqrt(v * 252) * 100;
+}
+
+/* ICE dollar index from its six components and published weights. */
+function dxyFrom(r) {
+  return 50.14348112
+    * Math.pow(1 / r.EUR, -0.576)
+    * Math.pow(r.JPY,      0.136)
+    * Math.pow(1 / r.GBP, -0.119)
+    * Math.pow(r.CAD,      0.091)
+    * Math.pow(r.SEK,      0.042)
+    * Math.pow(r.CHF,      0.036);
+}
+
+function computeStats(series) {
+  const last = series[series.length - 1];
+  const s200 = sma(series, 200), s50 = sma(series, 50);
+  const r = rsi(series, 14);
+  const dist = s200 ? (last / s200 - 1) * 100 : null;
+  const win = series.slice(-20);
+  const hi20 = Math.max(...win), lo20 = Math.min(...win);
+  const yr = series.slice(-252);
+  const hi52 = Math.max(...yr), lo52 = Math.min(...yr);
+
+  let smaLoc = 'unknown';
+  if (dist !== null) smaLoc = Math.abs(dist) < 0.5 ? 'testing' : dist > 0 ? 'above' : 'below';
+
+  return {
+    last, prev: series[series.length - 2], sma200: s200, sma50: s50, rsi: r, dist, smaLoc,
+    hi20, lo20, hi52, lo52,
+    rangePos: hi52 === lo52 ? 50 : (last - lo52) / (hi52 - lo52) * 100,
+    chg1: pctChange(series, 1), chg5: pctChange(series, 5), chg20: pctChange(series, 20),
+    vol: realisedVol(series, 20),
+    crossUp: s50 !== null && s200 !== null ? s50 > s200 : null,
+    bars: series.length
+  };
+}
+
+/* Structural bias is derived, not typed in: trend location, trend structure and
+   20-day drift each vote, and the trap zone halves the conviction. */
+function deriveBias(st) {
+  if (st.sma200 === null) return { key:'neutral', label:'Insufficient History', tone:'slate', score:0 };
+  let sc = 0;
+  sc += st.smaLoc === 'above' ? 1 : st.smaLoc === 'below' ? -1 : 0;
+  sc += st.crossUp ? 0.5 : -0.5;
+  sc += (st.chg20 || 0) > 0 ? 0.5 : -0.5;
+  if (st.smaLoc === 'testing') sc *= 0.5;
+  const key = sc >= 1 ? 'bullish' : sc <= -1 ? 'bearish' : 'neutral';
+  return {
+    key, score: +sc.toFixed(2), tone: key === 'bullish' ? 'emerald' : key === 'bearish' ? 'rose' : 'slate',
+    label: key === 'bullish' ? 'Structurally Bullish' : key === 'bearish' ? 'Structurally Bearish' : 'Neutral / Two-Way'
+  };
+}
+
+/* ============================================================================
+   INTERPRETATION — same framework as the static build, now fed by real numbers
+   ============================================================================ */
+function rsiZone(v) {
+  if (v === null) return { tone:'slate', label:'No Reading', short:'—', risk:0, warn:'Not enough history to compute a 14-day RSI.' };
+  if (v >= 80) return { tone:'rose', label:'Extreme Overbought', short:'EXT OB', risk:3,
+    warn:`RSI ${v.toFixed(1)} is a rare, late-stage reading. The move is mature and the distance to a mean-reversion air pocket is minimal. <span class="text-rose-300 font-medium">No new longs at market.</span> Trail stops on existing longs and take partial profit into strength.` };
+  if (v > 70) return { tone:'rose', label:'Overbought', short:'OB', risk:2,
+    warn:`RSI ${v.toFixed(1)} is overbought — high risk of exhaustion. This is a sizing signal, not a sell signal: <span class="text-rose-300 font-medium">halve the clip or wait for a cool-off below 65.</span> Fading it without a bearish divergence is low-expectancy.` };
+  if (v >= 60) return { tone:'amber', label:'Elevated / Trend-Strong', short:'ELEV', risk:1,
+    warn:`RSI ${v.toFixed(1)} shows genuine trend strength without exhaustion. Healthy for continuation, but the entry is no longer cheap — <span class="text-amber-300 font-medium">add on pullbacks into structure, not at market.</span>` };
+  if (v > 40) return { tone:'slate', label:'Neutral', short:'NEUT', risk:0,
+    warn:`RSI ${v.toFixed(1)} is neutral — momentum gives no edge either way. <span class="text-slate-200">Defer to trend location and carry alignment.</span> This is the correct zone in which to add to an aligned position.` };
+  if (v >= 30) return { tone:'amber', label:'Soft / Losing Momentum', short:'SOFT', risk:1,
+    warn:`RSI ${v.toFixed(1)} shows momentum rolling over. Continuation in a downtrend, warning in an uptrend. <span class="text-amber-300 font-medium">Do not add to longs</span> until momentum resets above 45.` };
+  if (v >= 20) return { tone:'rose', label:'Oversold', short:'OS', risk:2,
+    warn:`RSI ${v.toFixed(1)} is oversold — high risk of exhaustion to the downside. <span class="text-rose-300 font-medium">Halve any new short; do not buy the dip</span> without a bullish divergence plus a reclaimed level.` };
+  return { tone:'rose', label:'Extreme Oversold', short:'EXT OS', risk:3,
+    warn:`RSI ${v.toFixed(1)} is capitulation-grade. Continuation is possible but risk/reward on fresh shorts is poor and snapback risk is severe. <span class="text-rose-300 font-medium">No new shorts at market.</span>` };
+}
+
+function smaMeta(loc, dist) {
+  const d = dist === null ? '' : ` (${dist >= 0 ? '+' : ''}${dist.toFixed(2)}% from the line)`;
+  if (loc === 'above') return { tone:'emerald', label:'Above 200-SMA', sub:'Bullish Trend Area', risk:0,
+    note:`Price is above the 200-day SMA${d}: the long-term filter is <span class="text-emerald-300 font-medium">constructive</span> and systematic trend capital is positioned long. Dips toward the line are the higher-probability buy location; the line is the invalidation, not a target.` };
+  if (loc === 'below') return { tone:'rose', label:'Below 200-SMA', sub:'Bearish Trend Area', risk:0,
+    note:`Price is below the 200-day SMA${d}: the long-term filter is <span class="text-rose-300 font-medium">negative</span> and systematic trend capital is positioned short. Rallies into the falling line are the higher-probability sell location.` };
+  if (loc === 'testing') return { tone:'amber', label:'Testing 200-SMA', sub:'High-Volatility Trap Zone', risk:3,
+    note:`Price is engaged with the 200-day SMA${d} — <span class="text-amber-300 font-medium">the trap zone</span>. Trend-followers defend the line, mean-reversion desks fade it, and the immediate path is decided by order flow you cannot see. <span class="text-slate-200">Stand aside</span> until a daily close through the line is followed by a retest that holds.` };
+  return { tone:'slate', label:'Insufficient History', sub:'—', risk:1, note:'Not enough published closes to compute a 200-day average yet.' };
+}
+
+function composite(rsiRisk, smaRisk) {
+  const s = rsiRisk + smaRisk;
+  if (s >= 3) return { tone:'rose',    label:'Hazard — No New Risk',   copy:'Trend location and/or momentum rule out a clean entry. Manage existing exposure only.' };
+  if (s >= 2) return { tone:'amber',   label:'Elevated — Half Size',   copy:'Tradeable, but not at full clip. Half size and wait for lower-timeframe confirmation.' };
+  if (s === 1) return { tone:'sky',    label:'Standard — Confirm Entry',copy:'Workable. Execute the written plan on a pullback into structure rather than at market.' };
+  return          { tone:'emerald', label:'Clean — Plan Eligible',  copy:'Trend location and momentum agree. Full-size eligible if the gate is cleared and carry aligns.' };
+}
+
+/* ============================================================================
+   RULES — generated from the live numbers, with real levels
+   ============================================================================ */
+function fmtPx(v, dp) { return v === null || v === undefined ? '—' : v.toFixed(dp); }
+function pct(v, d = 2) { return v === null ? '—' : (v >= 0 ? '+' : '') + v.toFixed(d) + '%'; }
+
+function rulesFor(p, st, bias, z) {
+  const dp = p.dp, L = v => `<span class="num font-semibold text-slate-100">${fmtPx(v, dp)}</span>`;
+  const out = [];
+
+  if (st.smaLoc === 'testing') {
+    out.push({ k:'Do not', v:`Do not initiate directional risk while price sits on the 200-SMA at ${L(st.sma200)}. This is the trap zone.` });
+    out.push({ k:'Trigger', v:`Wait for a daily close beyond ${L(st.sma200)}, then trade the retest with the stop on the far side of the line.` });
+  } else if (st.smaLoc === 'above') {
+    out.push({ k:'Do not', v:`Do not short into strength while price holds above the 200-SMA at ${L(st.sma200)} — that is counter-trend.` });
+    out.push({ k:'Buy plan', v:`Buy weakness toward ${L(st.sma200)} or the 20-day shelf at ${L(st.lo20)}. Invalidation is a daily close below ${L(st.sma200)}.` });
+  } else if (st.smaLoc === 'below') {
+    out.push({ k:'Do not', v:`Do not buy dips while price holds below the 200-SMA at ${L(st.sma200)} — that is fighting the dominant flow.` });
+    out.push({ k:'Sell plan', v:`Sell rallies into ${L(st.sma200)} or the 20-day ceiling at ${L(st.hi20)}. Invalidation is a daily close above ${L(st.sma200)}.` });
+  }
+
+  if (st.rsi !== null) {
+    if (st.rsi > 70) out.push({ k:'Wait', v:`RSI is ${st.rsi.toFixed(1)}. Do not chase — wait for a cool-off below 65 before adding to the long side.` });
+    else if (st.rsi < 30) out.push({ k:'Wait', v:`RSI is ${st.rsi.toFixed(1)}. Do not press shorts into an oversold reading — wait for a reset above 35.` });
+    else if (st.rsi >= 60) out.push({ k:'Sizing', v:`RSI ${st.rsi.toFixed(1)} is trend-strong but not extreme. Add on pullbacks; do not pay up at market.` });
+    else if (st.rsi <= 40) out.push({ k:'Sizing', v:`RSI ${st.rsi.toFixed(1)} shows momentum rolling over. Reduce conviction on longs until it resets above 45.` });
+  }
+
+  out.push({ k:'Levels', v:`20-day range ${L(st.lo20)} – ${L(st.hi20)}. 52-week range ${L(st.lo52)} – ${L(st.hi52)} (currently ${st.rangePos.toFixed(0)}% of the way up it).` });
+
+  if (st.vol !== null) {
+    out.push({ k:'Sizing', v:`Realised vol is ${st.vol.toFixed(1)}% annualised over 20 days — roughly ${(st.vol / Math.sqrt(252)).toFixed(2)}% of daily range. Size the stop off that, not off a round number.` });
+  }
+  if (p.id === 'jpy') {
+    out.push({ k:'Event risk', v:'Intervention and policy-surprise risk in this pair is non-linear. Assume the stop gaps through and size for that, not for the distance.' });
+  }
+  return out;
+}
+
+/* ============================================================================
+   CALENDAR — real rule-based events plus anything the user adds
+   ============================================================================ */
+function firstFridayOf(y, m) {           // m is 0-indexed
+  const d = new Date(Date.UTC(y, m, 1));
+  while (d.getUTCDay() !== 5) d.setUTCDate(d.getUTCDate() + 1);
+  return d;
+}
+function iso(d) { return d.toISOString().slice(0, 10); }
+
+function autoEvents(todayISO) {
+  const t = new Date(todayISO + 'T00:00:00Z');
+  const list = [];
+  for (const off of [0, 1]) {
+    const ff = firstFridayOf(t.getUTCFullYear(), t.getUTCMonth() + off);
+    list.push({ date: iso(ff), name:'US Non-Farm Payrolls', impact:'high', auto:true,
+                note:'BLS releases the employment situation on the first Friday of the month, 08:30 ET.' });
+  }
+  return list;
+}
+
+function eventsFor(dateISO) {
+  const auto = autoEvents(dateISO).filter(e => e.date === dateISO);
+  const user = (S.events || []).filter(e => e.date === dateISO);
+  return [...auto, ...user];
+}
+function upcoming(dateISO, days = 10) {
+  const all = [...autoEvents(dateISO), ...(S.events || [])];
+  const t = new Date(dateISO + 'T00:00:00Z').getTime();
+  return all
+    .filter(e => { const d = new Date(e.date + 'T00:00:00Z').getTime(); return d >= t && d <= t + days * 864e5; })
+    .sort((a, b) => a.date.localeCompare(b.date));
+}
+
+/* ============================================================================
+   LEXICON — for the narrative journal
+   ============================================================================ */
+const LEX = [
+  ['structurally elevated',1.0,'s'],['higher for longer',.95,'s'],['above target',.6,'s'],['upside risks',.75,'s'],
+  ['sticky',.6,'s'],['stickier',.7,'s'],['tightening',.8,'s'],['restrictive',.7,'s'],['hike',.9,'s'],
+  ['resilient',.55,'s'],['re-accelerating',.8,'s'],['beat expectations',.6,'s'],['inflationary',.7,'s'],
+  ['robust',.5,'s'],['overheating',.85,'s'],['normalisation',.65,'s'],['normalization',.65,'s'],['firm',.4,'s'],
+  ['rate cut',-.9,'s'],['cuts',-.75,'s'],['easing',-.8,'s'],['softening',-.7,'s'],['cooling',-.65,'s'],
+  ['downside risks',-.75,'s'],['slowdown',-.7,'s'],['deteriorating',-.8,'s'],['disinflation',-.7,'s'],
+  ['collapse',-1.0,'s'],['layoffs',-.8,'s'],['contraction',-.8,'s'],['missed expectations',-.6,'s'],
+  ['patient',-.4,'s'],['pause',-.5,'s'],['weakening',-.7,'s'],['undershoot',-.6,'s'],['stalling',-.65,'s'],['fragile',-.6,'s'],
+  ['escalation',.9,'risk'],['shipping disruption',.85,'risk'],['supply disruption',.8,'risk'],['sanctions',.7,'risk'],
+  ['conflict',.75,'risk'],['flight to quality',.85,'risk'],['haven demand',.7,'risk'],['volatility spike',.8,'risk'],
+  ['unwind',.75,'risk'],['intervention',.7,'risk'],['margin calls',.85,'risk'],['gapping',.7,'risk']
+];
+const NEG_RE    = /\b(not|no|isn'?t|aren'?t|without|unlikely to|far from|nowhere near|pushed back on|ruled out|downplayed|dismissed)\b[\w\s'-]{0,22}$/i;
+const INTENS_RE = /\b(materially|sharply|significantly|markedly|substantially)\b[\w\s]{0,12}$/i;
+const HEDGE_RE  = /\b(somewhat|modestly|slightly|marginally)\b[\w\s]{0,12}$/i;
+
+/* A negation only governs its own clause. Without this, "pushed back on easing,
+   though downside risks are building" would flip "downside risks" positive. */
+const CLAUSE_BREAK = /[,;:.!?]|\b(?:though|although|but|while|however|yet|whereas|despite)\b/gi;
+function clauseTail(pre) {
+  const parts = pre.split(CLAUSE_BREAK);
+  return parts[parts.length - 1] || '';
+}
+
+function isBoundary(t, i, len) {
+  const a = t[i - 1], b = t[i + len], w = c => c !== undefined && /[a-z0-9]/i.test(c);
+  return !w(a) && (!w(b) || (b === 's' && !w(t[i + len + 1])));
+}
+function scoreText(text) {
+  const lower = text.toLowerCase(); const hits = []; let sent = 0, risk = 0;
+  for (const [phrase, w, axis] of LEX) {
+    let from = 0, i;
+    while ((i = lower.indexOf(phrase, from)) !== -1) {
+      from = i + phrase.length;
+      if (!isBoundary(lower, i, phrase.length)) continue;
+      const pre = clauseTail(lower.slice(Math.max(0, i - 60), i));
+      const neg = NEG_RE.test(pre);
+      const mult = INTENS_RE.test(pre) ? 1.25 : HEDGE_RE.test(pre) ? 0.7 : 1;
+      const eff = w * mult * (neg ? -0.8 : 1);
+      hits.push({ phrase, i, len: phrase.length, axis, eff, neg, mult });
+      if (axis === 'risk') risk += Math.abs(eff); else sent += eff;
+    }
+  }
+  return { score:+Math.tanh(sent * 0.55).toFixed(2), risk:Math.min(1, +(risk * 0.38).toFixed(2)), hits: hits.sort((a,b)=>a.i-b.i) };
+}
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function highlight(text, hits) {
+  let out = '', cur = 0;
+  hits.forEach(h => {
+    if (h.i < cur) return;
+    const cls = h.axis === 'risk' ? 'risk' : h.eff > 0 ? 'hawk' : 'dove';
+    out += esc(text.slice(cur, h.i)) + `<mark class="${cls}" title="${esc(h.phrase + ' ' + (h.eff>0?'+':'') + h.eff.toFixed(2) + (h.neg ? ' (negated)' : ''))}">${esc(text.substr(h.i, h.len))}</mark>`;
+    cur = h.i + h.len;
+  });
+  return out + esc(text.slice(cur));
+}
+
+/* ============================================================================
+   FETCH
+   ============================================================================ */
+function ymd(d) { return d.toISOString().slice(0, 10); }
+
+async function fetchData() {
+  setStatus('loading', 'Fetching ECB reference rates…');
+  render();
+  const end = new Date();
+  const start = new Date(end.getTime() - 560 * 864e5);
+  const url = `${API}/${ymd(start)}..${ymd(end)}?base=USD&symbols=${SYMBOLS}`;
+
+  try {
+    const res = await fetch(url, { cache:'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json();
+    if (!json.rates) throw new Error('Unexpected payload shape');
+    DATA = build(json);
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify({ saved: Date.now(), json })); } catch (e) {}
+    setStatus('live', '');
+  } catch (err) {
+    const cached = readCache();
+    if (cached) {
+      DATA = build(cached.json);
+      setStatus('cached', `Live fetch failed (${err.message}). Showing the last good snapshot from ${new Date(cached.saved).toLocaleString()}.`);
+    } else {
+      DATA = null;
+      setStatus('error', `Could not reach the rate service (${err.message}) and there is no cached snapshot. Check your connection and press Refresh.`);
+    }
+  }
+  render();
+}
+
+/* The narrative layer is produced out-of-band by scripts/build_brief.py and
+   committed as data/brief.json. Absent locally — that is fine, the page degrades
+   to the facts-only view rather than pretending it has a story. */
+async function fetchBrief() {
+  try {
+    const res = await fetch('data/brief.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    BRIEF = await res.json();
+  } catch (e) { BRIEF = null; }
+}
+
+function readCache() {
+  try { const raw = localStorage.getItem(CACHE_KEY); return raw ? JSON.parse(raw) : null; } catch (e) { return null; }
+}
+
+function build(json) {
+  const dates = Object.keys(json.rates).sort();
+  const series = { dxy:[], eur:[], gbp:[], jpy:[] };
+  dates.forEach(d => {
+    const r = json.rates[d];
+    if (!r || !r.EUR || !r.GBP || !r.JPY || !r.CAD || !r.SEK || !r.CHF) return;
+    series.dxy.push(dxyFrom(r));
+    series.eur.push(1 / r.EUR);
+    series.gbp.push(1 / r.GBP);
+    series.jpy.push(r.JPY);
+  });
+  const stats = {};
+  PAIRS.forEach(p => { stats[p.id] = computeStats(series[p.id]); });
+  return { asOf: dates[dates.length - 1], dates, series, stats };
+}
+
+function setStatus(s, msg) { status = s; statusMsg = msg || ''; }
+
+/* effective readings: live values unless the user has overridden them for a what-if */
+function reading(id) {
+  const st = DATA.stats[id];
+  const o = S.overrides[id] || {};
+  return {
+    ...st,
+    rsi: o.rsi !== undefined ? o.rsi : st.rsi,
+    smaLoc: o.smaLoc !== undefined ? o.smaLoc : st.smaLoc,
+    overridden: o.rsi !== undefined || o.smaLoc !== undefined
+  };
+}
+
+/* ============================================================================
+   SPARKLINE
+   ============================================================================ */
+function spark(series, tone, n = 120) {
+  const s = series.slice(-n);
+  const min = Math.min(...s), max = Math.max(...s), rng = max - min || 1;
+  const pts = s.map((v, i) => `${(i / (s.length - 1) * 100).toFixed(2)},${(34 - (v - min) / rng * 30).toFixed(2)}`).join(' ');
+  return `<svg class="spark" viewBox="0 0 100 38" preserveAspectRatio="none" aria-hidden="true">
+    <polyline points="${pts}" fill="none" stroke="${TONE[tone].stroke}" stroke-width="1.2" vector-effect="non-scaling-stroke" opacity="0.9"/>
+  </svg>`;
+}
+
+/* ============================================================================
+   NARRATIVE BRIEF — rendered from data/brief.json
+   ============================================================================ */
+const LIKELIHOOD_TONE = { 'more likely':'emerald', 'possible':'amber', 'less likely':'slate' };
+const CONF_TONE = { high:'emerald', medium:'amber', low:'rose' };
+const TAPE_TONE = { consistent:'emerald', contradicts:'rose', 'insufficient evidence':'amber' };
+const DIR_TONE = { supportive:'emerald', negative:'rose', mixed:'slate' };
+
+function briefPanel() {
+  if (!BRIEF || !BRIEF.story) {
+    const why = BRIEF && BRIEF.story_error ? BRIEF.story_error : 'data/brief.json not found';
+    return `
+      <article class="panel rounded-xl overflow-hidden">
+        <div class="px-5 py-4 border-b hairline">
+          <p class="text-base font-semibold text-slate-50">Why The Market Is Moving</p>
+        </div>
+        <div class="p-5">
+          <p class="text-[13px] text-slate-400 leading-relaxed">
+            No narrative brief loaded — showing computed figures only.
+            <span class="text-slate-500">(${esc(why)})</span>
+          </p>
+          <p class="text-[12px] text-slate-500 mt-2 leading-relaxed">
+            The narrative layer is produced once a day by <span class="text-slate-400">scripts/build_brief.py</span>,
+            which searches the web and writes <span class="text-slate-400">data/brief.json</span>.
+            Run it locally with an <span class="text-slate-400">ANTHROPIC_API_KEY</span> set, or let the
+            scheduled GitHub Action do it.
+          </p>
+        </div>
+      </article>`;
+  }
+
+  const st = BRIEF.story;
+  const stamp = new Date(BRIEF.generated_at).toLocaleString();
+
+  return `
+    <article class="panel rounded-xl overflow-hidden">
+      <div class="px-5 py-4 border-b hairline flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h2 class="text-[11px] uppercase tracking-[0.22em] text-slate-500 font-semibold">Narrative Layer</h2>
+          <p class="text-base font-semibold text-slate-50 mt-0.5">Why The Market Is Moving</p>
+        </div>
+        <span class="num text-[10px] text-slate-500">built ${esc(stamp)}</span>
+      </div>
+
+      <div class="p-5 space-y-4">
+        <p class="text-[13.5px] leading-relaxed text-slate-300">${esc(st.market_summary)}</p>
+        ${st.regime_note ? `<p class="text-[12.5px] leading-relaxed text-slate-400 border-l-2 border-slate-700 pl-3">${esc(st.regime_note)}</p>` : ''}
+
+        <div class="space-y-3">
+          ${(st.currencies || []).map(c => {
+            const tt = TONE[TAPE_TONE[c.tape_check] || 'slate'];
+            const cf = TONE[CONF_TONE[c.confidence] || 'slate'];
+            const pid = { USD:'dxy', EUR:'eur', GBP:'gbp', JPY:'jpy' }[c.code];
+            const f = DATA && pid ? DATA.stats[pid] : null;
+            const mvTone = f && f.chg1 >= 0 ? 'text-emerald-300' : 'text-rose-300';
+            return `
+            <details class="rounded-lg border hairline bg-slate-950/40" open>
+              <summary class="flex items-center gap-2.5 px-4 py-3 hover:bg-slate-800/30 rounded-lg transition-colors flex-wrap">
+                <svg class="chev h-3 w-3 shrink-0 text-slate-500" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                  <path d="M4 2.5L8 6L4 9.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="text-sm font-bold text-slate-50">${esc(c.code)}</span>
+                ${f ? `<span class="num text-[12px] font-semibold ${mvTone}">${pct(f.chg1)}</span>` : ''}
+                <span class="rounded border ${tt.border} ${tt.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${tt.text}">Tape: ${esc(c.tape_check)}</span>
+                <span class="rounded border ${cf.border} ${cf.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${cf.text}">Confidence ${esc(c.confidence)}</span>
+              </summary>
+
+              <div class="px-4 pb-4 pl-[2.1rem] space-y-3 fade-in">
+                <div>
+                  <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold mb-1">What happened</p>
+                  <p class="text-[12.5px] leading-relaxed text-slate-300">${esc(c.what_happened)}</p>
+                </div>
+                <div>
+                  <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold mb-1">Why</p>
+                  <p class="text-[12.5px] leading-relaxed text-slate-300">${esc(c.why)}</p>
+                </div>
+
+                ${(c.drivers || []).length ? `
+                <div>
+                  <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold mb-1.5">Drivers</p>
+                  <div class="space-y-1">
+                    ${c.drivers.map(d => {
+                      const dt2 = TONE[DIR_TONE[d.direction] || 'slate'];
+                      return `<div class="flex items-start gap-2">
+                        <span class="mt-[3px] shrink-0 rounded border ${dt2.border} ${dt2.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${dt2.text} w-[5.4rem] text-center">${esc(d.direction)}</span>
+                        <span class="text-[12px] leading-relaxed text-slate-300 flex-1">${esc(d.factor)}</span>
+                        <span class="text-[9px] uppercase tracking-wider text-slate-600 shrink-0">${esc(d.weight)}</span>
+                      </div>`;
+                    }).join('')}
+                  </div>
+                </div>` : ''}
+
+                ${(c.scenarios || []).length ? `
+                <div>
+                  <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold mb-1.5">If / Then</p>
+                  <div class="space-y-1.5">
+                    ${c.scenarios.map(sc => {
+                      const lt = TONE[LIKELIHOOD_TONE[sc.likelihood] || 'slate'];
+                      return `<div class="rounded-md border hairline bg-slate-900/50 px-3 py-2">
+                        <div class="flex items-start gap-2 flex-wrap">
+                          <span class="rounded border ${lt.border} ${lt.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${lt.text}">${esc(sc.likelihood)}</span>
+                          <span class="text-[12px] leading-relaxed text-slate-200 flex-1 min-w-[12rem]"><span class="text-slate-400">${esc(sc.condition)}</span> → ${esc(sc.implication)}</span>
+                        </div>
+                      </div>`;
+                    }).join('')}
+                  </div>
+                </div>` : ''}
+
+                <div class="rounded-md border ${tt.border} ${tt.bg} px-3 py-2">
+                  <p class="text-[10px] uppercase tracking-[0.16em] ${tt.text} font-bold mb-0.5">Tape check — ${esc(c.tape_check)}</p>
+                  <p class="text-[12px] leading-relaxed text-slate-300">${esc(c.tape_check_note)}</p>
+                </div>
+                <p class="text-[11px] text-slate-500">Confidence <span class="${cf.text} font-semibold">${esc(c.confidence)}</span> — ${esc(c.confidence_reason)}</p>
+              </div>
+            </details>`;
+          }).join('')}
+        </div>
+
+        ${(st.data_expectations || []).length ? `
+        <div class="pt-3 border-t hairline">
+          <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold mb-2">Upcoming Data — What The Evidence Leans Toward</p>
+          <div class="space-y-2">
+            ${st.data_expectations.map(d => `
+              <div class="rounded-md border hairline bg-slate-950/50 px-3 py-2.5">
+                <div class="flex items-baseline gap-2 flex-wrap">
+                  <span class="text-[12.5px] font-semibold text-slate-100">${esc(d.release)}</span>
+                  <span class="num text-[10px] text-slate-500">${esc(d.when)}</span>
+                </div>
+                <p class="text-[12px] leading-relaxed text-slate-300 mt-1">${esc(d.evidence_so_far)}</p>
+                <p class="text-[11.5px] leading-relaxed text-amber-300/90 mt-1"><span class="uppercase tracking-wider text-[9px] font-bold">Surprise would be ·</span> ${esc(d.what_would_surprise)}</p>
+              </div>`).join('')}
+          </div>
+        </div>` : ''}
+
+        ${(st.sources || []).length ? `
+        <div class="pt-3 border-t hairline">
+          <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold mb-2">Sources Read (${st.sources.length})</p>
+          <div class="space-y-1">
+            ${st.sources.map(s2 => `
+              <a href="${esc(s2.url)}" target="_blank" rel="noopener noreferrer"
+                 class="flex items-baseline gap-2 text-[11.5px] hover:bg-slate-800/40 rounded px-2 py-1 -mx-2 transition-colors">
+                <span class="text-slate-600 shrink-0">${esc(s2.publisher)}</span>
+                <span class="text-sky-400 hover:text-sky-300 truncate">${esc(s2.title)}</span>
+              </a>`).join('')}
+          </div>
+          <p class="text-[10.5px] text-slate-600 mt-2 leading-relaxed">
+            Every causal claim above should trace to one of these. If a claim has no source behind it, treat it as the model's inference, not reporting.
+          </p>
+        </div>` : ''}
+      </div>
+    </article>`;
+}
+
+/* ============================================================================
+   VIEW — DAILY BRIEF
+   ============================================================================ */
+function renderBrief() {
+  const el = document.getElementById('view-brief');
+  if (!DATA) { el.innerHTML = emptyState(); return; }
+
+  const today = DATA.asOf;
+  const todays = eventsFor(ymd(new Date()));
+  const rows = PAIRS.map(p => {
+    const st = reading(p.id), bias = deriveBias(DATA.stats[p.id]);
+    const z = rsiZone(st.rsi), m = smaMeta(st.smaLoc, st.dist), c = composite(z.risk, m.risk);
+    return { p, st, bias, z, m, c };
+  });
+
+  const traps = rows.filter(r => r.st.smaLoc === 'testing');
+  const extremes = rows.filter(r => r.st.rsi !== null && (r.st.rsi > 70 || r.st.rsi < 30));
+  const clean = rows.filter(r => r.c.label.startsWith('Clean'));
+
+  let posture, ptone, pcopy;
+  if (todays.length) {
+    posture = 'Event Day — Reduce'; ptone = 'rose';
+    pcopy = `A high-impact release lands today (${todays.map(e => e.name).join(', ')}). Liquidity thins into the print and stops fill beyond their trigger. No new positions inside two hours either side; carry existing risk smaller than normal.`;
+  } else if (traps.length >= 2) {
+    posture = 'Stand Down — Trap Zones'; ptone = 'rose';
+    pcopy = `${traps.length} of the four majors are sitting on their 200-day line (${traps.map(r => r.p.pair).join(', ')}). That is the lowest-expectancy entry location on the chart. Trade the resolution, not the anticipation.`;
+  } else if (clean.length) {
+    posture = 'Selective — Plans Live'; ptone = 'emerald';
+    pcopy = `${clean.length} pair${clean.length === 1 ? '' : 's'} (${clean.map(r => r.p.pair).join(', ')}) show trend location and momentum in agreement. Those are the only full-size candidates today; everything else is half-size or flat.`;
+  } else {
+    posture = 'Selective — Reduced Size'; ptone = 'amber';
+    pcopy = 'No pair currently shows a clean alignment of trend location and momentum. Half size at most, and only on a written plan with the stop placed before the order goes in.';
+  }
+  const pt = TONE[ptone];
+
+  const mover = [...rows].sort((a, b) => Math.abs(b.st.chg1 || 0) - Math.abs(a.st.chg1 || 0))[0];
+
+  el.innerHTML = `
+    <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] gap-6">
+
+      <div class="space-y-6">
+        <!-- posture -->
+        <article class="panel rounded-xl overflow-hidden">
+          <div class="px-5 py-4 border-b hairline flex items-start justify-between gap-4 flex-wrap">
+            <div>
+              <h2 class="text-[11px] uppercase tracking-[0.22em] text-slate-500 font-semibold">Daily Brief</h2>
+              <p class="text-base font-semibold text-slate-50 mt-0.5">Session Posture — ${new Date().toLocaleDateString(undefined,{weekday:'long', day:'numeric', month:'long', year:'numeric'})}</p>
+            </div>
+            <span class="shrink-0 inline-flex items-center gap-1.5 rounded-md border ${pt.border} ${pt.bg} px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${pt.text}">
+              <span class="h-1.5 w-1.5 rounded-full ${pt.dot}"></span>${posture}
+            </span>
+          </div>
+          <div class="p-5">
+            <p class="text-[13.5px] leading-relaxed text-slate-300">${pcopy}</p>
+            <div class="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+              ${[
+                ['Trap zones', traps.length + ' / 4', traps.length ? 'amber' : 'emerald'],
+                ['RSI extremes', extremes.length + ' / 4', extremes.length ? 'rose' : 'emerald'],
+                ['Clean setups', clean.length + ' / 4', clean.length ? 'emerald' : 'slate'],
+                ['Biggest mover', mover.p.pair + ' ' + pct(mover.st.chg1), Math.abs(mover.st.chg1||0) > 0.5 ? 'amber' : 'slate']
+              ].map(([l, v, t]) => `
+                <div class="rounded-lg border hairline bg-slate-950/50 px-3 py-2.5">
+                  <div class="text-[10px] uppercase tracking-[0.16em] text-slate-500">${l}</div>
+                  <div class="num text-lg font-bold ${TONE[t].text} truncate">${v}</div>
+                </div>`).join('')}
+            </div>
+          </div>
+        </article>
+
+        ${briefPanel()}
+
+        <!-- the four pairs at a glance -->
+        <article class="panel rounded-xl overflow-hidden">
+          <div class="px-5 py-4 border-b hairline">
+            <p class="text-base font-semibold text-slate-50">The Four Majors — Today's Read</p>
+            <p class="text-xs text-slate-500 mt-1">Every figure below is computed from published closes through ${DATA.asOf}. Click a row for the full card.</p>
+          </div>
+          <div class="divide-y divide-slate-800/60">
+            ${rows.map(r => {
+              const bt = TONE[r.bias.tone], zt = TONE[r.z.tone], mt = TONE[r.m.tone], ct = TONE[r.c.tone];
+              const chgTone = (r.st.chg1 || 0) >= 0 ? 'text-emerald-300' : 'text-rose-300';
+              return `
+              <button type="button" data-goto="${r.p.id}" class="w-full text-left px-5 py-3.5 hover:bg-slate-800/40 transition-colors">
+                <div class="flex items-start gap-4 flex-wrap">
+                  <div class="min-w-[8.5rem]">
+                    <div class="flex items-baseline gap-2">
+                      <span class="text-base font-bold text-slate-50">${r.p.code}</span>
+                      <span class="num text-[11px] text-slate-500">${r.p.pair}</span>
+                    </div>
+                    <div class="num text-lg font-semibold text-slate-100 mt-0.5">${fmtPx(r.st.last, r.p.dp)}
+                      <span class="text-[12px] font-medium ${chgTone}">${pct(r.st.chg1)}</span>
+                    </div>
+                  </div>
+                  <div class="w-24 shrink-0 hidden sm:block">${spark(DATA.series[r.p.id], r.bias.tone)}</div>
+                  <div class="flex flex-wrap items-center gap-1.5 flex-1 min-w-[12rem]">
+                    <span class="rounded border ${bt.border} ${bt.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${bt.text}">${r.bias.label}</span>
+                    <span class="rounded border ${zt.border} ${zt.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${zt.text}">RSI ${r.st.rsi === null ? '—' : r.st.rsi.toFixed(0)} ${r.z.short}</span>
+                    <span class="rounded border ${mt.border} ${mt.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${mt.text}">${r.m.label}</span>
+                    <span class="rounded border ${ct.border} ${ct.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${ct.text}">${r.c.label}</span>
+                  </div>
+                </div>
+              </button>`;
+            }).join('')}
+          </div>
+        </article>
+      </div>
+
+      <div class="space-y-6">
+        <!-- event risk -->
+        <article class="panel rounded-xl overflow-hidden">
+          <div class="px-5 py-4 border-b hairline">
+            <p class="text-base font-semibold text-slate-50">Event Risk</p>
+            <p class="text-xs text-slate-500 mt-1">Non-Farm Payrolls is derived from the BLS rule (first Friday). Add CPI, FOMC and your own dates below.</p>
+          </div>
+          <div class="p-5 space-y-3">
+            ${todays.length
+              ? `<div class="rounded-lg border border-rose-500/30 bg-rose-500/10 p-3">
+                   <p class="text-[10px] uppercase tracking-wider text-rose-300 font-bold mb-1">Today — Blackout In Force</p>
+                   ${todays.map(e => `<p class="text-[13px] text-slate-200 font-medium">${esc(e.name)}</p><p class="text-[11px] text-slate-400">${esc(e.note || '')}</p>`).join('')}
+                 </div>`
+              : `<div class="rounded-lg border border-emerald-500/25 bg-emerald-500/[0.07] p-3">
+                   <p class="text-[10px] uppercase tracking-wider text-emerald-300 font-bold mb-0.5">Today — Clear</p>
+                   <p class="text-[12px] text-slate-400">No high-impact event recorded for today. This only covers what the rule knows plus what you have entered — always confirm against a live calendar.</p>
+                 </div>`}
+
+            <div>
+              <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold mb-2">Next 10 Days</p>
+              <div class="space-y-1.5">
+                ${upcoming(ymd(new Date())).length
+                  ? upcoming(ymd(new Date())).map(e => `
+                    <div class="flex items-center gap-2.5 rounded-md border hairline bg-slate-950/50 px-3 py-2">
+                      <span class="num text-[11px] text-slate-400 w-[5.5rem] shrink-0">${e.date}</span>
+                      <span class="text-[12px] text-slate-200 flex-1 min-w-0 truncate">${esc(e.name)}</span>
+                      ${e.auto ? '<span class="text-[9px] uppercase tracking-wider text-slate-600">rule</span>'
+                               : `<button data-delevent="${esc(e.date)}|${esc(e.name)}" class="text-[10px] text-slate-500 hover:text-rose-300 transition">remove</button>`}
+                    </div>`).join('')
+                  : '<p class="text-[12px] text-slate-500">Nothing scheduled in the window.</p>'}
+              </div>
+            </div>
+
+            <div class="pt-3 border-t hairline">
+              <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold mb-2">Add An Event</p>
+              <div class="flex gap-2 flex-wrap">
+                <input id="evDate" type="date" class="rounded-md border hairline bg-slate-950/70 px-2.5 py-1.5 text-[12px] text-slate-200 num" />
+                <input id="evName" type="text" placeholder="US CPI, FOMC, BoE decision…" class="flex-1 min-w-[10rem] rounded-md border hairline bg-slate-950/70 px-2.5 py-1.5 text-[12px] text-slate-200 placeholder:text-slate-600" />
+                <button id="evAdd" class="rounded-md border border-sky-500/30 bg-sky-500/10 px-3 py-1.5 text-[11px] font-semibold text-sky-300 hover:border-sky-400/60 transition">Add</button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- pre-trade gate -->
+        <article class="panel rounded-xl overflow-hidden">
+          <div class="px-5 py-4 border-b hairline flex items-start justify-between gap-3">
+            <div>
+              <p class="text-base font-semibold text-slate-50">Pre-Trade Gate</p>
+              <p class="text-xs text-slate-500 mt-1">Three of the four clearances answer themselves from live data.</p>
+            </div>
+            <select id="gatePair" class="rounded-md border hairline bg-slate-950/70 px-2 py-1.5 text-[12px] text-slate-200">
+              ${PAIRS.map(p => `<option value="${p.id}" ${p.id === selected ? 'selected' : ''}>${p.pair}</option>`).join('')}
+            </select>
+          </div>
+          <div id="gateBody" class="p-5"></div>
+        </article>
+      </div>
+    </div>`;
+
+  renderGate();
+}
+
+function renderGate() {
+  const host = document.getElementById('gateBody');
+  if (!host || !DATA) return;
+  const p = PAIRS.find(x => x.id === selected);
+  const st = reading(selected);
+  const todays = eventsFor(ymd(new Date()));
+
+  const checks = [
+    { id:'sma', n:'01', title:'200-Day Moving Average Proximity', hazard:'Reversal Risk',
+      auto:true, pass: st.smaLoc !== 'testing',
+      evidence: st.dist === null ? 'No 200-day average yet.'
+        : `Price is <span class="num text-slate-200">${Math.abs(st.dist).toFixed(2)}%</span> from the 200-SMA at <span class="num text-slate-200">${fmtPx(st.sma200, p.dp)}</span>. ${st.smaLoc === 'testing' ? 'Inside the 0.5% trap band.' : 'Outside the 0.5% trap band.'}` },
+    { id:'rsi', n:'02', title:'14-Day RSI Extremes', hazard:'Exhaustion Risk',
+      auto:true, pass: st.rsi !== null && st.rsi <= 70 && st.rsi >= 30,
+      evidence: st.rsi === null ? 'No RSI yet.' : `RSI(14) is <span class="num text-slate-200">${st.rsi.toFixed(1)}</span>. ${st.rsi > 70 ? 'Overbought — exhaustion risk.' : st.rsi < 30 ? 'Oversold — exhaustion risk.' : 'Inside the 30–70 band.'}` },
+    { id:'cal', n:'03', title:'Economic Calendar Blackout', hazard:'Volatility Hazard',
+      auto:true, pass: todays.length === 0,
+      evidence: todays.length ? `<span class="text-rose-300">${todays.map(e => esc(e.name)).join(', ')}</span> lands today. Stay flat within two hours either side.` : 'No high-impact event recorded for today in this tool. Confirm against a live calendar before you rely on it.' },
+    { id:'carry', n:'04', title:'Carry / Rate-Differential Alignment', hazard:'Structural Alignment',
+      auto:false, pass: !!S.carryOK[selected],
+      evidence: 'This tool has no yield feed, so it cannot answer this one. Confirm from your own source that the trade direction agrees with the front-end rate differential — then tick it.' }
+  ];
+
+  const passed = checks.filter(c => c.pass).length;
+  let v;
+  if (passed === 4) v = { tone:'emerald', title:'GATE CLEARED — Full Size Eligible', copy:'All four clearances are green. Take the written entry at planned size, with the stop placed before the order is sent.' };
+  else if (passed === 3) v = { tone:'amber', title:'CONDITIONAL — Half Size At Most', copy:'One clearance is outstanding. Write down which gate you are overriding and why before you proceed.' };
+  else v = { tone:'rose', title:'STAND DOWN — Gate Not Satisfied', copy:`${4 - passed} clearances outstanding. No capital committed. There is no penalty for missing a trade; there is a compounding one for taking a bad one.` };
+  const vt = TONE[v.tone];
+
+  host.innerHTML = `
+    <div class="flex items-center justify-between gap-3 mb-3">
+      <span class="text-[11px] text-slate-500">Evaluating <span class="text-slate-300 font-semibold">${p.pair}</span></span>
+      <span class="num text-xl font-bold text-slate-100">${passed}<span class="text-slate-600 text-sm">/4</span></span>
+    </div>
+    <div class="h-1 w-full bg-slate-800/70 rounded-full overflow-hidden mb-4">
+      <div class="h-full ${vt.bar} transition-all duration-300" style="width:${passed / 4 * 100}%"></div>
+    </div>
+    <div class="space-y-2.5">
+      ${checks.map(c => {
+        const ct = TONE[c.pass ? 'emerald' : 'rose'];
+        return `
+        <div class="rounded-lg border ${c.pass ? 'border-emerald-500/30 bg-emerald-500/[0.05]' : 'hairline bg-slate-900/50'} p-3">
+          <div class="flex items-start gap-2.5">
+            ${c.auto
+              ? `<span class="mt-0.5 h-5 w-5 shrink-0 rounded border ${c.pass ? 'border-emerald-400 bg-emerald-500 text-slate-950' : 'border-rose-500/50 bg-rose-500/10 text-rose-300'} grid place-items-center text-[11px] font-bold">${c.pass ? '✓' : '✕'}</span>`
+              : `<button type="button" data-carry="${selected}" role="checkbox" aria-checked="${c.pass}"
+                   class="mt-0.5 h-5 w-5 shrink-0 rounded border grid place-items-center transition-colors ${c.pass ? 'border-emerald-400 bg-emerald-500 text-slate-950' : 'border-slate-600 bg-slate-800/60 text-transparent hover:border-slate-400'}">
+                   <svg viewBox="0 0 14 14" class="h-3 w-3" fill="none"><path d="M2.5 7.5L5.5 10.5L11.5 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                 </button>`}
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="num text-[10px] font-bold text-slate-600">${c.n}</span>
+                <h4 class="text-[13px] font-semibold ${c.pass ? 'text-emerald-200' : 'text-slate-100'}">${c.title}</h4>
+                <span class="ml-auto rounded border ${c.auto ? 'border-sky-500/30 bg-sky-500/10 text-sky-300' : 'border-violet-500/30 bg-violet-500/10 text-violet-300'} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider">${c.auto ? 'Auto' : 'Manual'}</span>
+              </div>
+              <p class="text-[12px] leading-relaxed text-slate-400 mt-1">${c.evidence}</p>
+            </div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="mt-4 rounded-lg border ${vt.border} ${vt.bg} p-4 fade-in">
+      <div class="flex items-center gap-2 mb-1.5">
+        <span class="h-2 w-2 rounded-full ${vt.dot}"></span>
+        <h4 class="text-[12px] font-bold uppercase tracking-[0.14em] ${vt.text}">${v.title}</h4>
+      </div>
+      <p class="text-[13px] leading-relaxed text-slate-300">${v.copy}</p>
+    </div>`;
+}
+
+/* ============================================================================
+   VIEW — MATRIX
+   ============================================================================ */
+function renderMatrix() {
+  const el = document.getElementById('view-matrix');
+  if (!DATA) { el.innerHTML = emptyState(); return; }
+
+  el.innerHTML = `
+    <div class="mb-5 panel rounded-xl px-5 py-4">
+      <div class="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h2 class="text-[11px] uppercase tracking-[0.22em] text-slate-500 font-semibold">Intensity Matrix</h2>
+          <p class="text-base font-semibold text-slate-50 mt-0.5">Per-Pair Diagnostics — Live Through ${DATA.asOf}</p>
+          <p class="text-xs text-slate-500 mt-1">RSI and 200-SMA location load from real data. Move a slider to stress-test a scenario; press <span class="text-slate-400">Revert to live</span> to snap back.</p>
+        </div>
+        <button id="revertAll" class="shrink-0 rounded-md border hairline bg-slate-900/70 px-3 py-1.5 text-[11px] font-medium text-slate-300 hover:text-white hover:border-slate-600 transition">Revert All To Live</button>
+      </div>
+    </div>
+    <div id="cards" class="grid grid-cols-1 2xl:grid-cols-2 gap-6">${PAIRS.map(cardHTML).join('')}</div>`;
+}
+
+const SMA_OPTS = [ {k:'above',l:'Above',t:'emerald'}, {k:'testing',l:'Testing',t:'amber'}, {k:'below',l:'Below',t:'rose'} ];
+
+function cardHTML(p) {
+  const live = DATA.stats[p.id];
+  const st = reading(p.id);
+  const bias = deriveBias(live);
+  const z = rsiZone(st.rsi), m = smaMeta(st.smaLoc, st.dist), c = composite(z.risk, m.risk);
+  const bt = TONE[bias.tone], zt = TONE[z.tone], mt = TONE[m.tone], ct = TONE[c.tone];
+  const rules = rulesFor(p, st, bias, z);
+  const chgTone = (st.chg1 || 0) >= 0 ? 'text-emerald-300' : 'text-rose-300';
+
+  return `
+  <article class="panel rounded-xl overflow-hidden" data-card="${p.id}">
+    <div class="px-5 py-4 border-b hairline">
+      <div class="flex items-start justify-between gap-3 flex-wrap">
+        <div class="min-w-0">
+          <div class="flex items-baseline gap-2.5 flex-wrap">
+            <h3 class="text-lg font-bold text-slate-50 tracking-tight">${p.code}</h3>
+            <span class="num text-sm font-medium text-slate-400">${p.pair}</span>
+            ${st.overridden ? '<span class="rounded border border-violet-500/30 bg-violet-500/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-violet-300">What-if</span>'
+                            : '<span class="rounded border border-emerald-500/25 bg-emerald-500/[0.07] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-emerald-400/90">Live</span>'}
+          </div>
+          <p class="text-[11px] text-slate-500 mt-0.5">${p.label} · ${p.note}</p>
+        </div>
+        <span class="shrink-0 inline-flex items-center gap-1.5 rounded-md border ${bt.border} ${bt.bg} px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${bt.text}">
+          <span class="h-1.5 w-1.5 rounded-full ${bt.dot}"></span>${bias.label}
+        </span>
+      </div>
+
+      <div class="mt-3 flex items-end gap-4 flex-wrap">
+        <div>
+          <div class="num text-2xl font-bold text-slate-50">${fmtPx(live.last, p.dp)}</div>
+          <div class="num text-[11px] ${chgTone}">${pct(live.chg1)} today · ${pct(live.chg5)} 5d · ${pct(live.chg20)} 20d</div>
+        </div>
+        <div class="flex-1 min-w-[8rem] max-w-[16rem]">${spark(DATA.series[p.id], bias.tone)}</div>
+      </div>
+    </div>
+
+    <!-- RSI -->
+    <div class="px-5 py-4 border-b hairline">
+      <div class="flex items-center justify-between gap-3 mb-3 flex-wrap">
+        <h4 class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-semibold">14-Day RSI (Wilder)</h4>
+        <div class="flex items-center gap-2">
+          <span data-rsi-badge class="rounded border ${zt.border} ${zt.bg} px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${zt.text}">${z.label}</span>
+          <span data-rsi-value class="num text-xl font-bold ${zt.text}">${st.rsi === null ? '—' : st.rsi.toFixed(1)}</span>
+        </div>
+      </div>
+      <div class="relative h-1.5 w-full rounded-full overflow-hidden flex mb-1" aria-hidden="true">
+        <div class="h-full bg-rose-500/45" style="width:30%"></div>
+        <div class="h-full bg-slate-600/50" style="width:40%"></div>
+        <div class="h-full bg-rose-500/45" style="width:30%"></div>
+      </div>
+      <input class="rsi -mt-[14px] relative z-10" type="range" min="0" max="100" step="1"
+             value="${st.rsi === null ? 50 : Math.round(st.rsi)}" data-rsi="${p.id}" aria-label="${p.code} RSI what-if" />
+      <div class="num flex justify-between text-[10px] text-slate-600 -mt-1 mb-2">
+        <span>0</span><span>30</span><span>70</span><span>100</span>
+      </div>
+      <div class="flex items-center gap-2 mb-3">
+        <button data-revert="${p.id}" class="rounded-md border hairline bg-slate-900/70 px-2.5 py-1 text-[11px] font-medium text-slate-400 hover:text-white hover:border-slate-500 transition">
+          Revert to live${live.rsi === null ? '' : ' · ' + live.rsi.toFixed(1)}
+        </button>
+        <span class="text-[10px] text-slate-600">drag to stress-test</span>
+      </div>
+      <div data-rsi-warn class="rounded-lg border ${zt.border} ${zt.bg} p-3" role="status" aria-live="polite">
+        <h5 data-rsi-warn-title class="text-[10px] uppercase tracking-[0.16em] font-bold mb-1 ${zt.text}">Technical Risk Warning</h5>
+        <p data-rsi-warn-body class="text-[12.5px] leading-relaxed text-slate-300">${z.warn}</p>
+      </div>
+    </div>
+
+    <!-- SMA -->
+    <div class="px-5 py-4 border-b hairline">
+      <div class="flex items-center justify-between gap-3 mb-3 flex-wrap">
+        <h4 class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-semibold">200-Day SMA Location</h4>
+        <span data-sma-badge class="inline-flex items-center gap-1.5 rounded-md border ${mt.border} ${mt.bg} px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${mt.text}">
+          <span class="h-1.5 w-1.5 rounded-full ${mt.dot}"></span>${m.label} · ${m.sub}
+        </span>
+      </div>
+      <div class="flex items-center gap-3 flex-wrap mb-3">
+        <div class="inline-flex rounded-lg border hairline bg-slate-950/60 p-1" role="group">
+          ${SMA_OPTS.map(o => {
+            const on = st.smaLoc === o.k, ot = TONE[o.t];
+            return `<button type="button" data-sma="${p.id}" data-val="${o.k}" aria-pressed="${on}"
+              class="rounded-md px-3 py-1.5 text-[11px] font-semibold transition-colors ${on ? `${ot.bg} ${ot.text} border ${ot.border}` : 'text-slate-500 hover:text-slate-200 border border-transparent'}">${o.l}</button>`;
+          }).join('')}
+        </div>
+        <span class="num text-[11px] text-slate-500">200-SMA <span class="text-slate-300">${fmtPx(live.sma200, p.dp)}</span> · 50-SMA <span class="text-slate-300">${fmtPx(live.sma50, p.dp)}</span> · ${live.crossUp ? '<span class="text-emerald-300">50 above 200</span>' : '<span class="text-rose-300">50 below 200</span>'}</span>
+      </div>
+      <p data-sma-note class="text-[12.5px] leading-relaxed text-slate-400">${m.note}</p>
+    </div>
+
+    <!-- composite -->
+    <div class="px-5 py-3 border-b hairline flex items-center gap-3 flex-wrap">
+      <span class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-semibold">Composite Execution State</span>
+      <span data-comp-badge class="inline-flex items-center gap-1.5 rounded-md border ${ct.border} ${ct.bg} px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${ct.text}">
+        <span class="h-1.5 w-1.5 rounded-full ${ct.dot}"></span>${c.label}
+      </span>
+      <p data-comp-copy class="text-[12px] text-slate-400 basis-full sm:basis-auto sm:flex-1 min-w-[14rem]">${c.copy}</p>
+    </div>
+
+    <!-- rules -->
+    <div class="px-5 py-4">
+      <h4 class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-semibold mb-3">Daily Operational Rules — Generated From Live Levels</h4>
+      <ul data-rules class="space-y-2">${rulesHTML(rules)}</ul>
+    </div>
+  </article>`;
+}
+
+function rulesHTML(rules) {
+  return rules.map(r => {
+    const isDont = /^do not$/i.test(r.k);
+    const t = isDont ? TONE.rose : (r.k === 'Wait' || r.k === 'Event risk') ? TONE.amber : TONE.sky;
+    return `<li class="flex items-start gap-2.5">
+      <span class="mt-[3px] shrink-0 rounded border ${t.border} ${t.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${t.text} w-[5.4rem] text-center">${r.k}</span>
+      <span class="text-[12.5px] leading-relaxed text-slate-300">${r.v}</span></li>`;
+  }).join('');
+}
+
+/* patch one card in place — never rebuild the slider mid-drag */
+function updateCard(id, syncSlider) {
+  const el = document.querySelector(`[data-card="${id}"]`);
+  if (!el || !DATA) return;
+  const p = PAIRS.find(x => x.id === id);
+  const st = reading(id), live = DATA.stats[id];
+  const z = rsiZone(st.rsi), m = smaMeta(st.smaLoc, st.dist), c = composite(z.risk, m.risk);
+  const zt = TONE[z.tone], mt = TONE[m.tone], ct = TONE[c.tone];
+  const q = s => el.querySelector(s);
+
+  const b = q('[data-rsi-badge]');
+  b.className = `rounded border ${zt.border} ${zt.bg} px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${zt.text}`;
+  b.textContent = z.label;
+  const v = q('[data-rsi-value]');
+  v.className = `num text-xl font-bold ${zt.text}`;
+  v.textContent = st.rsi === null ? '—' : st.rsi.toFixed(1);
+  q('[data-rsi-warn]').className = `rounded-lg border ${zt.border} ${zt.bg} p-3`;
+  q('[data-rsi-warn-title]').className = `text-[10px] uppercase tracking-[0.16em] font-bold mb-1 ${zt.text}`;
+  q('[data-rsi-warn-body]').innerHTML = z.warn;
+  if (syncSlider) q(`[data-rsi="${id}"]`).value = st.rsi === null ? 50 : Math.round(st.rsi);
+
+  const sb = q('[data-sma-badge]');
+  sb.className = `inline-flex items-center gap-1.5 rounded-md border ${mt.border} ${mt.bg} px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${mt.text}`;
+  sb.innerHTML = `<span class="h-1.5 w-1.5 rounded-full ${mt.dot}"></span>${m.label} · ${m.sub}`;
+  q('[data-sma-note]').innerHTML = m.note;
+  el.querySelectorAll('[data-sma]').forEach(btn => {
+    const on = btn.dataset.val === st.smaLoc, ot = TONE[SMA_OPTS.find(o => o.k === btn.dataset.val).t];
+    btn.setAttribute('aria-pressed', String(on));
+    btn.className = `rounded-md px-3 py-1.5 text-[11px] font-semibold transition-colors ${on ? `${ot.bg} ${ot.text} border ${ot.border}` : 'text-slate-500 hover:text-slate-200 border border-transparent'}`;
+  });
+
+  const cb = q('[data-comp-badge]');
+  cb.className = `inline-flex items-center gap-1.5 rounded-md border ${ct.border} ${ct.bg} px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${ct.text}`;
+  cb.innerHTML = `<span class="h-1.5 w-1.5 rounded-full ${ct.dot}"></span>${c.label}`;
+  q('[data-comp-copy]').innerHTML = c.copy;
+  q('[data-rules]').innerHTML = rulesHTML(rulesFor(p, st, deriveBias(live), z));
+  renderGate();
+}
+
+/* ============================================================================
+   VIEW — NARRATIVE JOURNAL
+   ============================================================================ */
+function renderNarrative() {
+  const el = document.getElementById('view-narrative');
+  const entries = S.journal || [];
+
+  const agg = { dxy:0, eur:0, gbp:0, jpy:0 }, wsum = { dxy:0, eur:0, gbp:0, jpy:0 };
+  const now = Date.now();
+  entries.forEach(e => {
+    const ageH = (now - e.ts) / 36e5;
+    const w = Math.exp(-ageH / 36);                       // ~1.5-day half-life
+    (e.pairs || []).forEach(pid => { agg[pid] += e.score * w; wsum[pid] += w; });
+  });
+  const net = {};
+  PAIRS.forEach(p => { net[p.id] = wsum[p.id] ? +(agg[p.id] / wsum[p.id]).toFixed(2) : null; });
+
+  el.innerHTML = `
+    <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,6fr)_minmax(0,6fr)] gap-6">
+      <div class="space-y-6">
+        <article class="panel rounded-xl overflow-hidden">
+          <div class="px-5 py-4 border-b hairline">
+            <h2 class="text-[11px] uppercase tracking-[0.22em] text-slate-500 font-semibold">Narrative Journal</h2>
+            <p class="text-base font-semibold text-slate-50 mt-0.5">Score A Real Statement</p>
+            <p class="text-xs text-slate-500 mt-1">
+              Paste something you actually read — a central bank line, a research headline, a data reaction. The lexicon scores it,
+              shows you exactly which words moved the number, and folds it into a narrative bias per pair.
+            </p>
+          </div>
+          <div class="p-5 space-y-3">
+            <textarea id="njText" rows="4" placeholder="e.g. Officials said inflation risks remain structurally elevated and pushed back on early easing…"
+              class="w-full rounded-lg border hairline bg-slate-950/70 px-3 py-2.5 text-[13px] text-slate-200 placeholder:text-slate-600 resize-y"></textarea>
+            <div id="njPreview" class="hidden rounded-lg border hairline bg-slate-950/50 p-3"></div>
+            <div>
+              <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold mb-2">Which pairs does this bear on?</p>
+              <div class="flex flex-wrap gap-2">
+                ${PAIRS.map(p => `
+                  <label class="inline-flex items-center gap-2 rounded-md border hairline bg-slate-900/60 px-2.5 py-1.5 cursor-pointer hover:border-slate-500 transition">
+                    <input type="checkbox" data-njpair="${p.id}" class="h-3.5 w-3.5 accent-sky-500 cursor-pointer" />
+                    <span class="text-[11.5px] font-medium text-slate-300">${p.pair}</span>
+                  </label>`).join('')}
+              </div>
+              <p class="text-[10.5px] text-slate-600 mt-1.5">A positive score is hawkish for the currency you tick. For USD/JPY remember a hawkish-USD item pushes the pair up.</p>
+            </div>
+            <div class="flex gap-2">
+              <button id="njSave" class="rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-2 text-[12px] font-semibold text-emerald-300 hover:border-emerald-400/60 transition">Score &amp; Save</button>
+              <button id="njClear" class="rounded-md border hairline bg-slate-900/70 px-3.5 py-2 text-[12px] font-medium text-slate-400 hover:text-white hover:border-slate-600 transition">Clear</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel rounded-xl overflow-hidden">
+          <div class="px-5 py-4 border-b hairline flex items-center justify-between gap-3">
+            <p class="text-base font-semibold text-slate-50">Journal</p>
+            <span class="num text-[11px] text-slate-500">${entries.length} entr${entries.length === 1 ? 'y' : 'ies'}</span>
+          </div>
+          <div class="scroller max-h-[520px] overflow-y-auto divide-y divide-slate-800/60">
+            ${entries.length ? entries.slice().reverse().map(e => {
+              const t = TONE[e.score >= 0.12 ? 'emerald' : e.score <= -0.12 ? 'rose' : 'slate'];
+              return `
+              <div class="px-5 py-3">
+                <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                  <span class="num text-[11px] font-bold ${t.text}">${e.score >= 0 ? '+' : ''}${e.score.toFixed(2)}</span>
+                  ${(e.pairs || []).map(pid => `<span class="rounded border hairline px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-slate-400">${PAIRS.find(p => p.id === pid).code}</span>`).join('')}
+                  <span class="num ml-auto text-[10px] text-slate-600">${new Date(e.ts).toLocaleString()}</span>
+                  <button data-njdel="${e.ts}" class="text-[10px] text-slate-600 hover:text-rose-300 transition">delete</button>
+                </div>
+                <p class="text-[12.5px] leading-relaxed text-slate-300">${highlight(e.text, e.hits || [])}</p>
+              </div>`;
+            }).join('') : '<p class="px-5 py-6 text-[13px] text-slate-500">Nothing scored yet. Paste a statement above to start the journal.</p>'}
+          </div>
+        </article>
+      </div>
+
+      <div class="space-y-6">
+        <article class="panel rounded-xl overflow-hidden">
+          <div class="px-5 py-4 border-b hairline">
+            <p class="text-base font-semibold text-slate-50">Narrative vs. Technicals</p>
+            <p class="text-xs text-slate-500 mt-1">Where your reading of the news disagrees with what price is doing — the divergence is the signal worth arguing about.</p>
+          </div>
+          <div class="divide-y divide-slate-800/60">
+            ${PAIRS.map(p => {
+              const n = net[p.id];
+              const bias = DATA ? deriveBias(DATA.stats[p.id]) : { key:'neutral', label:'—', tone:'slate' };
+              const nt = TONE[n === null ? 'slate' : n >= 0.12 ? 'emerald' : n <= -0.12 ? 'rose' : 'slate'];
+              const techDir = bias.key === 'bullish' ? 1 : bias.key === 'bearish' ? -1 : 0;
+              const narrDir = n === null ? 0 : n >= 0.12 ? 1 : n <= -0.12 ? -1 : 0;
+              const diverge = techDir && narrDir && techDir !== narrDir;
+              return `
+              <div class="px-5 py-3.5">
+                <div class="flex items-center gap-3 flex-wrap">
+                  <span class="text-sm font-bold text-slate-100 w-[3rem]">${p.code}</span>
+                  <span class="rounded border ${TONE[bias.tone].border} ${TONE[bias.tone].bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${TONE[bias.tone].text}">Tech: ${bias.label}</span>
+                  <span class="rounded border ${nt.border} ${nt.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${nt.text}">Narrative: ${n === null ? 'no entries' : (n >= 0 ? '+' : '') + n.toFixed(2)}</span>
+                  ${diverge ? '<span class="ml-auto rounded border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-300">Divergence</span>' : ''}
+                </div>
+                ${diverge ? `<p class="text-[12px] text-slate-400 mt-1.5">Price and your read of the news point opposite ways. Either the market has not repriced yet, or your interpretation is early. Size accordingly — do not double down on both.</p>` : ''}
+              </div>`;
+            }).join('')}
+          </div>
+        </article>
+
+        <article class="panel rounded-xl overflow-hidden">
+          <div class="px-5 py-4 border-b hairline"><p class="text-base font-semibold text-slate-50">How The Scorer Works</p></div>
+          <div class="p-5 space-y-2.5 text-[12.5px] leading-relaxed text-slate-400">
+            <p>It is a <span class="text-slate-200">weighted lexicon</span>, not a language model: about 50 phrases carry a signed weight, negation flips them ("<em>pushed back on normalisation</em>" scores dovish), and intensifiers scale them. Every matched phrase is highlighted so you can see exactly what drove the number.</p>
+            <p>That transparency is the point — you can audit it. It will still misread sarcasm, conditionals and long-range context, so treat it as a <span class="text-slate-200">structured note-taking tool</span> that keeps you honest about what you actually read, not as an oracle.</p>
+            <p class="text-slate-500">Entries are stored only in this browser. Nothing is uploaded.</p>
+          </div>
+        </article>
+      </div>
+    </div>`;
+}
+
+/* ============================================================================
+   SHELL
+   ============================================================================ */
+function emptyState() {
+  if (status === 'loading') {
+    return `<div class="space-y-4">${[1,2,3].map(() => '<div class="skel h-28 rounded-xl"></div>').join('')}</div>`;
+  }
+  return `<div class="panel rounded-xl p-8 text-center">
+    <p class="text-base font-semibold text-slate-100">No market data loaded</p>
+    <p class="text-[13px] text-slate-400 mt-2 max-w-lg mx-auto">${esc(statusMsg || 'Press Refresh to try again.')}</p>
+    <button id="retry" class="mt-4 rounded-md border border-sky-500/30 bg-sky-500/10 px-4 py-2 text-[12px] font-semibold text-sky-300 hover:border-sky-400/60 transition">Retry</button>
+  </div>`;
+}
+
+const VIEWS = [ ['brief','Daily Brief'], ['matrix','Risk Matrix'], ['narrative','Narrative'] ];
+
+function renderTabs() {
+  document.getElementById('tabs').innerHTML = VIEWS.map(([k, l]) => k === view
+    ? `<span class="rounded-md bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1 text-[11px] font-semibold text-emerald-300">${l}</span>`
+    : `<button data-view="${k}" class="rounded-md px-2.5 py-1 text-[11px] font-semibold text-slate-500 hover:text-slate-200 transition">${l}</button>`
+  ).join('');
+}
+
+function renderStatus() {
+  const map = {
+    loading:['bg-amber-400','Loading…','text-slate-300'],
+    live:   ['bg-emerald-400','Live','text-emerald-300'],
+    cached: ['bg-amber-400','Cached','text-amber-300'],
+    error:  ['bg-rose-400','Offline','text-rose-300']
+  };
+  const [dot, label, txt] = map[status];
+  document.getElementById('statusDot').className = `h-1.5 w-1.5 rounded-full ${dot} ${status === 'loading' ? 'tick-pulse' : ''}`;
+  document.getElementById('statusText').className = `text-[11px] font-semibold ${txt}`;
+  document.getElementById('statusText').textContent = label;
+  document.getElementById('asOf').textContent = DATA ? DATA.asOf : '—';
+
+  const b = document.getElementById('banner');
+  if (statusMsg) {
+    const t = status === 'error' ? TONE.rose : TONE.amber;
+    b.innerHTML = `<div class="border-b hairline ${t.bg}"><div class="mx-auto max-w-[1700px] px-4 sm:px-6 py-2">
+      <p class="text-[11.5px] ${t.text}"><span class="font-semibold uppercase tracking-wider">${status === 'error' ? 'Offline' : 'Notice'} ·</span> ${esc(statusMsg)}</p></div></div>`;
+  } else if (DATA) {
+    const stale = DATA.asOf !== ymd(new Date());
+    b.innerHTML = stale
+      ? `<div class="border-b hairline bg-slate-900/40"><div class="mx-auto max-w-[1700px] px-4 sm:px-6 py-2">
+          <p class="text-[11.5px] text-slate-500"><span class="font-semibold text-slate-400 uppercase tracking-wider">Note ·</span>
+          Latest published close is <span class="num text-slate-300">${DATA.asOf}</span>. The ECB publishes once per TARGET business day, so weekends and holidays show the last working day — this is expected, not a failure.</p></div></div>`
+      : '';
+  } else b.innerHTML = '';
+}
+
+function render() {
+  renderTabs();
+  renderStatus();
+  document.getElementById('view-brief').classList.toggle('hidden', view !== 'brief');
+  document.getElementById('view-matrix').classList.toggle('hidden', view !== 'matrix');
+  document.getElementById('view-narrative').classList.toggle('hidden', view !== 'narrative');
+  if (view === 'brief') renderBrief();
+  else if (view === 'matrix') renderMatrix();
+  else renderNarrative();
+}
+
+/* ============================================================================
+   EVENTS
+   ============================================================================ */
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (t.dataset && t.dataset.rsi) {
+    S.overrides[t.dataset.rsi] = { ...(S.overrides[t.dataset.rsi] || {}), rsi: Number(t.value) };
+    saveState(); updateCard(t.dataset.rsi, false);
+    const card = document.querySelector(`[data-card="${t.dataset.rsi}"]`);
+    return;
+  }
+  if (t.id === 'njText') {
+    const host = document.getElementById('njPreview');
+    const val = t.value.trim();
+    if (!val) { host.classList.add('hidden'); return; }
+    const s = scoreText(val);
+    const tone = TONE[s.score >= 0.12 ? 'emerald' : s.score <= -0.12 ? 'rose' : 'slate'];
+    host.classList.remove('hidden');
+    host.innerHTML = `
+      <div class="flex items-center gap-3 mb-2">
+        <span class="num text-xl font-bold ${tone.text}">${s.score >= 0 ? '+' : ''}${s.score.toFixed(2)}</span>
+        <span class="text-[11px] text-slate-500">${s.hits.length} matched term${s.hits.length === 1 ? '' : 's'}${s.risk > 0.05 ? ` · risk ${Math.round(s.risk * 100)}` : ''}</span>
+      </div>
+      <p class="text-[12.5px] leading-relaxed text-slate-300">${highlight(val, s.hits)}</p>`;
+  }
+});
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('button, [data-view]');
+  if (!el) return;
+
+  if (el.dataset.view) { view = el.dataset.view; render(); return; }
+  if (el.id === 'refresh' || el.id === 'retry') { fetchData(); fetchBrief().then(render); return; }
+
+  if (el.dataset.goto) { selected = el.dataset.goto; view = 'matrix'; render();
+    const c = document.querySelector(`[data-card="${selected}"]`);
+    if (c) c.scrollIntoView({ behavior:'smooth', block:'start' });
+    return; }
+
+  if (el.dataset.sma) {
+    S.overrides[el.dataset.sma] = { ...(S.overrides[el.dataset.sma] || {}), smaLoc: el.dataset.val };
+    saveState(); updateCard(el.dataset.sma, false); return;
+  }
+  if (el.dataset.revert) { delete S.overrides[el.dataset.revert]; saveState(); updateCard(el.dataset.revert, true);
+    const card = document.querySelector(`[data-card="${el.dataset.revert}"]`);
+    if (card) card.outerHTML = cardHTML(PAIRS.find(p => p.id === el.dataset.revert));
+    return; }
+  if (el.id === 'revertAll') { S.overrides = {}; saveState(); render(); return; }
+
+  if (el.dataset.carry) { S.carryOK[el.dataset.carry] = !S.carryOK[el.dataset.carry]; saveState(); renderGate(); return; }
+
+  if (el.id === 'evAdd') {
+    const d = document.getElementById('evDate').value, n = document.getElementById('evName').value.trim();
+    if (!d || !n) return;
+    S.events.push({ date:d, name:n, impact:'high' }); saveState(); render(); return;
+  }
+  if (el.dataset.delevent) {
+    const [d, n] = el.dataset.delevent.split('|');
+    S.events = S.events.filter(x => !(x.date === d && x.name === n)); saveState(); render(); return;
+  }
+
+  if (el.id === 'njSave') {
+    const txt = document.getElementById('njText').value.trim();
+    if (!txt) return;
+    const pairs = [...document.querySelectorAll('[data-njpair]:checked')].map(i => i.dataset.njpair);
+    const s = scoreText(txt);
+    S.journal.push({ ts: Date.now(), text: txt, score: s.score, risk: s.risk, hits: s.hits, pairs });
+    saveState(); render(); return;
+  }
+  if (el.id === 'njClear') { document.getElementById('njText').value = ''; document.getElementById('njPreview').classList.add('hidden'); return; }
+  if (el.dataset.njdel) { S.journal = S.journal.filter(x => String(x.ts) !== el.dataset.njdel); saveState(); render(); return; }
+});
+
+document.addEventListener('change', e => {
+  if (e.target.id === 'gatePair') { selected = e.target.value; renderGate(); }
+});
+
+/* boot */
+loadState();
+render();
+fetchData();
+fetchBrief().then(render);
+</script>
+</body>
+</html>

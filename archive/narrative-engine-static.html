@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Global Narrative &amp; Text Intelligence Ingestion Engine</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = { theme: { extend: { fontFamily: {
+    sans: ['Inter','ui-sans-serif','system-ui','-apple-system','Segoe UI','sans-serif'],
+    mono: ['ui-monospace','SFMono-Regular','Menlo','Consolas','monospace']
+  }}}}
+</script>
+<style>
+  :root { color-scheme: dark; }
+  body {
+    background-color: #020617;
+    background-image:
+      radial-gradient(900px 500px at 8% -10%, rgba(56,189,248,.07), transparent 60%),
+      radial-gradient(900px 500px at 95% -5%, rgba(168,85,247,.06), transparent 60%);
+    background-attachment: fixed;
+  }
+  ::selection { background: #075985; color: #f0f9ff; }
+  .num { font-variant-numeric: tabular-nums; }
+  .hairline { border-color: rgba(148,163,184,.14); }
+  .panel {
+    background: linear-gradient(180deg, rgba(15,23,42,.82) 0%, rgba(2,6,23,.72) 100%);
+    border: 1px solid rgba(148,163,184,.14);
+    backdrop-filter: blur(6px);
+  }
+  .scroller { scrollbar-width: thin; scrollbar-color: rgba(100,116,139,.5) transparent; }
+  .scroller::-webkit-scrollbar { width: 8px; }
+  .scroller::-webkit-scrollbar-thumb { background: rgba(100,116,139,.4); border-radius: 8px; }
+  .scroller::-webkit-scrollbar-track { background: transparent; }
+  .fade-in { animation: fade .3s ease-out; }
+  @keyframes fade { from { opacity:0; transform: translateY(-4px) } to { opacity:1; transform:none } }
+  .flash { animation: flash 1.6s ease-out; }
+  @keyframes flash { 0% { background-color: rgba(56,189,248,.16) } 100% { background-color: transparent } }
+  .tick-pulse { animation: pulse 1.5s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:.3 } }
+  mark.hawk { background: rgba(16,185,129,.18); color:#6ee7b7; border-radius:3px; padding:0 2px; }
+  mark.dove { background: rgba(244,63,94,.16);  color:#fda4af; border-radius:3px; padding:0 2px; }
+  mark.risk { background: rgba(245,158,11,.16); color:#fcd34d; border-radius:3px; padding:0 2px; }
+  .lamp { box-shadow: 0 0 0 3px rgba(255,255,255,.03); }
+  .lamp-on-green { background:#10b981; box-shadow:0 0 10px 1px rgba(16,185,129,.7), 0 0 0 3px rgba(16,185,129,.12); }
+  .lamp-on-amber { background:#f59e0b; box-shadow:0 0 10px 1px rgba(245,158,11,.7), 0 0 0 3px rgba(245,158,11,.12); }
+  .lamp-on-red   { background:#f43f5e; box-shadow:0 0 10px 1px rgba(244,63,94,.7),  0 0 0 3px rgba(244,63,94,.12); }
+  .lamp-off { background:#1e293b; }
+  details > summary { list-style:none; cursor:pointer }
+  details > summary::-webkit-details-marker { display:none }
+  details[open] .chev { transform: rotate(90deg) }
+  .chev { transition: transform .18s ease }
+</style>
+</head>
+<body class="font-sans text-slate-300 antialiased min-h-screen">
+
+<!-- ================= HEADER ================= -->
+<header class="sticky top-0 z-40 border-b hairline bg-slate-950/85 backdrop-blur-md">
+  <div class="mx-auto max-w-[1800px] px-4 sm:px-6 py-3">
+    <div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="h-9 w-9 shrink-0 rounded-md border border-sky-500/30 bg-sky-500/10 grid place-items-center">
+          <span class="text-sky-400 font-bold text-[11px] tracking-tight">NLP</span>
+        </div>
+        <div class="min-w-0">
+          <h1 class="text-[15px] sm:text-base font-semibold text-slate-50 tracking-tight truncate">
+            Global Narrative &amp; Text Intelligence Ingestion Engine
+          </h1>
+          <p class="text-[11px] text-slate-500 tracking-wide truncate">
+            Unstructured Feed Aggregation · Lexical Sentiment Scoring · Narrative-Driven FX Tactics
+          </p>
+        </div>
+      </div>
+
+      <nav class="flex items-center gap-1 rounded-lg border hairline bg-slate-900/60 p-1">
+        <a href="index.html" class="rounded-md px-2.5 py-1 text-[11px] font-semibold text-slate-500 hover:text-slate-200 transition">Risk Matrix</a>
+        <span class="rounded-md bg-sky-500/10 border border-sky-500/30 px-2.5 py-1 text-[11px] font-semibold text-sky-300">Narrative Engine</span>
+      </nav>
+
+      <div class="ml-auto flex flex-wrap items-center gap-2 sm:gap-3">
+        <div class="hidden md:flex flex-col items-end leading-tight">
+          <span class="text-[10px] uppercase tracking-[0.18em] text-slate-500">Ingested / Passing Filter</span>
+          <span class="num text-sm font-medium text-slate-200"><span id="statTotal">0</span> · <span id="statShown" class="text-sky-300">0</span></span>
+        </div>
+        <div class="h-8 w-px bg-slate-800 hidden md:block"></div>
+        <button id="liveToggle" type="button"
+          class="inline-flex items-center gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-[11px] font-semibold text-emerald-300 hover:border-emerald-400/60 transition">
+          <span id="liveDot" class="h-1.5 w-1.5 rounded-full bg-emerald-400 tick-pulse"></span><span id="liveLabel">Streaming</span>
+        </button>
+        <button id="replay" type="button"
+          class="rounded-md border hairline bg-slate-900/70 px-3 py-1.5 text-[11px] font-medium text-slate-300 hover:text-white hover:border-slate-600 transition">
+          Replay Session
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= NOTICE ================= -->
+<div class="border-b hairline bg-slate-900/40">
+  <div class="mx-auto max-w-[1800px] px-4 sm:px-6 py-2">
+    <p class="text-[11px] leading-relaxed text-slate-500">
+      <span class="font-semibold text-slate-400 uppercase tracking-wider">Simulation Notice ·</span>
+      Every message in this feed is <span class="text-slate-400">synthetic text written for this demo</span>. No statement is
+      a real quote and none is attributable to any actual institution, official or account — source badges denote
+      <em>category</em> only. Scoring is a transparent <span class="text-slate-400">lexicon model running locally</span>, not a
+      language model, and there is no network connection of any kind. Nothing here is investment advice.
+    </p>
+  </div>
+</div>
+
+<!-- ================= GLOBAL STRIP ================= -->
+<div class="border-b hairline bg-slate-950/60">
+  <div class="mx-auto max-w-[1800px] px-4 sm:px-6 py-3 grid grid-cols-2 lg:grid-cols-4 gap-3" id="globalStrip"></div>
+</div>
+
+<!-- ================= MAIN ================= -->
+<main class="mx-auto max-w-[1800px] px-4 sm:px-6 py-6">
+  <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-[minmax(0,4fr)_minmax(0,4.4fr)_minmax(0,3.6fr)] gap-5">
+
+    <!-- ========== COLUMN 1 — RAW STREAM ========== -->
+    <section class="panel rounded-xl overflow-hidden flex flex-col">
+      <div class="px-4 py-3.5 border-b hairline">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <h2 class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-semibold">Column 01</h2>
+            <p class="text-[15px] font-semibold text-slate-50 mt-0.5">Raw Inbound Communications Stream</p>
+          </div>
+          <span class="shrink-0 inline-flex items-center gap-1.5 rounded border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-emerald-300">
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 tick-pulse"></span>Ingesting
+          </span>
+        </div>
+      </div>
+
+      <!-- filters -->
+      <div class="px-4 py-3 border-b hairline bg-slate-950/40">
+        <div class="flex items-center justify-between gap-2 mb-2.5">
+          <h3 class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold">Source Filters</h3>
+          <div class="flex gap-2">
+            <button data-filter-all="on"  class="text-[10px] font-medium text-slate-500 hover:text-sky-300 transition">All</button>
+            <span class="text-slate-700">|</span>
+            <button data-filter-all="off" class="text-[10px] font-medium text-slate-500 hover:text-sky-300 transition">None</button>
+          </div>
+        </div>
+        <div id="filters" class="space-y-1.5"></div>
+
+        <label class="mt-3 flex items-start gap-2.5 rounded-md border hairline bg-slate-900/50 px-3 py-2 cursor-pointer hover:border-slate-600 transition">
+          <input id="signalOnly" type="checkbox" class="mt-0.5 h-3.5 w-3.5 accent-sky-500 cursor-pointer" />
+          <span class="min-w-0">
+            <span class="block text-[11.5px] font-medium text-slate-200">High-signal only</span>
+            <span class="block text-[10.5px] leading-snug text-slate-500">Drops unverified accounts and low-specificity chatter — the noise-to-signal control.</span>
+          </span>
+        </label>
+      </div>
+
+      <div id="feed" class="scroller flex-1 overflow-y-auto max-h-[calc(100vh-6rem)] xl:max-h-[1200px] divide-y divide-slate-800/60"></div>
+
+      <div class="px-4 py-2.5 border-t hairline bg-slate-950/50">
+        <p class="text-[10.5px] text-slate-500"><span id="feedCount" class="num text-slate-300 font-medium">0</span> messages passing filter · newest first · click any message to inspect its scoring</p>
+      </div>
+    </section>
+
+    <!-- ========== COLUMN 2 — NLP HUB ========== -->
+    <section class="space-y-5">
+
+      <!-- dominant narrative -->
+      <article class="panel rounded-xl overflow-hidden">
+        <div class="px-4 py-3.5 border-b hairline">
+          <h2 class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-semibold">Column 02</h2>
+          <p class="text-[15px] font-semibold text-slate-50 mt-0.5">NLP Sentiment Interpretation Hub</p>
+        </div>
+        <div id="dominant" class="p-4"></div>
+      </article>
+
+      <!-- aggregate -->
+      <article class="panel rounded-xl overflow-hidden">
+        <div class="px-4 py-3 border-b hairline">
+          <h3 class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-semibold">Aggregate Sentiment Balance</h3>
+        </div>
+        <div id="aggregate" class="p-4"></div>
+      </article>
+
+      <!-- deep dive -->
+      <article class="panel rounded-xl overflow-hidden">
+        <div class="px-4 py-3 border-b hairline flex items-center justify-between gap-3">
+          <h3 class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-semibold">Scoring Deep-Dive</h3>
+          <span class="text-[10px] text-slate-600">selected message</span>
+        </div>
+        <div id="deepdive" class="p-4"></div>
+      </article>
+
+      <!-- per-item meters -->
+      <article class="panel rounded-xl overflow-hidden">
+        <div class="px-4 py-3 border-b hairline flex items-center justify-between gap-3">
+          <h3 class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-semibold">Per-Message Sentiment Meters</h3>
+          <span class="num text-[10px] text-slate-600">−1.0 dovish · +1.0 hawkish</span>
+        </div>
+        <div id="meters" class="scroller max-h-[560px] overflow-y-auto divide-y divide-slate-800/60"></div>
+      </article>
+
+    </section>
+
+    <!-- ========== COLUMN 3 — TACTICS ========== -->
+    <section class="space-y-5 lg:col-span-2 xl:col-span-1">
+      <article class="panel rounded-xl overflow-hidden">
+        <div class="px-4 py-3.5 border-b hairline">
+          <h2 class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-semibold">Column 03</h2>
+          <p class="text-[15px] font-semibold text-slate-50 mt-0.5">Currency Tactical Strategy Panel</p>
+          <p class="text-[11px] text-slate-500 mt-1">Execution bias derived from the text balance alone — no yield math is used on this screen.</p>
+        </div>
+        <div class="px-4 py-2.5 border-b hairline flex items-center gap-4 flex-wrap text-[10px] text-slate-500">
+          <span class="inline-flex items-center gap-1.5"><span class="h-2 w-2 rounded-full lamp-on-green"></span>Aligned momentum</span>
+          <span class="inline-flex items-center gap-1.5"><span class="h-2 w-2 rounded-full lamp-on-amber"></span>Mixed / thin</span>
+          <span class="inline-flex items-center gap-1.5"><span class="h-2 w-2 rounded-full lamp-on-red"></span>Hostile narrative</span>
+        </div>
+      </article>
+
+      <div id="tactics" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-5"></div>
+
+      <article class="panel rounded-xl overflow-hidden">
+        <div class="px-4 py-3 border-b hairline">
+          <h3 class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-semibold">Deployment Reality Check</h3>
+        </div>
+        <div class="p-4 space-y-2.5" id="hurdles"></div>
+      </article>
+    </section>
+  </div>
+
+  <footer class="mt-8 border-t hairline pt-5 pb-8">
+    <p class="text-[11px] text-slate-600 leading-relaxed max-w-4xl">
+      Global Narrative &amp; Text Intelligence Ingestion Engine · Single-file client-side terminal, fully offline.
+      Feed contents are synthetic; sentiment is produced by a local weighted-lexicon scorer with negation and
+      intensifier handling, deliberately transparent so every score can be traced to the phrases that caused it.
+      A production build would replace the corpus with real ingestion and the lexicon with a fine-tuned classifier —
+      both of which change the numbers, not the layout.
+    </p>
+  </footer>
+</main>
+
+<script>
+/* ============================================================
+   1. SOURCE TAXONOMY
+   ============================================================ */
+const SOURCES = {
+  fed: { id:'fed', badge:'FED OFFICIAL PRESS',    short:'FED',  tone:'sky',     weight:1.00, desc:'Central bank wire & prepared remarks' },
+  cb:  { id:'cb',  badge:'ECB / BOE / BOJ PRESS', short:'CB',   tone:'indigo',  weight:0.95, desc:'Non-US central bank press hubs' },
+  gs:  { id:'gs',  badge:'GOLDMAN INSIGHTS',      short:'GS',   tone:'amber',   weight:0.80, desc:'Sell-side research landing pages' },
+  jpm: { id:'jpm', badge:'JPM RESEARCH',          short:'JPM',  tone:'violet',  weight:0.80, desc:'Sell-side research landing pages' },
+  x:   { id:'x',   badge:'X-FINANCE COMMUNITIES', short:'X',    tone:'slate',   weight:0.35, desc:'Social finance chatter & buy-side accounts' }
+};
+
+const TONE = {
+  sky:     { text:'text-sky-300',     border:'border-sky-500/30',     bg:'bg-sky-500/10',     dot:'bg-sky-400',     bar:'bg-sky-500'     },
+  indigo:  { text:'text-indigo-300',  border:'border-indigo-500/30',  bg:'bg-indigo-500/10',  dot:'bg-indigo-400',  bar:'bg-indigo-500'  },
+  amber:   { text:'text-amber-300',   border:'border-amber-500/30',   bg:'bg-amber-500/10',   dot:'bg-amber-400',   bar:'bg-amber-500'   },
+  violet:  { text:'text-violet-300',  border:'border-violet-500/30',  bg:'bg-violet-500/10',  dot:'bg-violet-400',  bar:'bg-violet-500'  },
+  emerald: { text:'text-emerald-300', border:'border-emerald-500/30', bg:'bg-emerald-500/10', dot:'bg-emerald-400', bar:'bg-emerald-500' },
+  rose:    { text:'text-rose-300',    border:'border-rose-500/30',    bg:'bg-rose-500/10',    dot:'bg-rose-400',    bar:'bg-rose-500'    },
+  slate:   { text:'text-slate-300',   border:'border-slate-600/40',   bg:'bg-slate-700/30',   dot:'bg-slate-400',   bar:'bg-slate-500'   }
+};
+
+/* ============================================================
+   2. THEMES — used to name the dominant narrative
+   ============================================================ */
+const THEMES = {
+  fedpath: { label:'Fed Policy Path',
+    hawk:'Fed Policy Path Repricing Hawkish on Sticky Services Inflation',
+    dove:'Fed Policy Softening as Consumer Spending Deteriorates',
+    implication:'Front-end US rate expectations are the transmission channel. The dollar leg of every G4 cross reprices first; carry-funded positions reprice second.' },
+  uslabour:{ label:'US Labour Market',
+    hawk:'Labour Demand Resilient — Wage Track Keeps Cuts Distant',
+    dove:'Labour Market Cracking as Layoff Announcements Broaden',
+    implication:'Payroll narrative moves the terminal-rate path more than any single inflation print. Watch for the dollar to trade the second derivative of hiring, not the level.' },
+  euro:    { label:'Euro-Area Growth & ECB',
+    hawk:'Euro-Area Inflation Proving Stickier Than the ECB Assumed',
+    dove:'Euro-Area Demand Contraction Pulls ECB Cuts Forward',
+    implication:'The euro trades the growth-inflation mix, not the level of rates. Weak growth with sticky prices is the worst combination for EUR.' },
+  uk:      { label:'UK Inflation & BoE',
+    hawk:'UK Services Inflation Keeps the BoE Boxed In',
+    dove:'UK Demand Softening Opens the Door to a BoE Cut',
+    implication:'Sterling is the highest-beta G4 currency to domestic inflation surprises and to global risk appetite simultaneously.' },
+  boj:     { label:'BoJ Normalisation & the Yen',
+    hawk:'BoJ Normalisation Chatter Revives Two-Way Yen Risk',
+    dove:'Yen Funding Demand Persists as Normalisation Slips',
+    implication:'The yen is the funding leg of the crowd. Normalisation headlines do not move it gradually — they move it in gaps.' },
+  energy:  { label:'Energy & Shipping Risk',
+    hawk:'Shipping Disruption Pushes an Energy Risk Premium Back Into Prices',
+    dove:'Energy Risk Premium Bleeding Out as Routing Normalises',
+    implication:'Crude is a direct FX input for the importer bloc. A sustained premium is EUR-, GBP- and JPY-negative regardless of what their central banks say.' },
+  posit:   { label:'Positioning & Carry Unwind',
+    hawk:'Carry Positioning Extends as Volatility Stays Suppressed',
+    dove:'Crowded Carry Positioning Shows Early Unwind Stress',
+    implication:'Position-driven moves ignore fundamentals for as long as they last. Treat this theme as a volatility forecast, not a direction forecast.' }
+};
+
+/* ============================================================
+   3. LEXICON — [phrase, weight, axis]
+   Positive weight = hawkish / policy-tight. Negative = dovish / easing.
+   'risk' axis feeds the Global Risk Premium score.
+   ============================================================ */
+const LEX = [
+  ['structurally elevated', 1.0,'s'], ['higher for longer', 0.95,'s'], ['above target', 0.6,'s'],
+  ['upside risks', 0.75,'s'], ['sticky', 0.6,'s'], ['stickier', 0.7,'s'], ['tightening', 0.8,'s'],
+  ['restrictive', 0.7,'s'], ['hike', 0.9,'s'], ['resilient', 0.55,'s'], ['re-accelerating', 0.8,'s'],
+  ['beat expectations', 0.6,'s'], ['inflationary', 0.7,'s'], ['robust', 0.5,'s'], ['overheating', 0.85,'s'],
+  ['normalisation', 0.65,'s'], ['premature to ease', 0.8,'s'], ['firm', 0.4,'s'],
+
+  ['rate cut', -0.9,'s'], ['cuts', -0.75,'s'], ['easing', -0.8,'s'], ['softening', -0.7,'s'],
+  ['cooling', -0.65,'s'], ['downside risks', -0.75,'s'], ['slowdown', -0.7,'s'], ['deteriorating', -0.8,'s'],
+  ['disinflation', -0.7,'s'], ['collapse', -1.0,'s'], ['layoffs', -0.8,'s'], ['contraction', -0.8,'s'],
+  ['missed expectations', -0.6,'s'], ['patient', -0.4,'s'], ['pause', -0.5,'s'], ['weakening', -0.7,'s'],
+  ['undershoot', -0.6,'s'], ['stalling', -0.65,'s'], ['fragile', -0.6,'s'],
+
+  ['escalation', 0.9,'risk'], ['shipping disruption', 0.85,'risk'], ['supply disruption', 0.8,'risk'],
+  ['sanctions', 0.7,'risk'], ['conflict', 0.75,'risk'], ['strait', 0.55,'risk'], ['rerouting', 0.5,'risk'],
+  ['flight to quality', 0.85,'risk'], ['haven demand', 0.7,'risk'], ['volatility spike', 0.8,'risk'],
+  ['unwind', 0.75,'risk'], ['intervention', 0.7,'risk'], ['stop-outs', 0.65,'risk'], ['gapping', 0.7,'risk'],
+  ['liquidity thin', 0.6,'risk'], ['margin calls', 0.85,'risk'], ['outage', 0.5,'risk']
+];
+const NEG_RE    = /\b(not|no|isn'?t|aren'?t|without|unlikely to|far from|nowhere near|pushed back on|pushing back on|ruled out|downplayed|dismissed|resisted|stopped short of)\b[\w\s,'-]{0,22}$/i;
+const INTENS_RE = /\b(materially|sharply|significantly|markedly|substantially)\b[\w\s]{0,12}$/i;
+const HEDGE_RE  = /\b(somewhat|modestly|slightly|marginally|only mildly)\b[\w\s]{0,12}$/i;
+
+function isBoundary(text, i, len) {
+  const a = text[i-1], b = text[i+len];
+  const w = c => c !== undefined && /[a-z0-9]/i.test(c);
+  return !w(a) && (!w(b) || b === 's' && !w(text[i+len+1]));
+}
+
+/* Transparent lexical scorer: returns sentiment (−1..+1), risk (0..1) and the hits that caused them. */
+function scoreText(text) {
+  const lower = text.toLowerCase();
+  const hits = [];
+  let sent = 0, risk = 0;
+
+  for (const [phrase, w, axis] of LEX) {
+    let from = 0, i;
+    while ((i = lower.indexOf(phrase, from)) !== -1) {
+      from = i + phrase.length;
+      if (!isBoundary(lower, i, phrase.length)) continue;
+      const pre = lower.slice(Math.max(0, i - 40), i);
+      const negated = NEG_RE.test(pre);
+      const mult = INTENS_RE.test(pre) ? 1.25 : HEDGE_RE.test(pre) ? 0.7 : 1;
+      const eff = w * mult * (negated ? -0.8 : 1);
+      hits.push({ phrase, i, len: lower.slice(i, from).length, axis, w, eff, negated, mult });
+      if (axis === 'risk') risk += Math.abs(eff); else sent += eff;
+    }
+  }
+  return {
+    score: Math.max(-1, Math.min(1, +(Math.tanh(sent * 0.55)).toFixed(2))),
+    risk:  Math.min(1, +(risk * 0.38).toFixed(2)),
+    hits:  hits.sort((a, b) => a.i - b.i)
+  };
+}
+
+/* ============================================================
+   4. SYNTHETIC CORPUS
+   expo  : how this message's SENTIMENT maps onto each currency
+   rexpo : how this message's RISK score maps onto each currency
+   ============================================================ */
+const E = (usd,eur,gbp,jpy) => ({usd,eur,gbp,jpy});
+
+const CORPUS = [
+  { src:'fed', author:'Policy Wire — prepared remarks', verified:true, signal:'high', theme:'fedpath', ago:214,
+    text:'Prepared remarks note that services inflation remains structurally elevated and that upside risks to the price path have not faded; policy should stay restrictive until the disinflation trend is durable.',
+    expo:E(1,-0.5,-0.45,-0.7), rexpo:E(0.2,-0.1,-0.1,-0.1) },
+
+  { src:'x', author:'@macro_desk_notes (unverified)', verified:false, signal:'low', theme:'fedpath', ago:206,
+    text:'everyone on this app is calling a rate cut in three weeks lol. positioning is one-sided and nobody is hedged.',
+    expo:E(-0.6,0.3,0.25,0.4), rexpo:E(0.1,0,0,-0.2) },
+
+  { src:'gs', author:'Global Rates Strategy — desk note', verified:true, signal:'high', theme:'uslabour', ago:198,
+    text:'Labour demand is proving resilient: hiring breadth is firm across services and the wage track has not been cooling at the pace the committee assumed in its last projection round.',
+    expo:E(1,-0.4,-0.35,-0.6), rexpo:E(0,0,0,0) },
+
+  { src:'cb', author:'ECB Press Hub — statement summary', verified:true, signal:'high', theme:'euro', ago:186,
+    text:'The statement flags a broadening contraction in manufacturing new orders alongside a slowdown in credit demand; several members judged that downside risks to growth now dominate.',
+    expo:E(0.45,-1,-0.3,0.1), rexpo:E(0.1,-0.2,-0.1,0) },
+
+  { src:'jpm', author:'FX Strategy — client note', verified:true, signal:'high', theme:'energy', ago:171,
+    text:'Shipping disruption on the southern route is forcing rerouting and a fresh energy risk premium into forward curves; the importer bloc absorbs the terms-of-trade hit first.',
+    expo:E(0.5,-0.7,-0.5,-0.6), rexpo:E(0.8,-0.9,-0.7,-0.5) },
+
+  { src:'x', author:'@vol_surface_watch (verified desk)', verified:true, signal:'high', theme:'posit', ago:160,
+    text:'Front-end vol is bid for the first time in weeks and dealers are gapping quotes into the fix. If this extends you get stop-outs in the crowded carry legs before you get any macro news.',
+    expo:E(0.2,-0.1,-0.2,0.5), rexpo:E(0.7,-0.4,-0.5,0.8) },
+
+  { src:'fed', author:'Regional Bank Research Release', verified:true, signal:'high', theme:'uslabour', ago:148,
+    text:'The regional survey shows layoffs broadening beyond technology into transport and retail, with hiring plans weakening for a third consecutive month.',
+    expo:E(-1,0.45,0.4,0.5), rexpo:E(0.3,-0.1,-0.1,0.2) },
+
+  { src:'gs', author:'European Economics — morning comment', verified:true, signal:'high', theme:'euro', ago:139,
+    text:'Euro-area core prints came in stickier than consensus and the services component is re-accelerating; a June move now looks premature to ease on our forecast path.',
+    expo:E(-0.4,1,0.3,-0.1), rexpo:E(0,0,0,0) },
+
+  { src:'cb', author:'BoE Communications — speech summary', verified:true, signal:'high', theme:'uk', ago:127,
+    text:'Remarks emphasised that services inflation remains above target and that the committee should be patient before declaring the tightening cycle complete.',
+    expo:E(-0.3,0.2,1,-0.1), rexpo:E(0,0,0,0) },
+
+  { src:'x', author:'@fx_flow_anon (unverified)', verified:false, signal:'low', theme:'boj', ago:118,
+    text:'hearing size offers topside in the yen crosses. intervention chatter again. no confirmation, just vibes.',
+    expo:E(-0.2,0,0,0.6), rexpo:E(0.3,0,0,0.8) },
+
+  { src:'jpm', author:'Japan Rates — research summary', verified:true, signal:'high', theme:'boj', ago:104,
+    text:'Normalisation guidance is being framed more firmly than at the previous meeting, and the balance of remarks suggests officials are no longer treating yen weakness as benign.',
+    expo:E(-0.5,0.1,0.1,1), rexpo:E(0.4,0,0,0.6) },
+
+  { src:'fed', author:'Policy Wire — Q&A transcript', verified:true, signal:'high', theme:'fedpath', ago:92,
+    text:'In the Q&A the speaker said the committee is not seeing the kind of consumer collapse that would justify moving early, and that policy is only modestly restrictive today.',
+    expo:E(1,-0.4,-0.4,-0.6), rexpo:E(0,0,0,0) },
+
+  { src:'gs', author:'Commodities — intraday update', verified:true, signal:'high', theme:'energy', ago:81,
+    text:'Crude has given back the escalation premium as the routing disruption eases; the disinflation impulse for importers resumes if this holds into next week.',
+    expo:E(-0.3,0.6,0.5,0.5), rexpo:E(-0.4,0.6,0.5,0.3) },
+
+  { src:'x', author:'@retail_signals_daily (unverified)', verified:false, signal:'low', theme:'posit', ago:73,
+    text:'DOLLAR ABOUT TO COLLAPSE!! biggest short opportunity of the decade, link in bio 🚀',
+    expo:E(-0.4,0.2,0.2,0.2), rexpo:E(0.1,0,0,0) },
+
+  { src:'jpm', author:'US Economics — data reaction', verified:true, signal:'high', theme:'uslabour', ago:64,
+    text:'Payrolls missed expectations and the prior two months were revised lower; the household survey points to a genuine slowdown rather than a seasonal quirk.',
+    expo:E(-1,0.5,0.4,0.55), rexpo:E(0.3,-0.1,-0.1,0.2) },
+
+  { src:'cb', author:'ECB Press Hub — member interview', verified:true, signal:'high', theme:'euro', ago:52,
+    text:'The member argued that waiting for full disinflation before easing risks an unnecessary contraction, and that the direction of travel toward cuts is now clear.',
+    expo:E(0.5,-1,-0.3,0.1), rexpo:E(0,0,0,0) },
+
+  { src:'gs', author:'FX Strategy — positioning monitor', verified:true, signal:'high', theme:'posit', ago:41,
+    text:'Our positioning monitor shows the carry basket at a two-year extreme with liquidity thin into month-end; an unwind from here produces margin calls before it produces a narrative.',
+    expo:E(0.1,-0.1,-0.2,0.6), rexpo:E(0.8,-0.5,-0.6,0.9) },
+
+  { src:'fed', author:'Policy Wire — minutes excerpt', verified:true, signal:'high', theme:'fedpath', ago:31,
+    text:'Minutes record that most participants saw inflation risks as no longer clearly to the upside, and several judged that a gradual easing path would become appropriate should the labour market keep cooling.',
+    expo:E(-1,0.45,0.4,0.55), rexpo:E(0.1,0,0,0.1) },
+
+  { src:'x', author:'@rates_pm_verified (verified desk)', verified:true, signal:'high', theme:'fedpath', ago:22,
+    text:'The minutes read materially softer than the speech two weeks ago. Front-end is repricing the easing path and the dollar leg is following it lower.',
+    expo:E(-0.9,0.4,0.4,0.5), rexpo:E(0.2,0,0,0.1) },
+
+  { src:'jpm', author:'UK Economics — flash comment', verified:true, signal:'high', theme:'uk', ago:14,
+    text:'UK retail volumes are stalling and survey hiring intentions are weakening; the case for a first cut is building faster than the committee has signalled.',
+    expo:E(0.3,0.1,-1,0.1), rexpo:E(0.1,0,-0.2,0.1) },
+
+  /* ---- released live during the session ---- */
+  { src:'cb', author:'BoJ Communications — briefing note', verified:true, signal:'high', theme:'boj', ago:0,
+    text:'Officials repeated that policy will stay accommodative and pushed back on normalisation timing; the briefing gave no indication that intervention is imminent.',
+    expo:E(0.5,-0.1,-0.1,-1), rexpo:E(0.2,0,0,0.4) },
+
+  { src:'gs', author:'Global Markets — risk desk flash', verified:true, signal:'high', theme:'energy', ago:0,
+    text:'Fresh escalation headlines on the shipping corridor have re-opened haven demand; crude and the dollar are bid together while the importer currencies lag.',
+    expo:E(0.6,-0.7,-0.6,-0.4), rexpo:E(0.9,-0.9,-0.8,-0.3) },
+
+  { src:'x', author:'@eod_liquidity (unverified)', verified:false, signal:'low', theme:'posit', ago:0,
+    text:'thin books into the close, everything gapping around, half the desk already gone for the weekend',
+    expo:E(0.1,0,-0.1,0.2), rexpo:E(0.6,-0.2,-0.3,0.4) },
+
+  { src:'fed', author:'Policy Wire — governor remarks', verified:true, signal:'high', theme:'fedpath', ago:0,
+    text:'The governor said inflation is nowhere near structurally elevated any more and that keeping policy restrictive for too long carries its own downside risks.',
+    expo:E(-1,0.45,0.4,0.55), rexpo:E(0.1,0,0,0) },
+
+  { src:'jpm', author:'European Credit — weekly wrap', verified:true, signal:'high', theme:'euro', ago:0,
+    text:'Bank lending surveys point to a further slowdown in credit creation; the growth impulse is deteriorating faster than the inflation impulse is fading.',
+    expo:E(0.5,-1,-0.3,0.1), rexpo:E(0.3,-0.4,-0.2,0.1) },
+
+  { src:'x', author:'@gilt_watcher (verified desk)', verified:true, signal:'high', theme:'uk', ago:0,
+    text:'Gilt market has fully priced a cut by autumn. Sterling is now trading the domestic slowdown rather than the global risk tone.',
+    expo:E(0.2,0.1,-0.9,0.1), rexpo:E(0.1,0,-0.2,0) },
+
+  { src:'gs', author:'Rates Research — CPI preview', verified:true, signal:'high', theme:'fedpath', ago:0,
+    text:'Our CPI preview looks for a firm core print driven by shelter; a beat would make the easing path priced in the front end look premature.',
+    expo:E(1,-0.4,-0.4,-0.6), rexpo:E(0.2,0,0,0.1) },
+
+  { src:'cb', author:'ECB Press Hub — account of meeting', verified:true, signal:'high', theme:'euro', ago:0,
+    text:'The account shows members split: one camp sees the disinflation as durable, the other warns that wage settlements remain above target and could prove sticky.',
+    expo:E(-0.2,0.5,0.2,-0.1), rexpo:E(0,0,0,0) },
+
+  { src:'x', author:'@carry_trade_daily (unverified)', verified:false, signal:'low', theme:'posit', ago:0,
+    text:'if the unwind starts you will not get filled. stop-outs cascade in the yen crosses first, every single time.',
+    expo:E(-0.1,0,0,0.5), rexpo:E(0.7,-0.3,-0.4,0.8) },
+
+  { src:'jpm', author:'FX Strategy — weekly outlook', verified:true, signal:'high', theme:'boj', ago:0,
+    text:'Normalisation is now a question of sequencing rather than direction, and a hawkish surprise would land in a market with no hedge on and gapping liquidity.',
+    expo:E(-0.4,0.1,0.1,1), rexpo:E(0.5,0,0,0.9) }
+];
+
+/* ============================================================
+   5. STATE
+   ============================================================ */
+const CCY = [
+  { id:'usd', code:'USD', name:'US Dollar',      pair:'DXY basket' },
+  { id:'eur', code:'EUR', name:'Euro',           pair:'EUR/USD'    },
+  { id:'gbp', code:'GBP', name:'British Pound',  pair:'GBP/USD'    },
+  { id:'jpy', code:'JPY', name:'Japanese Yen',   pair:'USD/JPY (inverted for JPY strength)' }
+];
+
+let items = [];            // ingested + scored
+let queue = [];            // awaiting release
+let live = true;
+let selectedId = null;
+let timer = null;
+const filters = Object.fromEntries(Object.keys(SOURCES).map(k => [k, true]));
+let signalOnly = false;
+
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function ingest(raw, ts) {
+  const s = scoreText(raw.text);
+  return { ...raw, id: 'm' + (items.length + queue.length + Math.random().toString(36).slice(2,7)),
+           ts, score: s.score, risk: s.risk, hits: s.hits };
+}
+
+function boot() {
+  const now = Date.now();
+  items = []; queue = [];
+  CORPUS.forEach(r => {
+    if (r.ago > 0) items.push(ingest(r, now - r.ago * 1000));
+    else queue.push(r);
+  });
+  items.sort((a, b) => b.ts - a.ts);
+  selectedId = items[0] ? items[0].id : null;
+}
+
+function release() {
+  if (!live || !queue.length) return;
+  const raw = queue.shift();
+  const it = ingest(raw, Date.now());
+  it.fresh = true;
+  items.unshift(it);
+  renderAll();
+  setTimeout(() => { it.fresh = false; }, 1700);
+}
+
+/* ============================================================
+   6. DERIVED ANALYTICS
+   ============================================================ */
+const visible = () => items.filter(i =>
+  filters[i.src] && (!signalOnly || (i.verified && i.signal === 'high')));
+
+function weightOf(i, now) {
+  const ageMin = Math.max(0, (now - i.ts) / 60000);
+  const recency = Math.exp(-ageMin / 40);   // ~40-minute half-life: this is a narrative-of-the-hour read
+  return SOURCES[i.src].weight * recency * (i.verified ? 1 : 0.55);
+}
+
+function analytics() {
+  const now = Date.now();
+  const vis = visible();
+  const out = {
+    n: vis.length, agg: 0, risk: 0, hawk: 0, dove: 0,
+    ccy: Object.fromEntries(CCY.map(c => [c.id, { net:0, wsum:0, contrib:0 }])),
+    themes: {}
+  };
+  let wsum = 0;
+
+  vis.forEach(i => {
+    const w = weightOf(i, now);
+    wsum += w;
+    out.agg  += i.score * w;
+    out.risk += i.risk  * w;
+    if (i.score > 0.12) out.hawk++; else if (i.score < -0.12) out.dove++;
+
+    const th = out.themes[i.theme] || (out.themes[i.theme] = { w:0, net:0, risk:0, n:0, srcs:new Set() });
+    th.w += w * (Math.abs(i.score) + i.risk);
+    th.net += i.score * w;
+    th.risk += i.risk * w;
+    th.n++; th.srcs.add(i.src);
+
+    CCY.forEach(c => {
+      const e = (i.expo && i.expo[c.id]) || 0;
+      const r = (i.rexpo && i.rexpo[c.id]) || 0;
+      const val = i.score * e + i.risk * r * 0.8;
+      if (e || r) {
+        out.ccy[c.id].net  += val * w;
+        out.ccy[c.id].wsum += w * (Math.abs(e) + Math.abs(r) * 0.8);
+        out.ccy[c.id].contrib++;
+      }
+    });
+  });
+
+  out.agg  = wsum ? +(out.agg / wsum).toFixed(2) : 0;
+  out.risk = wsum ? Math.round(Math.min(1, out.risk / wsum * 1.9) * 100) : 0;
+  CCY.forEach(c => {
+    const s = out.ccy[c.id];
+    // AMP lifts the weighted mean out of the dead zone that averaging many mixed
+    // messages always produces, without letting a single loud item saturate the meter.
+    const AMP = 1.5;
+    s.net = s.wsum ? Math.max(-1, Math.min(1, +((s.net / s.wsum) * AMP).toFixed(2))) : 0;
+  });
+
+  const ranked = Object.entries(out.themes).sort((a, b) => b[1].w - a[1].w);
+  out.top = ranked[0] || null;
+  out.ranked = ranked;
+  out.themeShare = ranked.length
+    ? Math.round(ranked[0][1].w / ranked.reduce((s, [, t]) => s + t.w, 0) * 100) : 0;
+  return out;
+}
+
+/* ============================================================
+   7. SMALL VIEW HELPERS
+   ============================================================ */
+function relTime(ts) {
+  const s = Math.max(0, Math.round((Date.now() - ts) / 1000));
+  if (s < 60) return s + 's ago';
+  const m = Math.round(s / 60);
+  if (m < 60) return m + 'm ago';
+  return Math.floor(m / 60) + 'h ' + (m % 60) + 'm ago';
+}
+function sentTone(v) { return v >= 0.12 ? 'emerald' : v <= -0.12 ? 'rose' : 'slate'; }
+function sentWord(v) {
+  if (v >= 0.5) return 'Strongly Hawkish'; if (v >= 0.12) return 'Hawkish';
+  if (v <= -0.5) return 'Strongly Dovish'; if (v <= -0.12) return 'Dovish';
+  return 'Neutral';
+}
+function fmt(v) { return (v > 0 ? '+' : v < 0 ? '' : '±') + v.toFixed(2); }
+
+/* Meter: centre-zero bar, fill grows left or right from the midpoint. */
+function meter(v, h) {
+  const t = TONE[sentTone(v)];
+  const pct = Math.abs(v) * 50;
+  const left = v >= 0 ? 50 : 50 - pct;
+  return `
+    <div class="relative w-full ${h || 'h-1.5'} rounded-full bg-slate-800/80 overflow-hidden">
+      <div class="absolute inset-y-0 left-1/2 w-px bg-slate-600/80"></div>
+      <div class="absolute inset-y-0 ${t.bar} rounded-full transition-all duration-300"
+           style="left:${left}%;width:${pct}%"></div>
+    </div>`;
+}
+
+function highlight(item) {
+  const text = item.text;
+  let out = '', cursor = 0;
+  item.hits.forEach(h => {
+    if (h.i < cursor) return;
+    const cls = h.axis === 'risk' ? 'risk' : (h.eff > 0 ? 'hawk' : 'dove');
+    const title = `${h.phrase} · ${h.axis === 'risk' ? 'risk' : 'sentiment'} ${fmt(h.eff)}${h.negated ? ' (negated)' : ''}${h.mult !== 1 ? ' ×' + h.mult : ''}`;
+    out += esc(text.slice(cursor, h.i))
+        +  `<mark class="${cls}" title="${esc(title)}">${esc(text.substr(h.i, h.len))}</mark>`;
+    cursor = h.i + h.len;
+  });
+  return out + esc(text.slice(cursor));
+}
+
+/* ============================================================
+   8. RENDER — FILTERS
+   ============================================================ */
+/* Built once. Never rebuilt afterwards: a stream tick that replaced this markup
+   would swallow any click that happened to land during the swap. */
+function buildFilters() {
+  document.getElementById('filters').innerHTML = Object.values(SOURCES).map(s => `
+      <label data-frow="${s.id}" class="flex items-center gap-2.5 rounded-md border px-3 py-2 cursor-pointer hover:border-slate-500 transition-colors">
+        <input type="checkbox" data-src="${s.id}" checked class="h-3.5 w-3.5 accent-sky-500 cursor-pointer" />
+        <span class="min-w-0 flex-1">
+          <span data-fbadge class="block text-[10px] font-bold uppercase tracking-wider">${s.badge}</span>
+          <span class="block text-[10px] text-slate-500 truncate">${esc(s.desc)} · weight ${s.weight.toFixed(2)}</span>
+        </span>
+        <span data-fcount class="num text-[11px] font-semibold">0</span>
+      </label>`).join('');
+  syncFilters();
+}
+
+/* Patch counts, checked state and tint in place. */
+function syncFilters() {
+  Object.values(SOURCES).forEach(s => {
+    const row = document.querySelector(`[data-frow="${s.id}"]`);
+    if (!row) return;
+    const t = TONE[s.tone], on = filters[s.id];
+    const n = items.filter(i => i.src === s.id).length;
+    row.className = `flex items-center gap-2.5 rounded-md border px-3 py-2 cursor-pointer hover:border-slate-500 transition-colors ${on ? t.border + ' ' + t.bg : 'hairline bg-slate-900/40'}`;
+    row.querySelector('[data-fbadge]').className = `block text-[10px] font-bold uppercase tracking-wider ${on ? t.text : 'text-slate-500'}`;
+    row.querySelector('[data-fcount]').className = `num text-[11px] font-semibold ${on ? 'text-slate-300' : 'text-slate-600'}`;
+    row.querySelector('[data-fcount]').textContent = n;
+    const box = row.querySelector('input');
+    if (box.checked !== on) box.checked = on;
+  });
+}
+
+/* ============================================================
+   9. RENDER — FEED
+   ============================================================ */
+function renderFeed() {
+  const vis = visible();
+  const el = document.getElementById('feed');
+  document.getElementById('feedCount').textContent = vis.length;
+  document.getElementById('statTotal').textContent = items.length;
+  document.getElementById('statShown').textContent = vis.length;
+
+  if (!vis.length) {
+    el.innerHTML = `<div class="p-6 text-center"><p class="text-sm text-slate-500">No messages pass the current filter.</p>
+      <p class="text-[11px] text-slate-600 mt-1">Re-enable a source category or turn off high-signal-only.</p></div>`;
+    return;
+  }
+
+  el.innerHTML = vis.map(i => {
+    const s = SOURCES[i.src], t = TONE[s.tone], st = TONE[sentTone(i.score)];
+    const sel = i.id === selectedId;
+    return `
+      <button type="button" data-item="${i.id}"
+        class="w-full text-left px-4 py-3 transition-colors ${sel ? 'bg-sky-500/[0.07]' : 'hover:bg-slate-800/40'} ${i.fresh ? 'flash' : ''}">
+        <div class="flex items-center gap-2 flex-wrap mb-1.5">
+          <span class="rounded border ${t.border} ${t.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${t.text}">${s.badge}</span>
+          ${i.verified
+            ? '<span class="rounded border border-emerald-500/25 bg-emerald-500/[0.07] px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-emerald-400/90">Authenticated</span>'
+            : '<span class="rounded border border-slate-600/40 bg-slate-800/50 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-slate-500">Unverified</span>'}
+          <span class="rounded border border-slate-700/50 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-slate-600">SIM</span>
+          <span class="num ml-auto text-[10px] text-slate-500" data-ts="${i.ts}">${relTime(i.ts)}</span>
+        </div>
+        <p class="text-[10px] text-slate-500 mb-1">${i.author}</p>
+        <p class="text-[12.5px] leading-relaxed ${sel ? 'text-slate-200' : 'text-slate-300'}">${highlight(i)}</p>
+        <div class="mt-2 flex items-center gap-2.5">
+          <span class="num text-[11px] font-bold ${st.text} w-[3.2rem]">${fmt(i.score)}</span>
+          <span class="flex-1">${meter(i.score, 'h-1')}</span>
+          ${i.risk > 0.05 ? `<span class="num rounded bg-amber-500/10 border border-amber-500/25 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-300">Risk ${Math.round(i.risk*100)}</span>` : ''}
+        </div>
+      </button>`;
+  }).join('');
+}
+
+/* ============================================================
+   10. RENDER — HUB
+   ============================================================ */
+function renderHub(a) {
+  /* --- dominant narrative --- */
+  const dom = document.getElementById('dominant');
+  if (!a.top) {
+    dom.innerHTML = `<p class="text-sm text-slate-500">Nothing passing the filter — the narrative engine has no text to aggregate.</p>`;
+  } else {
+    const [key, th] = a.top;
+    const T = THEMES[key];
+    const dir = th.net >= 0 ? 'hawk' : 'dove';
+    const t = TONE[th.net >= 0 ? 'emerald' : 'rose'];
+    dom.innerHTML = `
+      <div class="flex items-center gap-2 mb-2 flex-wrap">
+        <span class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-semibold">Dominant Narrative of the Hour</span>
+        <span class="num rounded border ${t.border} ${t.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${t.text}">${a.themeShare}% of weighted attention</span>
+      </div>
+      <h3 class="text-[19px] leading-snug font-bold text-slate-50 tracking-tight">${T[dir]}</h3>
+      <p class="text-[12.5px] leading-relaxed text-slate-400 mt-2">${T.implication}</p>
+      <div class="mt-3 flex flex-wrap items-center gap-2">
+        <span class="text-[10px] uppercase tracking-wider text-slate-500">Carried by</span>
+        ${[...th.srcs].map(s => {
+          const st = TONE[SOURCES[s].tone];
+          return `<span class="rounded border ${st.border} ${st.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${st.text}">${esc(SOURCES[s].short)}</span>`;
+        }).join('')}
+        <span class="num text-[10px] text-slate-500">· ${th.n} message${th.n === 1 ? '' : 's'} · theme balance ${fmt(th.net / Math.max(1, th.n))}</span>
+      </div>
+      <div class="mt-4 pt-3 border-t hairline space-y-1.5">
+        <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold mb-1.5">Competing Themes</p>
+        ${a.ranked.slice(0, 5).map(([k, v]) => {
+          const share = Math.round(v.w / a.ranked.reduce((s, [, x]) => s + x.w, 0) * 100);
+          const vt = TONE[sentTone(v.net / Math.max(1, v.n))];
+          return `
+            <div class="flex items-center gap-2.5">
+              <span class="text-[11px] text-slate-400 w-[9.5rem] shrink-0 truncate">${esc(THEMES[k].label)}</span>
+              <span class="flex-1 h-1.5 rounded-full bg-slate-800/80 overflow-hidden">
+                <span class="block h-full ${vt.bar} rounded-full" style="width:${share}%"></span>
+              </span>
+              <span class="num text-[10px] text-slate-500 w-[2.4rem] text-right">${share}%</span>
+            </div>`;
+        }).join('')}
+      </div>`;
+  }
+
+  /* --- aggregate --- */
+  const at = TONE[sentTone(a.agg)];
+  const rt = a.risk >= 62 ? TONE.rose : a.risk >= 35 ? TONE.amber : TONE.emerald;
+  document.getElementById('aggregate').innerHTML = `
+    <div class="flex items-end justify-between gap-3 mb-2 flex-wrap">
+      <div>
+        <div class="num text-3xl font-bold ${at.text} leading-none">${fmt(a.agg)}</div>
+        <div class="text-[11px] ${at.text} font-semibold mt-1">${sentWord(a.agg)}</div>
+      </div>
+      <div class="text-right">
+        <div class="text-[10px] uppercase tracking-wider text-slate-500">Global Risk Premium</div>
+        <div class="num text-2xl font-bold ${rt.text} leading-tight">${a.risk}<span class="text-sm text-slate-600">/100</span></div>
+      </div>
+    </div>
+    ${meter(a.agg, 'h-2.5')}
+    <div class="num flex justify-between text-[10px] text-slate-600 mt-1">
+      <span>−1.0 dovish / risk-off</span><span>0</span><span>+1.0 hawkish / risk-on</span>
+    </div>
+    <div class="mt-3 grid grid-cols-3 gap-2 text-center">
+      <div class="rounded-md border hairline bg-slate-950/50 px-2 py-2">
+        <div class="num text-lg font-bold text-emerald-300">${a.hawk}</div>
+        <div class="text-[9px] uppercase tracking-wider text-slate-500">Hawkish</div>
+      </div>
+      <div class="rounded-md border hairline bg-slate-950/50 px-2 py-2">
+        <div class="num text-lg font-bold text-rose-300">${a.dove}</div>
+        <div class="text-[9px] uppercase tracking-wider text-slate-500">Dovish</div>
+      </div>
+      <div class="rounded-md border hairline bg-slate-950/50 px-2 py-2">
+        <div class="num text-lg font-bold text-slate-300">${a.n}</div>
+        <div class="text-[9px] uppercase tracking-wider text-slate-500">Scored</div>
+      </div>
+    </div>
+    <p class="text-[11px] leading-relaxed text-slate-500 mt-3">
+      Aggregate is weighted by source authority, message recency (40-minute half-life) and account verification —
+      a social post never outvotes a policy wire. Risk premium rises on escalation, liquidity and unwind language
+      regardless of the hawkish/dovish balance.
+    </p>`;
+
+  /* --- deep dive --- */
+  const sel = items.find(i => i.id === selectedId) || visible()[0];
+  const dd = document.getElementById('deepdive');
+  if (!sel) { dd.innerHTML = `<p class="text-sm text-slate-500">Select a message in the stream to inspect its scoring.</p>`; return; }
+  const s = SOURCES[sel.src], t = TONE[s.tone], st = TONE[sentTone(sel.score)];
+  const conf = Math.min(100, 28 + sel.hits.length * 17);
+  dd.innerHTML = `
+    <div class="flex items-center gap-2 flex-wrap mb-2">
+      <span class="rounded border ${t.border} ${t.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${t.text}">${s.badge}</span>
+      <span class="text-[10px] text-slate-500">${sel.author}</span>
+      <span class="num ml-auto text-[10px] text-slate-500">${relTime(sel.ts)}</span>
+    </div>
+    <p class="text-[13px] leading-relaxed text-slate-200">${highlight(sel)}</p>
+    <div class="mt-3 flex items-center gap-3">
+      <span class="num text-2xl font-bold ${st.text}">${fmt(sel.score)}</span>
+      <span class="flex-1">${meter(sel.score, 'h-2')}</span>
+    </div>
+    <div class="mt-3 space-y-1.5">
+      <p class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold">Terms that produced the score</p>
+      ${sel.hits.length ? sel.hits.map(h => {
+        const ht = TONE[h.axis === 'risk' ? 'amber' : (h.eff > 0 ? 'emerald' : 'rose')];
+        return `
+          <div class="flex items-center gap-2 text-[11.5px]">
+            <span class="rounded ${ht.bg} border ${ht.border} px-1.5 py-0.5 ${ht.text} font-medium">${esc(h.phrase)}</span>
+            <span class="text-[10px] text-slate-500">${h.axis === 'risk' ? 'risk axis' : 'sentiment axis'}${h.negated ? ' · negated' : ''}${h.mult !== 1 ? ' · ×' + h.mult : ''}</span>
+            <span class="num ml-auto font-semibold ${ht.text}">${fmt(h.eff)}</span>
+          </div>`;
+      }).join('')
+      : '<p class="text-[11.5px] text-slate-500">No lexicon terms matched — this message scores neutral and contributes only weight, not direction.</p>'}
+    </div>
+    <div class="mt-3 pt-3 border-t hairline grid grid-cols-2 gap-3">
+      <div>
+        <p class="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Model confidence</p>
+        <div class="flex items-center gap-2">
+          <span class="flex-1 h-1.5 rounded-full bg-slate-800 overflow-hidden"><span class="block h-full bg-sky-500 rounded-full" style="width:${conf}%"></span></span>
+          <span class="num text-[11px] font-semibold text-sky-300">${conf}%</span>
+        </div>
+        <p class="text-[10px] text-slate-600 mt-1">${sel.hits.length} matched term${sel.hits.length === 1 ? '' : 's'}</p>
+      </div>
+      <div>
+        <p class="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Mapped FX exposure</p>
+        <div class="flex flex-wrap gap-1.5">
+          ${CCY.map(c => {
+            const e = (sel.expo && sel.expo[c.id]) || 0;
+            if (!e) return '';
+            const v = sel.score * e;
+            const et = TONE[sentTone(v)];
+            return `<span class="num rounded border ${et.border} ${et.bg} px-1.5 py-0.5 text-[10px] font-semibold ${et.text}">${c.code} ${fmt(v)}</span>`;
+          }).join('') || '<span class="text-[10px] text-slate-600">none</span>'}
+        </div>
+      </div>
+    </div>`;
+
+  /* --- per-message meters --- */
+  document.getElementById('meters').innerHTML = visible().slice(0, 14).map(i => {
+    const ms = SOURCES[i.src], mt = TONE[ms.tone], it = TONE[sentTone(i.score)];
+    return `
+      <button type="button" data-item="${i.id}"
+        class="w-full text-left px-4 py-2.5 transition-colors ${i.id === selectedId ? 'bg-sky-500/[0.07]' : 'hover:bg-slate-800/40'}">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="rounded border ${mt.border} ${mt.bg} px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${mt.text}">${ms.short}</span>
+          <span class="text-[11px] text-slate-400 truncate flex-1">${esc(i.text.slice(0, 68))}…</span>
+          <span class="num text-[11px] font-bold ${it.text} shrink-0">${fmt(i.score)}</span>
+        </div>
+        ${meter(i.score, 'h-1.5')}
+      </button>`;
+  }).join('');
+}
+
+/* ============================================================
+   11. RENDER — TACTICS
+   ============================================================ */
+const PLAYBOOK = {
+  usd: {
+    bull: ['Buy dollar dips against the funders while the policy wire keeps carrying the hawkish side of the narrative.',
+           'Fade rallies in EUR/USD into resistance rather than initiating dollar shorts.',
+           'Cut the trade if the next policy communication reads softer than the last — this bias is text-driven, so it dies on text.'],
+    bear: ['Do not add to dollar longs while the official wire is carrying the dovish side of the narrative.',
+           'Express the view against the currency with the cleanest domestic story, not against the whole basket.',
+           'A dovish text run that is not confirmed by the next data print reverses violently — keep the stop tight.'],
+    flat: ['No directional dollar risk from narrative alone. Trade the crosses instead.',
+           'Wait for a policy wire item to break the tie — sell-side notes alone are not enough to size on.']
+  },
+  eur: {
+    bull: ['Buy EUR dips only while the press-hub tone stays firm and the energy risk premium is contained.',
+           'Prefer EUR against the softest-narrative currency in the panel rather than against the dollar.',
+           'Exit on any escalation headline — the euro loses its narrative bid the moment the risk premium reopens.'],
+    bear: ['Sell EUR rallies while the growth commentary keeps deteriorating faster than the inflation commentary fades.',
+           'Add on energy risk headlines; the importer bloc takes the terms-of-trade hit first.',
+           'Do not chase the break — the euro gaps on ECB text and then retraces most of it.'],
+    flat: ['Two-way narrative. Stand aside on EUR direction and let the press hub resolve it.',
+           'Range-trade only, with the stop outside the last two ECB communication reactions.']
+  },
+  gbp: {
+    bull: ['Buy GBP only when the domestic inflation narrative is firm AND global risk premium is falling — sterling needs both.',
+           'Size smaller than the equivalent EUR trade; sterling carries the widest narrative-to-price slippage in the panel.',
+           'Exit into any broad risk-off item; GBP loses its bid first.'],
+    bear: ['Sell GBP rallies while domestic demand commentary keeps softening ahead of official guidance.',
+           'The gilt-priced cut is the driver — watch for text that pulls it forward, not for the level of rates.',
+           'Avoid holding through UK data with a narrative-only thesis.'],
+    flat: ['Sterling is trading two stories at once. No directional risk until one of them dominates.',
+           'If forced to be involved, express it against EUR rather than USD to strip out the dollar leg.']
+  },
+  jpy: {
+    bull: ['Yen-positive narrative means normalisation or risk-off text is landing. Buy the yen in size only after a confirming policy item — not on chatter.',
+           'This is the crowd\'s funding leg: a yen rally on text tends to overshoot, so take profit earlier than the model suggests.',
+           'Never fade a yen rally that starts on liquidity or unwind language.'],
+    bear: ['Yen-negative narrative supports the carry leg, but the payoff is a slow grind with a gap-shaped tail.',
+           'Do not add to yen shorts on unverified chatter alone — intervention language originates there first.',
+           'Assume the stop does not fill where you place it; size for the gap, not for the distance.'],
+    flat: ['Mixed yen narrative is the most dangerous state for the most crowded trade. Reduce, do not initiate.',
+           'Watch the risk premium score rather than the sentiment balance — the yen reacts to the former.']
+  }
+};
+
+/* Decision threshold on the weighted-mean estimator. A mixed feed rarely produces
+   a mean beyond ±0.4, so ±0.18 is the level at which sources are genuinely agreeing
+   rather than an arbitrary round number. Shared by the lamps and the playbook. */
+const NET_T = 0.18;
+
+function lampFor(net, contrib, risk) {
+  if (contrib < 3) return { key:'amber', label:'Thin Sample', copy:'Too few messages bear on this currency to act on the narrative. Treat the reading as provisional.' };
+  if (risk >= 62)  return { key:'red',   label:'Hostile Narrative', copy:'Risk premium is elevated. Narrative-driven entries are the first to be stopped out in this state.' };
+  if (net >= NET_T)  return { key:'green', label:'Aligned — Constructive', copy:'The text balance is consistently supportive and carried by weighted sources.' };
+  if (net <= -NET_T) return { key:'green', label:'Aligned — Negative', copy:'The text balance is consistently against this currency and carried by weighted sources.' };
+  return { key:'amber', label:'Mixed / Consolidating', copy:'Sources disagree. Narrative gives no directional edge here today.' };
+}
+
+function renderTactics(a) {
+  document.getElementById('tactics').innerHTML = CCY.map(c => {
+    const s = a.ccy[c.id];
+    const lamp = lampFor(s.net, s.contrib, a.risk);
+    const st = TONE[sentTone(s.net)];
+    const book = s.net >= NET_T ? PLAYBOOK[c.id].bull : s.net <= -NET_T ? PLAYBOOK[c.id].bear : PLAYBOOK[c.id].flat;
+    const biasLabel = s.net >= NET_T ? 'Narrative-Bullish' : s.net <= -NET_T ? 'Narrative-Bearish' : 'Narrative-Neutral';
+
+    return `
+    <article class="panel rounded-xl overflow-hidden">
+      <div class="px-4 py-3 border-b hairline">
+        <div class="flex items-start justify-between gap-3 flex-wrap">
+          <div class="min-w-0">
+            <div class="flex items-baseline gap-2">
+              <h3 class="text-base font-bold text-slate-50 tracking-tight">${c.code}</h3>
+              <span class="text-[11px] text-slate-500">${c.name}</span>
+            </div>
+            <p class="text-[10px] text-slate-600 mt-0.5">${c.pair}</p>
+          </div>
+          <div class="flex items-center gap-2.5">
+            <div class="flex items-center gap-1.5" role="img" aria-label="Narrative momentum: ${lamp.label}">
+              <span class="h-2.5 w-2.5 rounded-full lamp ${lamp.key === 'green' ? 'lamp-on-green' : 'lamp-off'}"></span>
+              <span class="h-2.5 w-2.5 rounded-full lamp ${lamp.key === 'amber' ? 'lamp-on-amber' : 'lamp-off'}"></span>
+              <span class="h-2.5 w-2.5 rounded-full lamp ${lamp.key === 'red'   ? 'lamp-on-red'   : 'lamp-off'}"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-4 py-3 border-b hairline">
+        <div class="flex items-center justify-between gap-3 mb-2 flex-wrap">
+          <span class="rounded border ${st.border} ${st.bg} px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${st.text}">${biasLabel}</span>
+          <span class="num text-lg font-bold ${st.text}">${fmt(s.net)}</span>
+        </div>
+        ${meter(s.net, 'h-2')}
+        <p class="text-[11px] text-slate-500 mt-2">
+          <span class="font-semibold text-slate-400">${lamp.label}.</span> ${lamp.copy}
+          <span class="text-slate-600">(${s.contrib} contributing message${s.contrib === 1 ? '' : 's'})</span>
+        </p>
+      </div>
+
+      <div class="px-4 py-3">
+        <h4 class="text-[10px] uppercase tracking-[0.18em] text-slate-500 font-semibold mb-2">Execution Rules — Text-Derived</h4>
+        <ul class="space-y-1.5">
+          ${book.map(r => `
+            <li class="flex items-start gap-2">
+              <span class="mt-[7px] h-1 w-1 rounded-full ${st.dot} shrink-0"></span>
+              <span class="text-[12px] leading-relaxed text-slate-300">${r}</span>
+            </li>`).join('')}
+        </ul>
+      </div>
+    </article>`;
+  }).join('');
+}
+
+/* ============================================================
+   12. HURDLES
+   ============================================================ */
+const HURDLES = [
+  { t:'Noise-to-signal ratio', d:'Social networks generate enormous low-quality volume. This build handles it two ways: source weighting (a social post carries 0.35 against a policy wire\'s 1.00) and the high-signal-only filter, which drops unverified accounts entirely. In production you would also whitelist authenticated corporate handles and require a financial keyword match before a post is admitted at all.' },
+  { t:'API rate boundaries', d:'Banks and social platforms cap how often a single IP may request data. A reliable live system routes through paid developer gateways or a news aggregator, caches aggressively, and degrades to the last good snapshot rather than showing a blank feed when the quota is hit.' },
+  { t:'Lexicon vs. classifier', d:'The scorer here is a weighted lexicon with negation and intensifier handling — fully transparent, and every score traces back to the phrases that caused it. It will misread sarcasm, conditionals and long-range context. A production system swaps in a fine-tuned classifier and keeps the lexicon as an auditable fallback.' },
+  { t:'Attribution risk', d:'Publishing machine-scored sentiment attributed to named institutions creates real legal and reputational exposure. Store the raw source URL and timestamp with every score, and never restate a scraped claim as your own analysis.' }
+];
+
+function renderHurdles() {
+  document.getElementById('hurdles').innerHTML = HURDLES.map((h, i) => `
+    <details class="rounded-md border hairline bg-slate-900/50" ${i === 0 ? 'open' : ''}>
+      <summary class="flex items-center gap-2 px-3 py-2 hover:bg-slate-800/40 rounded-md transition-colors">
+        <svg class="chev h-3 w-3 shrink-0 text-slate-500" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <path d="M4 2.5L8 6L4 9.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="text-[12px] font-semibold text-slate-200">${h.t}</span>
+      </summary>
+      <p class="px-3 pb-3 pl-8 text-[11.5px] leading-relaxed text-slate-400">${h.d}</p>
+    </details>`).join('');
+}
+
+/* ============================================================
+   13. GLOBAL STRIP
+   ============================================================ */
+function renderStrip(a) {
+  const at = TONE[sentTone(a.agg)];
+  const rt = a.risk >= 62 ? TONE.rose : a.risk >= 35 ? TONE.amber : TONE.emerald;
+  const top = a.top ? esc(THEMES[a.top[0]].label) : '—';
+  const lead = CCY.map(c => ({ c, v: a.ccy[c.id].net })).sort((x, y) => Math.abs(y.v) - Math.abs(x.v))[0];
+  const lt = TONE[sentTone(lead.v)];
+  const cells = [
+    { l:'Aggregate Text Balance', v:fmt(a.agg),  s:sentWord(a.agg),        t:at },
+    { l:'Global Risk Premium',    v:a.risk + '/100', s:a.risk >= 62 ? 'Elevated — haven bid' : a.risk >= 35 ? 'Building' : 'Contained', t:rt },
+    { l:'Dominant Theme',         v:top,        s:a.themeShare + '% of weighted attention', t:TONE.sky, small:true },
+    { l:'Strongest FX Signal',    v:lead.c.code + ' ' + fmt(lead.v), s:sentWord(lead.v) + ' narrative', t:lt }
+  ];
+  document.getElementById('globalStrip').innerHTML = cells.map(c => `
+    <div class="rounded-lg border hairline bg-slate-950/50 px-3 py-2.5">
+      <div class="text-[10px] uppercase tracking-[0.16em] text-slate-500">${c.l}</div>
+      <div class="num ${c.small ? 'text-[13px] leading-tight mt-1' : 'text-xl'} font-bold ${c.t.text} truncate" title="${c.v}">${c.v}</div>
+      <div class="text-[10px] text-slate-500 truncate">${c.s}</div>
+    </div>`).join('');
+}
+
+/* ============================================================
+   14. ORCHESTRATION
+   ============================================================ */
+function renderAll() {
+  const a = analytics();
+  syncFilters();
+  renderFeed();
+  renderHub(a);
+  renderTactics(a);
+  renderStrip(a);
+}
+
+document.addEventListener('change', e => {
+  if (e.target.dataset && e.target.dataset.src) {
+    filters[e.target.dataset.src] = e.target.checked;
+    renderAll();
+  } else if (e.target.id === 'signalOnly') {
+    signalOnly = e.target.checked;
+    renderAll();
+  }
+});
+
+document.addEventListener('click', e => {
+  const item = e.target.closest('[data-item]');
+  if (item) { selectedId = item.dataset.item; renderAll(); return; }
+
+  const all = e.target.closest('[data-filter-all]');
+  if (all) {
+    const on = all.dataset.filterAll === 'on';
+    Object.keys(filters).forEach(k => filters[k] = on);
+    renderAll(); return;
+  }
+
+  if (e.target.closest('#liveToggle')) {
+    live = !live;
+    const b = document.getElementById('liveToggle');
+    document.getElementById('liveLabel').textContent = live ? 'Streaming' : 'Paused';
+    document.getElementById('liveDot').className =
+      'h-1.5 w-1.5 rounded-full ' + (live ? 'bg-emerald-400 tick-pulse' : 'bg-slate-500');
+    b.className = live
+      ? 'inline-flex items-center gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-[11px] font-semibold text-emerald-300 hover:border-emerald-400/60 transition'
+      : 'inline-flex items-center gap-2 rounded-md border hairline bg-slate-900/70 px-3 py-1.5 text-[11px] font-semibold text-slate-400 hover:border-slate-500 transition';
+    return;
+  }
+
+  if (e.target.closest('#replay')) { boot(); renderAll(); return; }
+});
+
+/* relative timestamps tick without a full re-render */
+setInterval(() => {
+  document.querySelectorAll('[data-ts]').forEach(el => {
+    el.textContent = relTime(Number(el.dataset.ts));
+  });
+}, 5000);
+
+boot();
+buildFilters();
+renderHurdles();
+renderAll();
+timer = setInterval(release, 7000);
+</script>
+</body>
+</html>
