@@ -9,9 +9,10 @@
       "lean": "above consensus",
       "confidence": "low",
       "called_at": "2026-08-19T16:55:49+00:00",
-      "outcome": null,
-      "actual": null,
-      "note": null
+      "outcome": "unclear",
+      "actual": "Minutes of the 28-29 July meeting released 19 Aug: many participants judged further tightening could become necessary if inflation fails to moderate; the record detailed the three dissents for an immediate hike. September 25bp hike probability afterwards sat at roughly 31-32% (Kalshi 32c), versus the ~25-31% benchmark, and the dollar fell to a three-month low that week.",
+      "note": "The content was widely characterised as hawkish (ING: 'Fed minutes lean hawkish, but we don't expect a hike'), which is directionally consistent with the call, but the benchmark was explicitly pricing-based and pricing barely moved - prediction-market commentary described the minutes as supporting the existing ~31% probability. Since the hawkishness was already discounted and the dollar weakened on the Treasury buyback story instead, the lean cannot honestly be scored a hit.",
+      "resolved_at": "2026-08-24T06:52:19+00:00"
     },
     {
       "event_id": "USD|President Trump Speaks|2026-08-19T14:30",
@@ -22,9 +23,10 @@
       "lean": "no clear lean",
       "confidence": "low",
       "called_at": "2026-08-19T16:55:49+00:00",
-      "outcome": null,
-      "actual": null,
-      "note": null
+      "outcome": "unclear",
+      "actual": "Trump hosted cryptocurrency and finance leaders in the Roosevelt Room, with remarks touching on digital assets, prediction markets, North Korea and interest rates; separately he said the US is not in talks with Iran. No single FX-defining headline emerged from the event itself.",
+      "note": "Lean was 'no clear lean', which resolves unclear by construction. The topic set skewed to crypto and foreign policy rather than the Canada tariff pause anticipated in the note.",
+      "resolved_at": "2026-08-24T06:52:19+00:00"
     },
     {
       "event_id": "USD|Philly Fed Manufacturing Index|2026-08-20T08:30",
@@ -35,9 +37,10 @@
       "lean": "above consensus",
       "confidence": "low",
       "called_at": "2026-08-19T16:55:49+00:00",
-      "outcome": null,
-      "actual": null,
-      "note": null
+      "outcome": "hit",
+      "actual": "47.4 in August versus a 24.1 consensus (Haver cites expectations of 25.0), up from 41.4 in July and a five-year high; the ISM-adjusted index eased to 57.5 from 58.1.",
+      "note": "Large beat on the side the lean called, though the call was held at low confidence and the magnitude was far beyond anything the evidence supported.",
+      "resolved_at": "2026-08-24T06:52:19+00:00"
     },
     {
       "event_id": "USD|Unemployment Claims|2026-08-20T08:30",
@@ -48,9 +51,10 @@
       "lean": "below consensus",
       "confidence": "low",
       "called_at": "2026-08-19T16:55:49+00:00",
-      "outcome": null,
-      "actual": null,
-      "note": null
+      "outcome": "hit",
+      "actual": "206K for the week ending 15 August versus a 210K consensus; prior week revised up to 212K from 209K; continuing claims 1.799mn.",
+      "note": "Printed below consensus as the lean called, consistent with the low-layoff pattern after July's 189K near-60-year low. The 4-week average still rose to 204K.",
+      "resolved_at": "2026-08-24T06:52:19+00:00"
     },
     {
       "event_id": "GBP|Retail Sales m/m|2026-08-21T02:00",
@@ -61,9 +65,10 @@
       "lean": "above consensus",
       "confidence": "low",
       "called_at": "2026-08-19T16:55:49+00:00",
-      "outcome": null,
-      "actual": null,
-      "note": null
+      "outcome": "unclear",
+      "actual": "ONS: retail sales volumes fell 0.5% m/m in July 2026, exactly matching the -0.5% consensus; total spend including online fell 0.6% m/m with online sales values down 3.9%, while supermarkets and alcoholic drinks benefited from hot weather.",
+      "note": "Printed exactly on consensus, so the 'above consensus' lean neither hit nor missed. The hot-weather food and drink support the note relied on was present but offset by a sharp online drop.",
+      "resolved_at": "2026-08-24T06:52:19+00:00"
     },
     {
       "event_id": "EUR|French Flash Manufacturing PMI|2026-08-21T03:15",
@@ -74,16 +79,137 @@
       "lean": "below consensus",
       "confidence": "low",
       "called_at": "2026-08-19T16:55:49+00:00",
+      "outcome": "miss",
+      "actual": "HCOB France flash manufacturing PMI 51.5 in August versus a 50.0-50.1 consensus, up from 49.8 in July and back into expansion; the composite nonetheless fell to 48.8 from 49.4 on service-sector weakness.",
+      "note": "Clear miss - the lean called below consensus and manufacturing beat by about 1.4pts. Notably the composite did weaken, so the underlying French growth concern was right but expressed in the wrong sub-index.",
+      "resolved_at": "2026-08-24T06:52:19+00:00"
+    },
+    {
+      "event_id": "USD|Core PCE Price Index m/m|2026-08-26T08:30",
+      "event": "US core PCE price index m/m, July 2026 (BEA, released with the Q2 second estimate)",
+      "currency": "USD",
+      "when_utc": "2026-08-26T12:30+00:00",
+      "consensus": "0.2% m/m (previous 0.1%); core y/y expected to ease to about 3.2% from 3.3%",
+      "lean": "in line",
+      "confidence": "medium",
+      "called_at": "2026-08-24T06:52:19+00:00",
+      "revisions": [
+        {
+          "lean": "in line",
+          "confidence": "medium",
+          "at": "2026-08-24T06:52:19+00:00"
+        }
+      ],
+      "outcome": null,
+      "actual": null,
+      "note": null
+    },
+    {
+      "event_id": "USD|Prelim GDP q/q|2026-08-26T08:30",
+      "event": "US Q2 2026 GDP, second estimate (BEA), with corporate profits",
+      "currency": "USD",
+      "when_utc": "2026-08-26T12:30+00:00",
+      "consensus": "1.5% q/q annualised, unrevised from the 30 July advance estimate",
+      "lean": "below consensus",
+      "confidence": "low",
+      "called_at": "2026-08-24T06:52:19+00:00",
+      "revisions": [
+        {
+          "lean": "below consensus",
+          "confidence": "low",
+          "at": "2026-08-24T06:52:19+00:00"
+        }
+      ],
+      "outcome": null,
+      "actual": null,
+      "note": null
+    },
+    {
+      "event_id": "USD|Fed Chairman Warsh Speaks|2026-08-28T10:00",
+      "event": "Fed Chair Kevin Warsh's first Jackson Hole keynote (symposium 27-29 Aug, theme 'Financial Innovation: Implications for Payments and Policy')",
+      "currency": "USD",
+      "when_utc": "2026-08-28T14:00+00:00",
+      "consensus": "No numeric consensus. The benchmark is that a neutral, 'big picture' address is expected - roughly 69% of fund managers surveyed by BofA look for a neutral tone. Read 'above consensus' as hawkish relative to that, 'below consensus' as dovish.",
+      "lean": "no clear lean",
+      "confidence": "low",
+      "called_at": "2026-08-24T06:52:19+00:00",
+      "revisions": [
+        {
+          "lean": "no clear lean",
+          "confidence": "low",
+          "at": "2026-08-24T06:52:19+00:00"
+        }
+      ],
+      "outcome": null,
+      "actual": null,
+      "note": null
+    },
+    {
+      "event_id": "USD|Prelim Benchmark Payrolls Revision|2026-08-28T10:00",
+      "event": "BLS preliminary estimate of the 2026 annual benchmark revision to establishment-survey employment (March 2026 level), published with Q1 2026 QCEW",
+      "currency": "USD",
+      "when_utc": "2026-08-28T14:00+00:00",
+      "consensus": "No published consensus; the anchor is last year's record -911K preliminary revision for March 2025. Read 'above consensus' as a materially smaller downward revision than that anchor, 'below consensus' as another very large downward revision.",
+      "lean": "above consensus",
+      "confidence": "medium",
+      "called_at": "2026-08-24T06:52:19+00:00",
+      "revisions": [
+        {
+          "lean": "above consensus",
+          "confidence": "medium",
+          "at": "2026-08-24T06:52:19+00:00"
+        }
+      ],
+      "outcome": null,
+      "actual": null,
+      "note": null
+    },
+    {
+      "event_id": "USD|Treasury Sec Bessent Speaks|2026-08-24T14:00",
+      "event": "Treasury Secretary Bessent press conference, Treasury Department, 14:00 ET / 18:00 GMT",
+      "currency": "USD",
+      "when_utc": "2026-08-24T18:00+00:00",
+      "consensus": "No numeric consensus. Billed as the unveiling of new Iran sanctions after Bessent's FT op-ed warning of an 'economic D-Day'; buyback and debt-management questions are near-certain.",
+      "lean": "no clear lean",
+      "confidence": "low",
+      "called_at": "2026-08-24T06:52:19+00:00",
+      "revisions": [
+        {
+          "lean": "no clear lean",
+          "confidence": "low",
+          "at": "2026-08-24T06:52:19+00:00"
+        }
+      ],
+      "outcome": null,
+      "actual": null,
+      "note": null
+    },
+    {
+      "event_id": "USD|CB Consumer Confidence|2026-08-25T10:00",
+      "event": "Conference Board Consumer Confidence Index, August 2026",
+      "currency": "USD",
+      "when_utc": "2026-08-25T14:00+00:00",
+      "consensus": "90.3 (previous 90.8)",
+      "lean": "below consensus",
+      "confidence": "medium",
+      "called_at": "2026-08-24T06:52:19+00:00",
+      "revisions": [
+        {
+          "lean": "below consensus",
+          "confidence": "medium",
+          "at": "2026-08-24T06:52:19+00:00"
+        }
+      ],
       "outcome": null,
       "actual": null,
       "note": null
     }
   ],
   "record": {
-    "scored": 0,
-    "hits": 0,
-    "misses": 0,
-    "unclear": 0,
+    "scored": 3,
+    "hits": 2,
+    "misses": 1,
+    "unclear": 3,
     "pending": 6
   }
 }
