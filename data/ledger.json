@@ -100,9 +100,10 @@
           "at": "2026-08-24T06:52:19+00:00"
         }
       ],
-      "outcome": null,
-      "actual": null,
-      "note": null
+      "outcome": "hit",
+      "actual": "Core PCE +0.2% m/m (about +0.25% unrounded per Employ America), core y/y 3.3%, unchanged from June; headline +0.2% m/m and 3.7% y/y",
+      "note": "Lean was 'in line' and core landed exactly on consensus on both m/m and y/y (CNBC/Yahoo: both readings as expected). The caveat: our brief expected core y/y to ease to about 3.2%; it held at 3.3%, and the headline surprised 0.1pp high on energy. Employ America flagged the m/m strength as concentrated in portfolio management fees, healthcare and airfares.",
+      "resolved_at": "2026-08-31T12:19:21+00:00"
     },
     {
       "event_id": "USD|Prelim GDP q/q|2026-08-26T08:30",
@@ -140,9 +141,10 @@
           "at": "2026-08-24T06:52:19+00:00"
         }
       ],
-      "outcome": null,
-      "actual": null,
-      "note": null
+      "outcome": "unclear",
+      "actual": "Hawkish keynote. Warsh said inflation's 'underlying trends' had not improved and that summer's better readings 'do not' settle the matter, called price stability 'not self-executing' and inflation the predominant focus, praised real-activity strength and downplayed labour-market risk; September hike odds rose to roughly a coin flip from about a third",
+      "note": "Our lean was 'no clear lean' at low confidence, so by construction this is unscored. Honest read: the neutral-tone benchmark (roughly 69% of BofA-surveyed managers) was wrong-footed and we did not call the hawkish direction. Bond-market reaction was described as muted despite the repricing.",
+      "resolved_at": "2026-08-31T12:19:21+00:00"
     },
     {
       "event_id": "USD|Prelim Benchmark Payrolls Revision|2026-08-28T10:00",
@@ -160,9 +162,10 @@
           "at": "2026-08-24T06:52:19+00:00"
         }
       ],
-      "outcome": null,
-      "actual": null,
-      "note": null
+      "outcome": "hit",
+      "actual": "-79,000 (-0.1%) for the March 2026 benchmark level, concentrated in retail and several other major sectors",
+      "note": "Lean was 'above consensus', i.e. a materially smaller downward revision than the -911K March 2025 anchor. -79K is an order of magnitude smaller and among the mildest preliminary revisions on record; Bloomberg reported the median economist projection looked for a larger markdown.",
+      "resolved_at": "2026-08-31T12:19:21+00:00"
     },
     {
       "event_id": "USD|Treasury Sec Bessent Speaks|2026-08-24T14:00",
@@ -180,9 +183,10 @@
           "at": "2026-08-24T06:52:19+00:00"
         }
       ],
-      "outcome": null,
-      "actual": null,
-      "note": null
+      "outcome": "unclear",
+      "actual": "Bessent unveiled 'Operation Economic Outcast', a sustained sanctions campaign against Iran and its 'enablers', and said on secondary targets that 'no one is above the reach of U.S. sanctions'; Iran said it was 'fully prepared'",
+      "note": "Lean was 'no clear lean' at low confidence; no numeric benchmark existed. The event delivered the pre-trailed sanctions escalation rather than a debt-management surprise, and energy prices remain the transmission channel into G4 inflation prints.",
+      "resolved_at": "2026-08-31T12:19:21+00:00"
     },
     {
       "event_id": "USD|CB Consumer Confidence|2026-08-25T10:00",
@@ -200,16 +204,137 @@
           "at": "2026-08-24T06:52:19+00:00"
         }
       ],
+      "outcome": "hit",
+      "actual": "89.4 in August versus 90.2-90.3 expected; July revised down to 90.2 from 90.8; Expectations 68.2 from 74.0, Present Situation 121.2 from 114.4",
+      "note": "Lean was 'below consensus' and the index printed 0.8-0.9pt below, a seven-month low, with the miss driven entirely by the Expectations component (labour-market and business-conditions pessimism, elevated mentions of energy prices and geopolitics). Market impact was negligible, as expected for this series.",
+      "resolved_at": "2026-08-31T12:19:21+00:00"
+    },
+    {
+      "event_id": "USD|ISM Manufacturing PMI|2026-09-01T10:00",
+      "event": "US ISM Manufacturing PMI, August 2026 (ISM, 10:00 ET / 14:00 GMT, 1 Sep)",
+      "currency": "USD",
+      "when_utc": "2026-09-01T14:00+00:00",
+      "consensus": "55.2 (previous 55.6, a four-year high)",
+      "lean": "above consensus",
+      "confidence": "medium",
+      "called_at": "2026-08-31T12:19:21+00:00",
+      "revisions": [
+        {
+          "lean": "above consensus",
+          "confidence": "medium",
+          "at": "2026-08-31T12:19:21+00:00"
+        }
+      ],
+      "outcome": null,
+      "actual": null,
+      "note": null
+    },
+    {
+      "event_id": "EUR|Core CPI Flash Estimate y/y|2026-09-01T05:00",
+      "event": "Euro area core HICP flash estimate y/y, August 2026 (Eurostat, 11:00 CET / 09:00 GMT, 1 Sep)",
+      "currency": "EUR",
+      "when_utc": "2026-09-01T09:00+00:00",
+      "consensus": "2.5% y/y (previous 2.5%)",
+      "lean": "in line",
+      "confidence": "medium",
+      "called_at": "2026-08-31T12:19:21+00:00",
+      "revisions": [
+        {
+          "lean": "in line",
+          "confidence": "medium",
+          "at": "2026-08-31T12:19:21+00:00"
+        }
+      ],
+      "outcome": null,
+      "actual": null,
+      "note": null
+    },
+    {
+      "event_id": "USD|Non-Farm Employment Change|2026-09-04T08:30",
+      "event": "US non-farm payrolls, August 2026 (BLS Employment Situation, 08:30 ET / 12:30 GMT, 4 Sep)",
+      "currency": "USD",
+      "when_utc": "2026-09-04T12:30+00:00",
+      "consensus": "+58K (previous -23K)",
+      "lean": "no clear lean",
+      "confidence": "low",
+      "called_at": "2026-08-31T12:19:21+00:00",
+      "revisions": [
+        {
+          "lean": "no clear lean",
+          "confidence": "low",
+          "at": "2026-08-31T12:19:21+00:00"
+        }
+      ],
+      "outcome": null,
+      "actual": null,
+      "note": null
+    },
+    {
+      "event_id": "USD|Average Hourly Earnings m/m|2026-09-04T08:30",
+      "event": "US average hourly earnings m/m, August 2026 (BLS, 08:30 ET / 12:30 GMT, 4 Sep)",
+      "currency": "USD",
+      "when_utc": "2026-09-04T12:30+00:00",
+      "consensus": "0.3% m/m (previous 0.1%)",
+      "lean": "in line",
+      "confidence": "medium",
+      "called_at": "2026-08-31T12:19:21+00:00",
+      "revisions": [
+        {
+          "lean": "in line",
+          "confidence": "medium",
+          "at": "2026-08-31T12:19:21+00:00"
+        }
+      ],
+      "outcome": null,
+      "actual": null,
+      "note": null
+    },
+    {
+      "event_id": "USD|Unemployment Rate|2026-09-04T08:30",
+      "event": "US unemployment rate, August 2026 (BLS household survey, 08:30 ET / 12:30 GMT, 4 Sep)",
+      "currency": "USD",
+      "when_utc": "2026-09-04T12:30+00:00",
+      "consensus": "4.1% (previous 4.1%)",
+      "lean": "in line",
+      "confidence": "medium",
+      "called_at": "2026-08-31T12:19:21+00:00",
+      "revisions": [
+        {
+          "lean": "in line",
+          "confidence": "medium",
+          "at": "2026-08-31T12:19:21+00:00"
+        }
+      ],
+      "outcome": null,
+      "actual": null,
+      "note": null
+    },
+    {
+      "event_id": "GBP|BOE Gov Bailey Speaks|2026-09-04T04:50",
+      "event": "BoE Governor Andrew Bailey keynote, LSE TRIUM Anniversary Conference, London (09:50 BST / 08:50 GMT, 4 Sep)",
+      "currency": "GBP",
+      "when_utc": "2026-09-04T08:50+00:00",
+      "consensus": "No numeric consensus. Benchmark is a broad, structural keynote with no fresh near-term policy signal, consistent with Bailey's recent practice. Read 'above consensus' as hawkish relative to that (opening the door to a 17 Sept hike), 'below consensus' as dovish.",
+      "lean": "no clear lean",
+      "confidence": "low",
+      "called_at": "2026-08-31T12:19:21+00:00",
+      "revisions": [
+        {
+          "lean": "no clear lean",
+          "confidence": "low",
+          "at": "2026-08-31T12:19:21+00:00"
+        }
+      ],
       "outcome": null,
       "actual": null,
       "note": null
     }
   ],
   "record": {
-    "scored": 3,
-    "hits": 2,
+    "scored": 6,
+    "hits": 5,
     "misses": 1,
-    "unclear": 3,
-    "pending": 6
+    "unclear": 5,
+    "pending": 7
   }
 }

@@ -1,42 +1,42 @@
 {
-  "generated_at": "2026-08-24T06:52:19+00:00",
-  "data_as_of": "2026-08-21",
+  "generated_at": "2026-08-31T12:19:21+00:00",
+  "data_as_of": "2026-08-28",
   "facts": {
     "dxy": {
       "code": "USD",
       "label": "DXY (reconstructed)",
       "dp": 2,
-      "last": 98.67,
-      "chg_1d_pct": -0.154,
-      "chg_5d_pct": -0.948,
-      "chg_20d_pct": -2.717,
-      "rsi_14": 28.4,
-      "sma_200": 99.19,
-      "dist_from_200sma_pct": -0.53,
-      "sma_location": "below",
-      "realised_vol_20d_pct": 4.5,
-      "daily_range_1sd_pct": 0.29,
+      "last": 99.21,
+      "chg_1d_pct": 0.023,
+      "chg_5d_pct": 0.553,
+      "chg_20d_pct": -1.136,
+      "rsi_14": 40.7,
+      "sma_200": 99.18,
+      "dist_from_200sma_pct": 0.03,
+      "sma_location": "testing",
+      "realised_vol_20d_pct": 4.1,
+      "daily_range_1sd_pct": 0.26,
       "range_20d": [
         98.67,
-        101.55
+        99.94
       ]
     },
     "eur": {
       "code": "EUR",
       "label": "EUR/USD",
       "dp": 4,
-      "last": 1.1699,
-      "chg_1d_pct": 0.154,
-      "chg_5d_pct": 1.142,
-      "chg_20d_pct": 2.831,
-      "rsi_14": 74.2,
-      "sma_200": 1.1627,
-      "dist_from_200sma_pct": 0.62,
-      "sma_location": "above",
-      "realised_vol_20d_pct": 4.4,
-      "daily_range_1sd_pct": 0.28,
+      "last": 1.1643,
+      "chg_1d_pct": -0.017,
+      "chg_5d_pct": -0.48,
+      "chg_20d_pct": 1.375,
+      "rsi_14": 62.1,
+      "sma_200": 1.1629,
+      "dist_from_200sma_pct": 0.12,
+      "sma_location": "testing",
+      "realised_vol_20d_pct": 3.8,
+      "daily_range_1sd_pct": 0.24,
       "range_20d": [
-        1.1367,
+        1.1515,
         1.1699
       ]
     },
@@ -44,18 +44,18 @@
       "code": "GBP",
       "label": "GBP/USD",
       "dp": 4,
-      "last": 1.3656,
-      "chg_1d_pct": 0.218,
-      "chg_5d_pct": 0.882,
-      "chg_20d_pct": 2.492,
-      "rsi_14": 69.6,
-      "sma_200": 1.3416,
-      "dist_from_200sma_pct": 1.79,
+      "last": 1.3583,
+      "chg_1d_pct": 0.005,
+      "chg_5d_pct": -0.538,
+      "chg_20d_pct": 1.201,
+      "rsi_14": 58.5,
+      "sma_200": 1.3428,
+      "dist_from_200sma_pct": 1.15,
       "sma_location": "above",
-      "realised_vol_20d_pct": 4.4,
-      "daily_range_1sd_pct": 0.28,
+      "realised_vol_20d_pct": 3.9,
+      "daily_range_1sd_pct": 0.25,
       "range_20d": [
-        1.3287,
+        1.3446,
         1.3656
       ]
     },
@@ -63,558 +63,629 @@
       "code": "JPY",
       "label": "USD/JPY",
       "dp": 2,
-      "last": 158.7,
-      "chg_1d_pct": -0.038,
-      "chg_5d_pct": -0.195,
-      "chg_20d_pct": -3.125,
-      "rsi_14": 40.2,
-      "sma_200": 158.22,
-      "dist_from_200sma_pct": 0.3,
-      "sma_location": "testing",
-      "realised_vol_20d_pct": 10.6,
-      "daily_range_1sd_pct": 0.67,
+      "last": 159.68,
+      "chg_1d_pct": 0.182,
+      "chg_5d_pct": 0.618,
+      "chg_20d_pct": -0.349,
+      "rsi_14": 49.5,
+      "sma_200": 158.35,
+      "dist_from_200sma_pct": 0.84,
+      "sma_location": "above",
+      "realised_vol_20d_pct": 9.0,
+      "daily_range_1sd_pct": 0.57,
       "range_20d": [
         156.68,
-        163.91
+        159.7
       ]
     }
   },
   "calendar": [
     {
-      "id": "USD|Treasury Sec Bessent Speaks|2026-08-24T14:00",
-      "title": "Treasury Sec Bessent Speaks",
-      "currency": "USD",
-      "when_utc": "2026-08-24T18:00+00:00",
-      "hours_until": 11.4,
+      "id": "EUR|Core CPI Flash Estimate y/y|2026-09-01T05:00",
+      "title": "Core CPI Flash Estimate y/y",
+      "currency": "EUR",
+      "when_utc": "2026-09-01T09:00+00:00",
+      "hours_until": 20.8,
       "impact": "Medium",
-      "consensus": null,
-      "previous": null,
+      "consensus": "2.5%",
+      "previous": "2.5%",
       "is_g4": true
     },
     {
-      "id": "USD|CB Consumer Confidence|2026-08-25T10:00",
-      "title": "CB Consumer Confidence",
-      "currency": "USD",
-      "when_utc": "2026-08-25T14:00+00:00",
-      "hours_until": 31.4,
+      "id": "EUR|CPI Flash Estimate y/y|2026-09-01T05:00",
+      "title": "CPI Flash Estimate y/y",
+      "currency": "EUR",
+      "when_utc": "2026-09-01T09:00+00:00",
+      "hours_until": 20.8,
       "impact": "Medium",
-      "consensus": "90.3",
-      "previous": "90.8",
-      "is_g4": true
-    },
-    {
-      "id": "AUD|CPI m/m|2026-08-25T21:30",
-      "title": "CPI m/m",
-      "currency": "AUD",
-      "when_utc": "2026-08-26T01:30+00:00",
-      "hours_until": 42.9,
-      "impact": "High",
-      "consensus": "0.9%",
-      "previous": "-0.1%",
-      "is_g4": false
-    },
-    {
-      "id": "AUD|CPI y/y|2026-08-25T21:30",
-      "title": "CPI y/y",
-      "currency": "AUD",
-      "when_utc": "2026-08-26T01:30+00:00",
-      "hours_until": 42.9,
-      "impact": "High",
       "consensus": "3.3%",
-      "previous": "3.8%",
-      "is_g4": false
+      "previous": "2.9%",
+      "is_g4": true
     },
     {
-      "id": "AUD|Trimmed Mean CPI m/m|2026-08-25T21:30",
-      "title": "Trimmed Mean CPI m/m",
+      "id": "USD|ISM Manufacturing PMI|2026-09-01T10:00",
+      "title": "ISM Manufacturing PMI",
+      "currency": "USD",
+      "when_utc": "2026-09-01T14:00+00:00",
+      "hours_until": 25.8,
+      "impact": "High",
+      "consensus": "55.2",
+      "previous": "55.6",
+      "is_g4": true
+    },
+    {
+      "id": "USD|ISM Manufacturing Prices|2026-09-01T10:00",
+      "title": "ISM Manufacturing Prices",
+      "currency": "USD",
+      "when_utc": "2026-09-01T14:00+00:00",
+      "hours_until": 25.8,
+      "impact": "Medium",
+      "consensus": "71.2",
+      "previous": "71.1",
+      "is_g4": true
+    },
+    {
+      "id": "USD|JOLTS Job Openings|2026-09-01T10:00",
+      "title": "JOLTS Job Openings",
+      "currency": "USD",
+      "when_utc": "2026-09-01T14:00+00:00",
+      "hours_until": 25.8,
+      "impact": "Medium",
+      "consensus": "7.33M",
+      "previous": "7.36M",
+      "is_g4": true
+    },
+    {
+      "id": "AUD|GDP q/q|2026-09-01T21:30",
+      "title": "GDP q/q",
       "currency": "AUD",
-      "when_utc": "2026-08-26T01:30+00:00",
-      "hours_until": 42.9,
+      "when_utc": "2026-09-02T01:30+00:00",
+      "hours_until": 37.3,
       "impact": "High",
       "consensus": "0.3%",
       "previous": "0.3%",
       "is_g4": false
     },
     {
-      "id": "USD|Core PCE Price Index m/m|2026-08-26T08:30",
-      "title": "Core PCE Price Index m/m",
-      "currency": "USD",
-      "when_utc": "2026-08-26T12:30+00:00",
-      "hours_until": 53.9,
+      "id": "NZD|Official Cash Rate|2026-09-01T22:00",
+      "title": "Official Cash Rate",
+      "currency": "NZD",
+      "when_utc": "2026-09-02T02:00+00:00",
+      "hours_until": 37.8,
       "impact": "High",
-      "consensus": "0.2%",
+      "consensus": "2.75%",
+      "previous": "2.50%",
+      "is_g4": false
+    },
+    {
+      "id": "NZD|RBNZ Monetary Policy Statement|2026-09-01T22:00",
+      "title": "RBNZ Monetary Policy Statement",
+      "currency": "NZD",
+      "when_utc": "2026-09-02T02:00+00:00",
+      "hours_until": 37.8,
+      "impact": "High",
+      "consensus": null,
+      "previous": null,
+      "is_g4": false
+    },
+    {
+      "id": "NZD|RBNZ Rate Statement|2026-09-01T22:00",
+      "title": "RBNZ Rate Statement",
+      "currency": "NZD",
+      "when_utc": "2026-09-02T02:00+00:00",
+      "hours_until": 37.8,
+      "impact": "High",
+      "consensus": null,
+      "previous": null,
+      "is_g4": false
+    },
+    {
+      "id": "NZD|RBNZ Press Conference|2026-09-01T23:00",
+      "title": "RBNZ Press Conference",
+      "currency": "NZD",
+      "when_utc": "2026-09-02T03:00+00:00",
+      "hours_until": 38.8,
+      "impact": "High",
+      "consensus": null,
+      "previous": null,
+      "is_g4": false
+    },
+    {
+      "id": "USD|ADP Non-Farm Employment Change|2026-09-02T08:15",
+      "title": "ADP Non-Farm Employment Change",
+      "currency": "USD",
+      "when_utc": "2026-09-02T12:15+00:00",
+      "hours_until": 48.1,
+      "impact": "Medium",
+      "consensus": "47K",
+      "previous": "44K",
+      "is_g4": true
+    },
+    {
+      "id": "CAD|BOC Rate Statement|2026-09-02T09:45",
+      "title": "BOC Rate Statement",
+      "currency": "CAD",
+      "when_utc": "2026-09-02T13:45+00:00",
+      "hours_until": 49.6,
+      "impact": "High",
+      "consensus": null,
+      "previous": null,
+      "is_g4": false
+    },
+    {
+      "id": "CAD|Overnight Rate|2026-09-02T09:45",
+      "title": "Overnight Rate",
+      "currency": "CAD",
+      "when_utc": "2026-09-02T13:45+00:00",
+      "hours_until": 49.6,
+      "impact": "High",
+      "consensus": "2.25%",
+      "previous": "2.25%",
+      "is_g4": false
+    },
+    {
+      "id": "CAD|BOC Press Conference|2026-09-02T10:30",
+      "title": "BOC Press Conference",
+      "currency": "CAD",
+      "when_utc": "2026-09-02T14:30+00:00",
+      "hours_until": 50.3,
+      "impact": "High",
+      "consensus": null,
+      "previous": null,
+      "is_g4": false
+    },
+    {
+      "id": "CHF|CPI m/m|2026-09-03T02:30",
+      "title": "CPI m/m",
+      "currency": "CHF",
+      "when_utc": "2026-09-03T06:30+00:00",
+      "hours_until": 66.3,
+      "impact": "Medium",
+      "consensus": "0.0%",
+      "previous": "-0.1%",
+      "is_g4": false
+    },
+    {
+      "id": "USD|Unemployment Claims|2026-09-03T08:30",
+      "title": "Unemployment Claims",
+      "currency": "USD",
+      "when_utc": "2026-09-03T12:30+00:00",
+      "hours_until": 72.3,
+      "impact": "Medium",
+      "consensus": "205K",
+      "previous": "203K",
+      "is_g4": true
+    },
+    {
+      "id": "USD|ISM Services PMI|2026-09-03T10:00",
+      "title": "ISM Services PMI",
+      "currency": "USD",
+      "when_utc": "2026-09-03T14:00+00:00",
+      "hours_until": 73.8,
+      "impact": "Medium",
+      "consensus": "54.1",
+      "previous": "54.1",
+      "is_g4": true
+    },
+    {
+      "id": "GBP|BOE Gov Bailey Speaks|2026-09-04T04:50",
+      "title": "BOE Gov Bailey Speaks",
+      "currency": "GBP",
+      "when_utc": "2026-09-04T08:50+00:00",
+      "hours_until": 92.6,
+      "impact": "High",
+      "consensus": null,
+      "previous": null,
+      "is_g4": true
+    },
+    {
+      "id": "CAD|Employment Change|2026-09-04T08:30",
+      "title": "Employment Change",
+      "currency": "CAD",
+      "when_utc": "2026-09-04T12:30+00:00",
+      "hours_until": 96.3,
+      "impact": "High",
+      "consensus": "15.8K",
+      "previous": "75.1K",
+      "is_g4": false
+    },
+    {
+      "id": "CAD|Unemployment Rate|2026-09-04T08:30",
+      "title": "Unemployment Rate",
+      "currency": "CAD",
+      "when_utc": "2026-09-04T12:30+00:00",
+      "hours_until": 96.3,
+      "impact": "High",
+      "consensus": "6.4%",
+      "previous": "6.4%",
+      "is_g4": false
+    },
+    {
+      "id": "USD|Average Hourly Earnings m/m|2026-09-04T08:30",
+      "title": "Average Hourly Earnings m/m",
+      "currency": "USD",
+      "when_utc": "2026-09-04T12:30+00:00",
+      "hours_until": 96.3,
+      "impact": "High",
+      "consensus": "0.3%",
       "previous": "0.1%",
       "is_g4": true
     },
     {
-      "id": "USD|Prelim GDP q/q|2026-08-26T08:30",
-      "title": "Prelim GDP q/q",
+      "id": "USD|Non-Farm Employment Change|2026-09-04T08:30",
+      "title": "Non-Farm Employment Change",
       "currency": "USD",
-      "when_utc": "2026-08-26T12:30+00:00",
-      "hours_until": 53.9,
+      "when_utc": "2026-09-04T12:30+00:00",
+      "hours_until": 96.3,
       "impact": "High",
-      "consensus": "1.5%",
-      "previous": "1.5%",
+      "consensus": "58K",
+      "previous": "-23K",
       "is_g4": true
     },
     {
-      "id": "USD|Prelim GDP Price Index q/q|2026-08-26T08:30",
-      "title": "Prelim GDP Price Index q/q",
+      "id": "USD|Unemployment Rate|2026-09-04T08:30",
+      "title": "Unemployment Rate",
       "currency": "USD",
-      "when_utc": "2026-08-26T12:30+00:00",
-      "hours_until": 53.9,
-      "impact": "Medium",
-      "consensus": "6.2%",
-      "previous": "6.2%",
+      "when_utc": "2026-09-04T12:30+00:00",
+      "hours_until": 96.3,
+      "impact": "High",
+      "consensus": "4.1%",
+      "previous": "4.1%",
       "is_g4": true
     },
     {
-      "id": "USD|Unemployment Claims|2026-08-27T08:30",
-      "title": "Unemployment Claims",
-      "currency": "USD",
-      "when_utc": "2026-08-27T12:30+00:00",
-      "hours_until": 77.9,
-      "impact": "Medium",
-      "consensus": "208K",
-      "previous": "206K",
-      "is_g4": true
-    },
-    {
-      "id": "All|Jackson Hole Symposium|2026-08-27T12:15",
-      "title": "Jackson Hole Symposium",
-      "currency": "All",
-      "when_utc": "2026-08-27T16:15+00:00",
-      "hours_until": 81.6,
-      "impact": "Medium",
-      "consensus": null,
-      "previous": null,
-      "is_g4": false
-    },
-    {
-      "id": "JPY|Tokyo Core CPI y/y|2026-08-27T19:30",
-      "title": "Tokyo Core CPI y/y",
-      "currency": "JPY",
-      "when_utc": "2026-08-27T23:30+00:00",
-      "hours_until": 88.9,
-      "impact": "Medium",
-      "consensus": "1.8%",
-      "previous": "1.9%",
-      "is_g4": true
-    },
-    {
-      "id": "CAD|GDP m/m|2026-08-28T08:30",
-      "title": "GDP m/m",
+      "id": "CAD|Ivey PMI|2026-09-04T10:00",
+      "title": "Ivey PMI",
       "currency": "CAD",
-      "when_utc": "2026-08-28T12:30+00:00",
-      "hours_until": 101.9,
-      "impact": "High",
-      "consensus": "0.2%",
-      "previous": "0.3%",
-      "is_g4": false
-    },
-    {
-      "id": "USD|Fed Chairman Warsh Speaks|2026-08-28T10:00",
-      "title": "Fed Chairman Warsh Speaks",
-      "currency": "USD",
-      "when_utc": "2026-08-28T14:00+00:00",
-      "hours_until": 103.4,
-      "impact": "High",
-      "consensus": null,
-      "previous": null,
-      "is_g4": true
-    },
-    {
-      "id": "USD|Prelim Benchmark Payrolls Revision|2026-08-28T10:00",
-      "title": "Prelim Benchmark Payrolls Revision",
-      "currency": "USD",
-      "when_utc": "2026-08-28T14:00+00:00",
-      "hours_until": 103.4,
-      "impact": "High",
-      "consensus": null,
-      "previous": "-911K",
-      "is_g4": true
-    },
-    {
-      "id": "USD|Revised UoM Consumer Sentiment|2026-08-28T10:00",
-      "title": "Revised UoM Consumer Sentiment",
-      "currency": "USD",
-      "when_utc": "2026-08-28T14:00+00:00",
-      "hours_until": 103.4,
+      "when_utc": "2026-09-04T14:00+00:00",
+      "hours_until": 97.8,
       "impact": "Medium",
-      "consensus": "51.0",
-      "previous": "51.0",
-      "is_g4": true
-    },
-    {
-      "id": "USD|Revised UoM Inflation Expectations|2026-08-28T10:00",
-      "title": "Revised UoM Inflation Expectations",
-      "currency": "USD",
-      "when_utc": "2026-08-28T14:00+00:00",
-      "hours_until": 103.4,
-      "impact": "Medium",
-      "consensus": null,
-      "previous": "4.3%",
-      "is_g4": true
-    },
-    {
-      "id": "All|Jackson Hole Symposium|2026-08-28T12:15",
-      "title": "Jackson Hole Symposium",
-      "currency": "All",
-      "when_utc": "2026-08-28T16:15+00:00",
-      "hours_until": 105.6,
-      "impact": "High",
-      "consensus": null,
-      "previous": null,
-      "is_g4": false
-    },
-    {
-      "id": "All|Jackson Hole Symposium|2026-08-29T12:15",
-      "title": "Jackson Hole Symposium",
-      "currency": "All",
-      "when_utc": "2026-08-29T16:15+00:00",
-      "hours_until": 129.6,
-      "impact": "Medium",
-      "consensus": null,
-      "previous": null,
+      "consensus": "56.2",
+      "previous": "55.1",
       "is_g4": false
     }
   ],
   "calendar_error": null,
   "forecast": {
-    "session_note": "Pre-event note for 24-28 Aug 2026. The week's USD risk is dominated by July core PCE (26th) and Warsh's first Jackson Hole keynote (28th). Critical context for judging any surprise: the dollar's slide to a three-month low (DXY 98.67, RSI14 28.4, below the 99.19 200SMA, at the bottom of the 98.67-101.55 20d range) has been driven by fiscal/institutional concerns - Treasury doubling long-end buybacks to at least $4bn per operation from 9 Sep after the 30y hit a 19-year high near 5.25%, and the yields erasing that relief within 24 hours - not by Fed rate expectations, which are static at roughly one-in-three for a 25bp September hike (Kalshi 32c, funds at 3.50-3.75% after the 9-3 July hold). That means short-dollar positioning is stretched against a theme that data cannot easily confirm, and hawkish surprises land into thinner air than dovish ones. EUR/USD 1.1699 (RSI 74.2, top of range) and GBP/USD 1.3656 (RSI 69.6) sit at the same extreme; USD/JPY 158.7 is testing its 200SMA at 158.22 with a 1SD day of 0.67% and July's coordinated intervention still fresh. Scoreboard on the six prior calls: 2 hit, 1 miss, 3 unclear.",
+    "session_note": "Pre-event note for 31 Aug\u20134 Sep 2026. The week's organising fact is that Warsh's 28 Aug Jackson Hole keynote turned the 16-17 Sept FOMC into roughly a coin flip (CNBC/CME FedWatch ~50%, up from the post-July-payrolls trough), with inflation named the Fed's 'predominant focus' and labour-market risk explicitly downplayed. That reaction function matters more than the data itself: it means activity/wage beats convert into rate pricing more efficiently than misses do. USD sits mid-range and technically indecisive \u2014 DXY 99.21 sitting exactly on its 200SMA (99.18) with RSI 40.7, EUR/USD 1.1643 just above its 200SMA (1.1629) and mid the 1.1515\u20131.1699 20d range \u2014 i.e. positioning does not look stretched either way ahead of ISM (1 Sep) and payrolls (4 Sep). Euro-area core is a low-beta event because the ECB's 10 Sept hike is close to fully discounted (Reuters, 26 Aug: policymakers ready to move, little appetite to signal more), and today's German flash (HICP 2.9% vs 3.1% expected, core steady at 2.4%) removes much of the upside tail. Bailey speaks with only ~15% priced for 17 Sept, so the sterling asymmetry sits on the hawkish side even though a structural, non-tactical speech is the base case. Two leans carry real evidential weight (ISM above, EUR core in line); payrolls genuinely does not separate from consensus and is marked as such.",
     "forecasts": [
       {
-        "event_id": "USD|Core PCE Price Index m/m|2026-08-26T08:30",
-        "event": "US core PCE price index m/m, July 2026 (BEA, released with the Q2 second estimate)",
+        "event_id": "USD|ISM Manufacturing PMI|2026-09-01T10:00",
+        "event": "US ISM Manufacturing PMI, August 2026 (ISM, 10:00 ET / 14:00 GMT, 1 Sep)",
         "currency": "USD",
-        "consensus": "0.2% m/m (previous 0.1%); core y/y expected to ease to about 3.2% from 3.3%",
+        "consensus": "55.2 (previous 55.6, a four-year high)",
         "evidence": [
           {
-            "fact": "July PPI (BLS, 13 Aug): final demand ex food, energy and trade services +0.4% m/m after +0.1% in June, led by a 6.5% jump in portfolio management fees - a category PCE takes directly from producer prices, alongside health care.",
+            "fact": "NY Fed Empire State (17 Aug) rose to 20.6 from 15.6 vs ~11 expected, highest in more than four years; new orders 17.3, shipments 11.7, unfilled orders +11pts to 15.5 and delivery times +8pts to 20.6 \u2014 lengthening supplier deliveries mechanically add to the ISM headline (15% weight).",
             "points": "above consensus",
             "weight": "high"
           },
           {
-            "fact": "Post-CPI nowcasts before PPI clustered just at or above the rounding line: Pantheon 0.16% ('it would take a big upside surprise [in PPI] to leave an increase of more than 0.20% looking likely'), Oxford Economics 0.2%, Capital Economics ~0.21%, Goldman 0.23%. Trackers noted estimates were raised after the PPI portfolio-fee spike.",
+            "fact": "Philadelphia Fed Manufacturing Business Outlook for August printed 47.4 vs 25.0 expected, with six-month optimism reported as the strongest since 1983.",
             "points": "above consensus",
             "weight": "high"
           },
           {
-            "fact": "BEA's methodology changes to portfolio management, legal services and software - which independent estimates suggest would shave roughly a tenth off core y/y and damp exactly this pass-through - arrive with the annual update on 30 September, not on 26 August.",
+            "fact": "Recent track record: July ISM was 55.6 vs 54.0 consensus (PNC: 'exceeded expectations\u2026 broad-based improvement'), the third consecutive factory report to run past forecasts; the employment sub-index crossed 50 for the first time in 33 months and production hit 58.5.",
             "points": "above consensus",
             "weight": "medium"
           },
           {
-            "fact": "July CPI (12 Aug) landed exactly on consensus: headline +0.1% m/m, core +0.2%, core 2.5% y/y, with shelter up only 0.1% and core goods +0.2%. The consumer-side inputs argue for no more than a routine 0.2%.",
+            "fact": "S&P Global flash US manufacturing PMI for August fell to 53.2 from 53.9 vs 53.9 expected \u2014 weakest since March, held back by higher fuel costs, less inventory building and supply delays.",
+            "points": "below consensus",
+            "weight": "medium"
+          },
+          {
+            "fact": "Chicago Business Barometer collapsed 10.5pts to 47.1 in August, though this series has been an unreliable ISM predictor and is heavily Chicago-district specific.",
+            "points": "below consensus",
+            "weight": "low"
+          },
+          {
+            "fact": "Base rate: consensus already embeds mild mean reversion (-0.4pt) from a four-year high, which is the normal statistical prior after an outlier month.",
+            "points": "neutral",
+            "weight": "medium"
+          }
+        ],
+        "lean": "above consensus",
+        "lean_rationale": "The two regional surveys that historically map best onto the ISM (Empire, Philadelphia) were both large upside surprises in August, and Empire's lengthening delivery times and rising unfilled orders feed the ISM headline positively. The offsetting signals \u2014 S&P Global flash and Chicago \u2014 are real but the S&P series has run persistently below ISM through 2026 (53.9 vs 55.6 in July), so its miss does not translate one-for-one. On balance the evidence leans above 55.2, most likely to the 55\u201357 zone rather than a large beat.",
+        "confidence": "medium",
+        "confidence_reason": "Two high-weight leading indicators point the same way and the series has beaten three months running, but the flash PMI/Chicago divergence is genuine and ISM month-to-month noise is roughly \u00b11.5pt.",
+        "whats_priced": "With the September FOMC near a coin flip, the market is already carrying a 'strong real activity, sticky inflation' narrative \u2014 Warsh said he was 'impressed' by the economy's strength. Another solid factory print is therefore largely consistent with what is discounted; DXY at 99.21 with RSI 40.7 sitting on the 200SMA suggests the dollar is not positioned long for it. Prices-paid detail is the underpriced part: fuel-driven cost pressure feeds the hawkish story more than the headline does.",
+        "asymmetry": "Skewed. A beat is more likely but partly discounted, so it plausibly produces only a modest, sub-1SD dollar move. A sub-54 print would be the genuine surprise \u2014 it would validate the flash PMI/Chicago signal and undercut the activity leg of hike pricing, so the larger move sits on the downside despite lower probability.",
+        "reactions": [
+          {
+            "if_outcome": "ISM prints at or above ~56 with prices paid elevated",
+            "then_currency": "Would likely support the dollar into payrolls, with DXY holding above the 200SMA at 99.18 and EUR/USD pressured back toward the middle of its 1.1515\u20131.1699 range",
+            "likelihood": "more likely"
+          },
+          {
+            "if_outcome": "ISM prints below ~54, i.e. a sharp break from the regional-survey run",
+            "then_currency": "Would likely weigh on the dollar as September hike odds are trimmed, with EUR/USD more likely to press the upper end of its 20d range and DXY losing its 200SMA",
+            "likelihood": "possible"
+          },
+          {
+            "if_outcome": "ISM lands 54.5\u201355.5, in line",
+            "then_currency": "Limited follow-through likely; USD/JPY, already at the top of its 20d range near 159.70 with a \u00b10.57% 1SD day, is the pair where even a modest surprise shows up most",
+            "likelihood": "more likely"
+          }
+        ]
+      },
+      {
+        "event_id": "EUR|Core CPI Flash Estimate y/y|2026-09-01T05:00",
+        "event": "Euro area core HICP flash estimate y/y, August 2026 (Eurostat, 11:00 CET / 09:00 GMT, 1 Sep)",
+        "currency": "EUR",
+        "consensus": "2.5% y/y (previous 2.5%)",
+        "evidence": [
+          {
+            "fact": "German flash for August (Destatis, 31 Aug): national core ex food and energy steady at 2.4% y/y; headline CPI/HICP 2.9% vs 3.0-3.1% expected and m/m 0.2% vs 0.3% expected, with energy +10.5% doing the work. Germany is the largest single weight in the euro-area aggregate.",
+            "points": "neutral",
+            "weight": "high"
+          },
+          {
+            "fact": "Spain (INE flash, August): HICP up six tenths to 4.5% y/y and core inflation 3.2%, up from 3.0% in July \u2014 a genuine underlying acceleration, though Spain is roughly a tenth of the euro-area basket.",
+            "points": "above consensus",
+            "weight": "medium"
+          },
+          {
+            "fact": "France flash: HICP accelerating to about 2.7% y/y from 2.4% on energy, with underlying pressure described as relatively contained.",
             "points": "neutral",
             "weight": "medium"
           },
           {
-            "fact": "Recent record of the series: June core PCE printed 0.1% m/m against a 0.2% consensus, i.e. the last observation rounded down, and headline PCE fell 0.1% m/m on the Iran-ceasefire energy drop.",
+            "fact": "Italy's core measure was soft into August (core ex energy easing to 1.8% from 1.9% in July data), limiting aggregate upside.",
             "points": "below consensus",
+            "weight": "low"
+          },
+          {
+            "fact": "Pass-through channel: euro-area non-energy industrial goods inflation drifted up to 0.9% in July from 0.7%, and services were 3.3%, so the energy shock is starting to touch core categories (August air fares/package holidays are the usual vector).",
+            "points": "above consensus",
+            "weight": "low"
+          }
+        ],
+        "lean": "in line",
+        "lean_rationale": "The national flashes already published point to stability rather than a break: Germany's core is unchanged at 2.4% and its headline undershot, which offsets a firmer Spanish core. Italy's soft core caps the aggregate. That combination is most consistent with 2.5% again, and the residual risk is modestly skewed to a 2.6% rounding rather than 2.4%.",
+        "confidence": "medium",
+        "confidence_reason": "Most of the aggregate is already observable from German, Spanish and French flashes; the uncertainty is confined to rounding and to volatile August services components.",
+        "whats_priced": "An ECB hike on 10 September is close to fully discounted \u2014 Reuters reported (26 Aug) policymakers are ready to move but have little appetite to signal more, and the July minutes said the pause should not be read as the end of the cycle. So an in-line core changes nothing for the front end; EUR direction this week is a US-data story, with EUR/USD at 1.1643 sitting barely above its 200SMA at 1.1629 after slipping toward two-week lows.",
+        "asymmetry": "Lopsided toward the upside. A 2.4% print would not credibly remove a hike that is already priced, so the euro downside is small. A 2.6-2.7% core, especially with services above 3.3%, would start pricing a follow-up move beyond September and is the outcome with the most unpriced content.",
+        "reactions": [
+          {
+            "if_outcome": "Core 2.6% or higher with services firming",
+            "then_currency": "Would likely support the euro, with EUR/USD more likely to hold above the 200SMA at 1.1629 and probe the 1.1699 top of the 20d range",
+            "likelihood": "possible"
+          },
+          {
+            "if_outcome": "Core 2.5% as expected",
+            "then_currency": "Little independent EUR impact likely; EUR/USD probably stays hostage to ISM and payrolls within the 1.1515\u20131.1699 range",
+            "likelihood": "more likely"
+          },
+          {
+            "if_outcome": "Core 2.4% or lower",
+            "then_currency": "Would likely weigh modestly on the euro, but with the September hike near-fully priced the downside is probably contained near the 1.1629 200SMA rather than trending",
+            "likelihood": "possible"
+          }
+        ]
+      },
+      {
+        "event_id": "USD|Non-Farm Employment Change|2026-09-04T08:30",
+        "event": "US non-farm payrolls, August 2026 (BLS Employment Situation, 08:30 ET / 12:30 GMT, 4 Sep)",
+        "currency": "USD",
+        "consensus": "+58K (previous -23K)",
+        "evidence": [
+          {
+            "fact": "Initial claims covering the August survey week were exceptionally low: 206K for the week ended 15 Aug (vs 210K expected) and 203K for 22 Aug (vs 208K), with a four-week average near 205K and continuing claims falling 18K to 1.778M \u2014 no sign of a layoff impulse.",
+            "points": "above consensus",
+            "weight": "medium"
+          },
+          {
+            "fact": "S&P Global flash composite output hit 56.0 in August, a 52-month high, with services 56.8 vs 54.0 expected \u2014 the sector that dominates payroll gains was accelerating.",
+            "points": "above consensus",
+            "weight": "medium"
+          },
+          {
+            "fact": "ADP's weekly NER Pulse (25 Aug) showed an average of 11,750 private jobs per week for the four weeks to 8 Aug \u2014 about 47K monthly private \u2014 with hiring up a second week. Netted against continued federal workforce slimming, that is consistent with a total near or slightly below +58K.",
+            "points": "neutral",
+            "weight": "medium"
+          },
+          {
+            "fact": "Momentum and revision record are poor: May cut to +63K, June to +20K, July -23K (vs +85K expected), leaving a 12-month average of about +34K; the establishment survey has been revised down three months running.",
+            "points": "below consensus",
+            "weight": "medium"
+          },
+          {
+            "fact": "Labour supply is shrinking (labour force -264K in July, participation 61.4%, the lowest since early 2021), which lowers the payroll breakeven but also caps the plausible upside to hiring.",
+            "points": "below consensus",
+            "weight": "low"
+          },
+          {
+            "fact": "The 28 Aug preliminary benchmark revision was only -79K (-0.1%) for the year to March 2026, far smaller than last year's -911K, arguing the establishment survey is not materially overstating the current trend.",
+            "points": "neutral",
+            "weight": "low"
+          },
+          {
+            "fact": "Published forecasts straddle consensus: Capital Economics looks for about +90K in August, while FXStreet notes the street is clustered nearer +50K.",
+            "points": "neutral",
+            "weight": "low"
+          }
+        ],
+        "lean": "no clear lean",
+        "lean_rationale": "The evidence is genuinely split: claims near 60-year lows and a 52-month-high composite PMI argue for a rebound from July's -23K, but ADP's weekly pulse implies only ~47K private before federal job losses, and three consecutive downward revisions plus a 34K 12-month average argue the low-58K bar is not obviously beatable. Recent dispersion is also enormous \u2014 July missed by 108K \u2014 which swamps any small edge in the leading indicators. ADP's monthly report on 2 Sep is the checkpoint that could shift this.",
+        "confidence": "low",
+        "confidence_reason": "Signals conflict in direction and the series' recent surprise dispersion (\u00b1100K) is far larger than any inference the leading data supports.",
+        "whats_priced": "A September hike is roughly a coin flip after Warsh, having been near-certain after the 9-3 July vote and then cut by the weak July jobs print. FXStreet's read is that a strong payroll with steady wages pushes EUR/USD below 1.16. Crucially, Warsh explicitly downplayed labour-market risk and called inflation the predominant focus, so the market is already inclined to discount a soft payroll number as less policy-relevant than a strong one.",
+        "asymmetry": "Skewed toward the upside for the dollar. A firm report (say +100K with 0.3-0.4% earnings) removes the last obstacle to a September hike and can take pricing from ~50% toward ~90%; a weak or negative print runs into a chair who has said he will not be diverted by labour softness, so the dovish repricing is likely to be shallower than the symmetric-probability view implies. USD/JPY, at 159.68 near its 20d high with a \u00b10.57% 1SD day, is the highest-beta expression.",
+        "reactions": [
+          {
+            "if_outcome": "Payrolls well above consensus (roughly +100K or more) with no offsetting revisions",
+            "then_currency": "Would likely support the dollar broadly, with EUR/USD pressured through its 200SMA at 1.1629 toward the lower half of the 1.1515\u20131.1699 range and USD/JPY likely testing the 159.70 range top",
+            "likelihood": "more likely"
+          },
+          {
+            "if_outcome": "Payrolls in line (roughly +40K to +75K) with unemployment at 4.1%",
+            "then_currency": "Probably a limited net move; the September hike stays a coin flip and DXY likely keeps oscillating around its 200SMA at 99.18",
+            "likelihood": "more likely"
+          },
+          {
+            "if_outcome": "Another negative or near-zero print with downward revisions to June/July",
+            "then_currency": "Would likely weigh on the dollar, though Warsh's stated framework argues the dovish repricing may be smaller than the mirror image of a beat; GBP/USD, already above its 200SMA at 1.3428, would be the more likely beneficiary alongside EUR",
+            "likelihood": "possible"
+          }
+        ]
+      },
+      {
+        "event_id": "USD|Average Hourly Earnings m/m|2026-09-04T08:30",
+        "event": "US average hourly earnings m/m, August 2026 (BLS, 08:30 ET / 12:30 GMT, 4 Sep)",
+        "currency": "USD",
+        "consensus": "0.3% m/m (previous 0.1%)",
+        "evidence": [
+          {
+            "fact": "July was unusually soft: +0.1% m/m (about 0.6% annualised), taking y/y to 3.2%, a five-year low, with Employ America putting 3m/3m annualised wage growth at just 2.5%.",
+            "points": "below consensus",
+            "weight": "medium"
+          },
+          {
+            "fact": "Mean reversion is the dominant statistical prior after a 0.1% print \u2014 the series routinely rebounds the following month, and the 12-month trend of about 3.15% y/y is itself consistent with roughly 0.26% per month.",
+            "points": "neutral",
+            "weight": "medium"
+          },
+          {
+            "fact": "ADP Pay Insights showed annual pay for job-stayers steady at 4.4% and job-changers at 7.0%, the largest since August 2025 \u2014 pointing to supply constraints in parts of the labour market rather than broad wage deceleration.",
+            "points": "above consensus",
+            "weight": "medium"
+          },
+          {
+            "fact": "Composition effects cut both ways: July's payroll weakness was concentrated in local-government education and retail, categories whose losses tend to flatter the average wage.",
+            "points": "above consensus",
+            "weight": "low"
+          }
+        ],
+        "lean": "in line",
+        "lean_rationale": "Consensus at 0.3% already embeds the post-0.1% rebound, and both the 12-month trend (~0.26%/month) and ADP pay data are consistent with that. Nothing in the available evidence separates meaningfully from 0.3%; if anything the risk of a 0.2% print is marginally larger than 0.4% given the 2.5% three-month annualised run rate.",
+        "confidence": "medium",
+        "confidence_reason": "AHE lands within a tick of consensus most months, but monthly noise from composition and pay-period timing is of the same order as the surprise being judged.",
+        "whats_priced": "With inflation, not employment, the stated priority for this Fed, the earnings line has higher beta than usual for a payroll sub-component. The market's hawkish case needs the combination of firm hiring and firm wages; the wage side is the part that has been quietly undermining it, with y/y at a five-year low.",
+        "asymmetry": "The bigger move sits with 0.4%: coupled with a decent payroll it would make the September hike hard to argue against, and it is not in the price. A 0.2% print largely confirms the existing soft-wage trend and should do less.",
+        "reactions": [
+          {
+            "if_outcome": "AHE 0.4% or higher, y/y turning back up",
+            "then_currency": "Would likely support the dollar, reinforcing any payroll beat and pressuring EUR/USD back below its 200SMA at 1.1629",
+            "likelihood": "possible"
+          },
+          {
+            "if_outcome": "AHE 0.3% as expected",
+            "then_currency": "Payroll headline likely dominates; limited independent impact",
+            "likelihood": "more likely"
+          },
+          {
+            "if_outcome": "AHE 0.1-0.2% with y/y easing further below 3.2%",
+            "then_currency": "Would likely take some hawkish premium out of the dollar even on a decent headline, with EUR and GBP the more likely beneficiaries",
+            "likelihood": "possible"
+          }
+        ]
+      },
+      {
+        "event_id": "USD|Unemployment Rate|2026-09-04T08:30",
+        "event": "US unemployment rate, August 2026 (BLS household survey, 08:30 ET / 12:30 GMT, 4 Sep)",
+        "currency": "USD",
+        "consensus": "4.1% (previous 4.1%)",
+        "evidence": [
+          {
+            "fact": "July's fall to 4.1% \u2014 a 13-month low \u2014 was driven by a shrinking labour force (-264K) rather than strength, with participation at 61.4%, the lowest since February 2021 and 0.7pp lower since January.",
+            "points": "neutral",
+            "weight": "high"
+          },
+          {
+            "fact": "Continued labour-force contraction (Staffing Industry Analysts put the decline at about -1.37M since January) mechanically restrains any rise in the jobless rate even with near-zero payroll growth.",
+            "points": "neutral",
+            "weight": "medium"
+          },
+          {
+            "fact": "Claims data are consistent with no deterioration: initial claims 203-206K through the survey period and continuing claims down to 1.778M.",
+            "points": "neutral",
+            "weight": "medium"
+          },
+          {
+            "fact": "Hiring breadth is weak (12-month payroll average about +34K) and the household survey is noisy month to month, so a tick either way is easily generated.",
+            "points": "neutral",
             "weight": "medium"
           }
         ],
         "lean": "in line",
-        "lean_rationale": "The bridge from CPI plus PPI puts the unrounded estimate in a 0.20-0.27% band, so 0.2% remains the modal print and calling 'above consensus' would over-read a rounding question. What the evidence does establish is that the distribution is skewed: the portfolio-management pass-through is a mechanical, calculable upside input that arrives before the methodology change that would have muted it, so a 0.3% is a live tail while a 0.1% requires the soft-services pattern of June to repeat without help from financial services.",
+        "lean_rationale": "Both the demand and supply sides are contracting together, which is precisely the configuration that keeps the measured rate flat. Claims give no signal of a labour-market break, and the collapsing participation rate means even a poor payroll number need not lift the rate. Nothing here separates from 4.1%.",
         "confidence": "medium",
-        "confidence_reason": "Multiple dated house nowcasts and a hard PPI input point the same way on the level, but all of them straddle the 0.25 rounding boundary, which is what the headline print turns on.",
-        "whats_priced": "Roughly a one-in-three September hike (Kalshi 32c) and a 9-3 hold at 3.50-3.75% already in the record. Sell-side framing since 12-13 August has been that an in-line July PCE is 'good enough' for a hold and that the September decision 'rests on August data', so 0.2% is close to fully discounted. Crucially, the dollar's three-month low was manufactured by Treasury buyback and fiscal-dominance concerns rather than by rate expectations, so a merely in-line print has little in it to reverse the move.",
-        "asymmetry": "Skewed to the upside surprise. A 0.3% would arrive into a DXY that is oversold at the bottom of its 20-day range with EUR/USD RSI at 74.2 at the top of its own - the short-dollar squeeze potential exceeds the room a 0.1% has to extend a move already three weeks old. A soft print largely confirms what is priced and would likely be worth less than 1SD.",
+        "confidence_reason": "The mechanical labour-supply argument is strong, but household-survey rounding means a 4.0% or 4.2% print is well within normal noise.",
+        "whats_priced": "The market treats the unemployment rate as the Fed's fig leaf: a stable 4.1% is what allows the hawkish camp to argue the labour market is 'roughly in balance' (Oxford Economics' framing). Stability is the assumption embedded in the ~coin-flip September pricing.",
+        "asymmetry": "The larger move is on 4.2% or higher. That would be the one labour-market outcome hard for a hawkish chair to dismiss, and it is not priced. A 4.0% print would be read partly as a participation artefact and should carry less weight.",
         "reactions": [
           {
-            "if_outcome": "Core PCE 0.3% m/m (or 0.25%+ unrounded with a 3.3% y/y that fails to decelerate)",
-            "then_currency": "Likely supports the dollar as September hike odds reprice above one-in-three; EUR/USD would probably be pressured back toward the 1.1627 200SMA, with USD/JPY more likely to hold above its 158.22 200SMA",
+            "if_outcome": "Unemployment rate rises to 4.2% or above, especially with a weak payroll headline",
+            "then_currency": "Would likely weigh on the dollar as September hike odds are cut, with EUR/USD more likely to press the 1.1699 top of its 20d range",
             "likelihood": "possible"
           },
           {
-            "if_outcome": "Core PCE 0.2% m/m with y/y easing to 3.2%",
-            "then_currency": "Limited FX follow-through, sub-1SD moves more likely than not, with the dollar's direction into month-end handed back to Bessent's buyback message and Warsh on Friday",
+            "if_outcome": "Rate holds at 4.1%",
+            "then_currency": "Likely neutral in isolation; payrolls and earnings drive the reaction",
             "likelihood": "more likely"
           },
           {
-            "if_outcome": "Core PCE 0.1% m/m",
-            "then_currency": "Would likely add to dollar pressure and could see EUR/USD probe above the 1.1699 range high, though the stretched RSI argues the extension may be shallow",
+            "if_outcome": "Rate falls to 4.0% on further participation decline",
+            "then_currency": "Would likely offer modest dollar support, though the quality of the decline argues against a durable move",
             "likelihood": "possible"
           }
         ]
       },
       {
-        "event_id": "USD|Prelim GDP q/q|2026-08-26T08:30",
-        "event": "US Q2 2026 GDP, second estimate (BEA), with corporate profits",
-        "currency": "USD",
-        "consensus": "1.5% q/q annualised, unrevised from the 30 July advance estimate",
+        "event_id": "GBP|BOE Gov Bailey Speaks|2026-09-04T04:50",
+        "event": "BoE Governor Andrew Bailey keynote, LSE TRIUM Anniversary Conference, London (09:50 BST / 08:50 GMT, 4 Sep)",
+        "currency": "GBP",
+        "consensus": "No numeric consensus. Benchmark is a broad, structural keynote with no fresh near-term policy signal, consistent with Bailey's recent practice. Read 'above consensus' as hawkish relative to that (opening the door to a 17 Sept hike), 'below consensus' as dovish.",
         "evidence": [
           {
-            "fact": "The last two second estimates were both marked down: Q1 2026 was revised down 0.4pp to 1.6% on softer investment and consumer spending, and Q4 2025 down 0.7pp to 0.7% on exports, consumption and inventories.",
-            "points": "below consensus",
+            "fact": "Venue and format: an anniversary conference keynote, not a policy platform. Bailey's recent set-piece speeches have been structural \u2014 regulation and growth at Mansion House (14 July), central bank independence (April) \u2014 rather than tactical.",
+            "points": "neutral",
             "weight": "medium"
           },
           {
-            "fact": "June wholesale inventories were revised to +0.2% m/m ($944.7bn) from the +0.3% advance reading, with inventories already subtracting 0.7pp from Q2 growth on the advance estimate.",
-            "points": "below consensus",
-            "weight": "low"
+            "fact": "Bailey has repeatedly declined to endorse the hawkish minority: after the 30 July 6-3 hold at 3.75% with three votes for 4.0%, BofA described him as 'fairly explicit that nothing suggests' the BoE is edging toward a hike.",
+            "points": "neutral",
+            "weight": "medium"
           },
           {
-            "fact": "The full June trade report (BEA/Census, 5 Aug) showed the goods and services deficit narrowing $4.4bn to $73.3bn and the real goods deficit down $5.3bn to $94.5bn, with small upward revisions to goods exports - the trade drag that caused the advance miss may be marginally smaller.",
+            "fact": "Inflation is running above target and rising: CPI 2.9% y/y in July from 2.6%, driven by the 13% Ofgem cap increase, with the BoE projecting a peak near 3.2% in Q4 and a second cap rise due in October \u2014 grounds for hawkish caution if he chooses to use them.",
             "points": "above consensus",
             "weight": "low"
           },
           {
-            "fact": "The advance detail was internally strong - real final sales +2.2%, consumer spending 3.2%, domestic private final sales 3.9% - so the composition, not the headline, is where any revision shows up.",
-            "points": "neutral",
-            "weight": "medium"
-          }
-        ],
-        "lean": "below consensus",
-        "lean_rationale": "Consensus is anchored mechanically at 'unrevised', while the two most recent second estimates were both revised down and the one hard new monthly input (June wholesale inventories) came in lower than the advance assumption. That is a weak base-rate signal on small n, offset in part by slightly better final trade data, which is why the lean is held at low confidence.",
-        "confidence": "low",
-        "confidence_reason": "Second-estimate revisions are close to coin-flips and the evidence pointing lower is two observations plus a one-tenth inventory tweak; nothing here separates decisively from 1.5%.",
-        "whats_priced": "Effectively nothing. The number is stale and shares its 08:30 ET slot with core PCE, which dominates the reaction. Current-quarter momentum has also moved on: the August flash composite PMI printed 56.0, a 52-month high, with services at 56.8, so a Q2 tweak does not change the growth narrative the market is trading.",
-        "asymmetry": "The larger move sits in the combination, not the number. A material downward revision (toward 1.0% or below) landing alongside a soft core PCE would sharpen the 'dual-mandate trap' framing after July's -23K payrolls and could pressure the dollar more than a GDP revision would on its own. An upward revision is likely to be ignored.",
-        "reactions": [
-          {
-            "if_outcome": "GDP revised down to 1.2% or lower alongside an in-line or soft core PCE",
-            "then_currency": "Likely dollar-negative via the growth channel, with EUR/USD more likely to test the top of its 20-day range at 1.1699",
-            "likelihood": "possible"
-          },
-          {
-            "if_outcome": "GDP unrevised at 1.5%",
-            "then_currency": "Negligible standalone FX impact; the PCE print in the same release would drive the dollar",
-            "likelihood": "more likely"
-          },
-          {
-            "if_outcome": "GDP revised up toward 1.8-2.0%",
-            "then_currency": "Mildly supportive for the dollar if it coincides with a firm PCE, but on its own unlikely to be worth a 1SD day in DXY",
-            "likelihood": "less likely"
-          }
-        ]
-      },
-      {
-        "event_id": "USD|Fed Chairman Warsh Speaks|2026-08-28T10:00",
-        "event": "Fed Chair Kevin Warsh's first Jackson Hole keynote (symposium 27-29 Aug, theme 'Financial Innovation: Implications for Payments and Policy')",
-        "currency": "USD",
-        "consensus": "No numeric consensus. The benchmark is that a neutral, 'big picture' address is expected - roughly 69% of fund managers surveyed by BofA look for a neutral tone. Read 'above consensus' as hawkish relative to that, 'below consensus' as dovish.",
-        "evidence": [
-          {
-            "fact": "Warsh described the planned speech at his 29 July press conference as 'like a blank sheet of paper' and has indicated it will not carry a rate-path signal; his tenure since 22 May has cut post-meeting statements to about 130 words, withheld his own dot, and produced deliberately evasive press conferences.",
-            "points": "neutral",
-            "weight": "high"
-          },
-          {
-            "fact": "Hawkish institutional backdrop: the July hold drew three dissents for an immediate hike (Hammack, Kashkari, Logan), the July minutes recorded many participants seeing further tightening as likely necessary if inflation fails to moderate, Warsh has used 'there is no soft inflation target', and reporting has him open to voting for a September hike if data warrant.",
-            "points": "above consensus",
-            "weight": "medium"
-          },
-          {
-            "fact": "Offsetting dovish threads he owns personally: the AI-as-disinflation thesis (which about 60% of economists in a Chicago/FT poll dispute), plus a labour market that shed 23,000 jobs in July with 103,000 of downward back revisions.",
+            "fact": "Recent Brent softening has pushed markets to defer the first hike from late 2026 into early 2027 (LSEG: 24bp priced by December, 36bp by February 2027), giving him room to sound relaxed without moving the curve much.",
             "points": "below consensus",
-            "weight": "medium"
+            "weight": "low"
           },
           {
-            "fact": "The Treasury-Fed axis is the live subplot: Treasury's expanded long-end buyback, criticised as suppressing yields that should reflect monetary conditions, gives Warsh an incentive to defend independence and the 2% mandate rather than to signal September.",
+            "fact": "Timing: 13 days before the 17 September MPC, so outside purdah \u2014 he is free to guide, but has shown no recent inclination to pre-commit.",
             "points": "neutral",
-            "weight": "medium"
-          },
-          {
-            "fact": "August jobs (4 Sep) and August CPI (11 Sep) still land before the 15-16 September FOMC, giving him a clean data-dependence excuse to commit to nothing.",
-            "points": "neutral",
-            "weight": "high"
+            "weight": "low"
           }
         ],
         "lean": "no clear lean",
-        "lean_rationale": "His revealed communication strategy - less guidance, shorter statements, no dot - plus two major data points still to come before the meeting makes a non-committal address the most likely outcome, which is exactly what is expected. There is no evidential basis to lean hawkish or dovish on content; the useful work is in the priced-outcome and asymmetry sections.",
+        "lean_rationale": "The base case is a broad keynote that repeats the 'energy shock, watch second-round effects, no signal on timing' formulation, which is what the market already assumes. There is no dated evidence pointing to a deliberate change in his stance ahead of 17 September, and the venue argues against one.",
         "confidence": "low",
-        "confidence_reason": "An unscripted-in-substance keynote from a chair with only two press conferences of track record; markets are still building the vocabulary to translate his phrasing, so even the sign of the reaction is uncertain.",
-        "whats_priced": "Neutral is the priced outcome, not the safe one: roughly 69% of surveyed fund managers expect a neutral tone, September hike odds are pinned near one-in-three, and the dollar already sits at a three-month low on the fiscal/independence theme rather than on rate expectations. Four things are not priced - any reaffirmation or dilution of the 2% commitment, any clarification of how he weights the dual mandate, a public development of the AI-disinflation thesis, and whether he addresses Treasury's buyback at all.",
-        "asymmetry": "Two-sided but not symmetric in mechanism. Given DXY oversold at 98.67 with EUR/USD RSI 74.2, a hawkish read (2% mandate reasserted, independence from Treasury debt management defended) has the cleanest path to a squeeze in a crowded short-dollar trade. A read perceived as dovish or as accommodating Treasury's yield-management agenda would compound the fiscal-dominance narrative that produced the current dollar level - potentially a larger move in long-end yields and gold than in DXY itself. A genuinely neutral address should be a low-volatility outcome, and that is the most likely one.",
+        "confidence_reason": "Speech content is unobservable in advance and Bailey's Q&A has produced unintended signals before; the honest answer is that this is not forecastable from available evidence.",
+        "whats_priced": "Very little tightening is priced for 17 September \u2014 under 4bp, roughly a 15% probability, with 24bp by December and 36bp by February 2027; a Reuters poll (13-18 Aug) had 56 of 64 economists expecting no change through year-end. Sterling nonetheless sits high in its range \u2014 GBP/USD 1.3583 versus a 20d range of 1.3446\u20131.3656 and comfortably above its 200SMA at 1.3428 \u2014 carrying a modest hawkish-risk premium alongside an unresolved fiscal story (10y gilt yields above 5%, autumn Budget arithmetic).",
+        "asymmetry": "Clearly lopsided. Because only ~15% is priced for September, dovish remarks can remove barely 4bp, whereas any hint that he is closer to the three dissenters could reprice the September meeting several-fold \u2014 the bigger move is on the hawkish side even though it is the lower-probability outcome. Against that, GBP/USD near the top of its 20d range and the fiscal overhang mean a hawkish pop may find sellers quickly.",
         "reactions": [
           {
-            "if_outcome": "Speech read as hawkish - no dilution of the 2% target, explicit willingness to act in September, pointed defence of Fed independence from Treasury",
-            "then_currency": "Likely supports the dollar with the sharpest move against the stretched longs; EUR/USD would probably be pressured back toward its 200SMA at 1.1627 and USD/JPY toward the upper half of its 156.68-163.91 range",
+            "if_outcome": "Bailey signals rising concern about second-round effects from the October Ofgem increase, moving closer to the hike dissenters",
+            "then_currency": "Would likely support sterling given how little is priced, with GBP/USD more likely to test the 1.3656 top of its 20d range",
             "likelihood": "possible"
           },
           {
-            "if_outcome": "Broad philosophical address on payments and frameworks with no September signal",
-            "then_currency": "Limited net FX impact; the dollar would likely stay hostage to the buyback story into month-end, with sub-1SD ranges more likely",
+            "if_outcome": "A structural keynote with no near-term policy content, as expected",
+            "then_currency": "Minimal GBP impact likely; sterling stays driven by the US payroll report later the same day",
             "likelihood": "more likely"
           },
           {
-            "if_outcome": "Speech read as dovish - AI-disinflation thesis developed, mandate language softened on labour-market grounds, silence on Treasury's intervention",
-            "then_currency": "Likely adds to dollar pressure and could see EUR/USD trade through the 1.1699 range high, with USD/JPY more likely to lose the 158.22 200SMA",
-            "likelihood": "possible"
-          }
-        ]
-      },
-      {
-        "event_id": "USD|Prelim Benchmark Payrolls Revision|2026-08-28T10:00",
-        "event": "BLS preliminary estimate of the 2026 annual benchmark revision to establishment-survey employment (March 2026 level), published with Q1 2026 QCEW",
-        "currency": "USD",
-        "consensus": "No published consensus; the anchor is last year's record -911K preliminary revision for March 2025. Read 'above consensus' as a materially smaller downward revision than that anchor, 'below consensus' as another very large downward revision.",
-        "evidence": [
-          {
-            "fact": "Pantheon Macroeconomics (Tombs, Allen) published ahead of the release that the benchmark is likely to show job gains overstated by roughly 200,000 on nonresponse bias - an order of magnitude smaller than the -911K precedent.",
-            "points": "above consensus",
-            "weight": "high"
-          },
-          {
-            "fact": "BLS modified the ARIMA component of the national birth-death model effective with the January 2026 estimates to incorporate current sample information; NBER work notes an analogous earlier adjustment reduced the size of the 2025 benchmark revision by about 200,000 jobs.",
-            "points": "above consensus",
-            "weight": "medium"
-          },
-          {
-            "fact": "Absolute benchmark revisions have averaged about 0.2% of total nonfarm employment over the past decade, roughly 300K, versus 0.6% last year.",
-            "points": "above consensus",
-            "weight": "medium"
-          },
-          {
-            "fact": "Persistent negative monthly revisions cut the other way: 27 of 35 revisions in the 36 months to December 2025 were downward, averaging -35K, and 2026 has continued the pattern (April -31K, May -43K, then a combined -103K to May and June with the July report).",
-            "points": "below consensus",
-            "weight": "medium"
-          },
-          {
-            "fact": "BLS is confirmed to release at 10:00 ET on 28 August, the same clock minute as Warsh's expected keynote.",
-            "points": "neutral",
-            "weight": "low"
-          }
-        ],
-        "lean": "above consensus",
-        "lean_rationale": "The only dated house estimate on the tape points to roughly -200K, and a documented birth-death model change works in the same direction, so the evidence leans toward a far smaller downward revision than the -911K anchor that has conditioned desks. Persistent negative monthly revisions are the main counterweight, and the historical dispersion around benchmark revisions is wide enough that this cannot be held with strong conviction.",
-        "confidence": "medium",
-        "confidence_reason": "One credible published estimate plus a methodology change align, but benchmark revisions have a wide error distribution and there is no consensus number against which the market can be said to be positioned.",
-        "whats_priced": "Very little in FX. The -911K precedent and the political controversy around BLS data have left desks braced for another large negative number, so a modest revision would be a quiet relief rather than a repricing event. The bigger practical issue is timing: a 10:00 ET release colliding with the Jackson Hole keynote means the number may simply be drowned out.",
-        "asymmetry": "Skewed to the downside tail. A revision materially worse than about -500K would revive the 'labour market much weaker than reported' narrative on top of July's -23K payrolls, likely pressuring the front end and the dollar and cutting September hike odds further. A -200K outcome is close to a non-event and would be crowded out by Warsh.",
-        "reactions": [
-          {
-            "if_outcome": "Revision near or beyond -700K",
-            "then_currency": "Likely dollar-negative through lower September hike odds; EUR/USD more likely to hold above 1.1699 and USD/JPY to lose the 158.22 200SMA, though a simultaneous hawkish keynote could neutralise it",
-            "likelihood": "possible"
-          },
-          {
-            "if_outcome": "Revision around -100K to -300K, in line with the Pantheon estimate",
-            "then_currency": "Modestly supportive for the dollar at the margin by removing a feared downside catalyst, but likely overwhelmed by the keynote in the same minute",
-            "likelihood": "more likely"
-          },
-          {
-            "if_outcome": "A positive or near-zero revision",
-            "then_currency": "Would be a genuine surprise and, combined with any hawkish tone from Warsh, could support the dollar into month-end against stretched EUR and GBP longs",
-            "likelihood": "less likely"
-          }
-        ]
-      },
-      {
-        "event_id": "USD|Treasury Sec Bessent Speaks|2026-08-24T14:00",
-        "event": "Treasury Secretary Bessent press conference, Treasury Department, 14:00 ET / 18:00 GMT",
-        "currency": "USD",
-        "consensus": "No numeric consensus. Billed as the unveiling of new Iran sanctions after Bessent's FT op-ed warning of an 'economic D-Day'; buyback and debt-management questions are near-certain.",
-        "evidence": [
-          {
-            "fact": "Bessent confirmed on CNBC on 20 August that he would hold a Monday press conference to detail planned Iran measures, and Trump has separately threatened an 'economic D-Day' - so the headline itself is largely telegraphed.",
-            "points": "neutral",
-            "weight": "high"
-          },
-          {
-            "fact": "Treasury announced on 19 August it would at least double long-end buybacks to $4bn per operation from 9 September; the 30y had hit a 19-year high, the relief rally was fully erased within 24 hours (30y back above 5.24%), and Bessent said the next day he is ready to go beyond $4bn.",
-            "points": "below consensus",
-            "weight": "high"
-          },
-          {
-            "fact": "This buyback/fiscal-dominance theme, not rate expectations, is what Reuters and others identify as having driven the dollar to a three-month low against the euro on 20-21 August.",
-            "points": "below consensus",
-            "weight": "high"
-          },
-          {
-            "fact": "Energy backdrop: Brent closed 94.39 and WTI 87.06 on 21 August, retail gasoline is 4.10/gal - a record for the date - with Hormuz disruption ongoing, so sanctions escalation carries an oil-upside channel.",
-            "points": "neutral",
-            "weight": "medium"
-          },
-          {
-            "fact": "Iran's president has publicly framed a memorandum of understanding with the US as a victory and oil eased through the first half of August on deal expectations, so the sanctions message could equally arrive alongside de-escalation language.",
-            "points": "neutral",
-            "weight": "medium"
-          }
-        ],
-        "lean": "no clear lean",
-        "lean_rationale": "There is no forecastable quantity here and the two channels pull in opposite directions: more explicit yield management is dollar-negative through the institutional-credibility channel that is already driving price, while harder sanctions and a higher oil price are more typically dollar-supportive versus energy importers. Direction depends on which thread he emphasises.",
-        "confidence": "low",
-        "confidence_reason": "Unscripted headline event with two offsetting transmission channels and a topic set (sanctions) that is already partly telegraphed.",
-        "whats_priced": "The sanctions announcement is expected and the buyback has already been faded once - yields returned above pre-announcement levels within a day, which is itself the market's verdict. What is not priced is the scale and secondary-sanctions reach of the Iran measures, any commitment to expand buybacks beyond $4bn, and any comment on the dollar or on Fed policy that could sharpen the Treasury-Fed tension ahead of Jackson Hole.",
-        "asymmetry": "The dollar-negative tail looks larger: leaning further into long-end purchases would feed exactly the narrative that took DXY to 98.67, and the market has shown it will test it. Oil-driven risk-off would be more visible in USD/JPY, where the 1SD day is 0.67% and Japan's terms of trade are directly exposed, and in commodity FX, than in DXY.",
-        "reactions": [
-          {
-            "if_outcome": "He signals buybacks beyond $4bn per operation or otherwise deepens the yield-management stance",
-            "then_currency": "Likely keeps the dollar under pressure, with EUR/USD more likely to trade through the 1.1699 range high and gold extending",
-            "likelihood": "possible"
-          },
-          {
-            "if_outcome": "Aggressive Iran sanctions including secondary measures, with crude spiking",
-            "then_currency": "More likely supports USD/JPY given Japan's energy import exposure, and would tend to support the dollar against European crosses on risk-off, partly offsetting the fiscal theme",
-            "likelihood": "possible"
-          },
-          {
-            "if_outcome": "Sanctions detail broadly as trailed, no new buyback commitment, no dollar or Fed commentary",
-            "then_currency": "Limited FX impact; the dollar would likely mark time into Tuesday's confidence print and Wednesday's PCE",
-            "likelihood": "more likely"
-          }
-        ]
-      },
-      {
-        "event_id": "USD|CB Consumer Confidence|2026-08-25T10:00",
-        "event": "Conference Board Consumer Confidence Index, August 2026",
-        "currency": "USD",
-        "consensus": "90.3 (previous 90.8)",
-        "evidence": [
-          {
-            "fact": "University of Michigan preliminary August sentiment fell about 8% to 51.0 against a 54.5-55.0 consensus, ending two months of improvement, with expectations at 50.6 and year-ahead inflation expectations up to 4.3%.",
-            "points": "below consensus",
-            "weight": "high"
-          },
-          {
-            "fact": "AAA reported the national average at $4.10/gal on 20 August, up 3 cents on the week and the highest ever for that date, with crude in the $80s-$90s on Strait of Hormuz instability - the single most reliable coincident driver of household sentiment.",
-            "points": "below consensus",
-            "weight": "high"
-          },
-          {
-            "fact": "July payrolls, published 7 August inside the survey window, showed employers shedding 23,000 jobs against expectations of an 83-85K gain, with 103,000 of downward revisions to prior months.",
-            "points": "below consensus",
-            "weight": "medium"
-          },
-          {
-            "fact": "July's internals were already deteriorating: headline 90.8 missed a 92.4 consensus, the Present Situation index fell 3.6pts to 114.9 (weakest since February 2021) and the jobs plentiful-minus-hard-to-get differential narrowed to +3.1pp.",
-            "points": "below consensus",
-            "weight": "medium"
-          },
-          {
-            "fact": "Hard activity and labour data have been firm: initial claims 206K for the week to 15 August (below the 210K consensus, following July's near-60-year low of 189K), Philly Fed 47.4 in August (a five-year high), and the August flash composite PMI at 56.0, a 52-month high.",
-            "points": "above consensus",
-            "weight": "medium"
-          },
-          {
-            "fact": "The Conference Board series is more labour-market-weighted and historically far less gasoline- and headline-sensitive than the Michigan survey, so it does not mechanically follow an 8% Michigan drop.",
-            "points": "neutral",
-            "weight": "medium"
-          }
-        ],
-        "lean": "below consensus",
-        "lean_rationale": "Four independent inputs inside the reference period - a sharp Michigan miss, record-for-date pump prices, a negative payroll print with large back revisions, and an already-weakest-since-2021 Present Situation reading - point the same way, and the series itself undershot in July. The firm claims/PMI/Philly Fed set is the genuine counterweight and is why this is a modest rather than aggressive lean; the Conference Board index has been unusually anchored around 90 and a one-point miss is not tradeable on its own.",
-        "confidence": "medium",
-        "confidence_reason": "Several aligned leading signals within the survey window, but the Michigan-to-Conference Board mapping is loose and the labour-market inputs the index weights most heavily are still resilient.",
-        "whats_priced": "Sentiment surveys have been heavily discounted as a growth signal through 2026 - consumption has kept running well ahead of confidence, with Q2 consumer spending at 3.2%. Consensus at 90.3 already embeds a further slide. The component the desk should watch is the labour differential, treated as a lead for the 4 September payroll report, rather than the headline.",
-        "asymmetry": "Given how weak Michigan was, a print at or above 90.8 would be the genuine surprise and, into an oversold DXY at the bottom of its 20-day range, would likely produce more dollar reaction than an equivalent-sized miss. A soft headline with a stable labour differential is close to a non-event; a soft headline with the differential collapsing toward zero is the combination that matters for September pricing.",
-        "reactions": [
-          {
-            "if_outcome": "Headline below roughly 88 with the labour differential narrowing further",
-            "then_currency": "Likely mild dollar pressure via lower September hike odds, though with EUR/USD RSI at 74.2 and at the 1.1699 range high, follow-through above the range may be limited",
-            "likelihood": "possible"
-          },
-          {
-            "if_outcome": "Headline near 90 with a stable labour differential",
-            "then_currency": "Minimal FX impact; sub-1SD ranges more likely as the market waits for Wednesday's PCE",
-            "likelihood": "more likely"
-          },
-          {
-            "if_outcome": "Headline at or above 91",
-            "then_currency": "Would likely give the dollar a modest lift against stretched EUR and GBP longs, with DXY more likely to attempt a move back toward the 99.19 200SMA",
+            "if_outcome": "Bailey leans dovish, stressing energy-driven inflation and weak demand",
+            "then_currency": "Would likely weigh on sterling, though with only ~15% priced for September the downside from rates alone is limited; GBP/EUR crosses are the cleaner expression than GBP/USD on a payrolls day",
             "likelihood": "possible"
           }
         ]
@@ -622,187 +693,232 @@
     ],
     "resolutions": [
       {
-        "event_id": "USD|FOMC Meeting Minutes|2026-08-19T14:00",
-        "actual": "Minutes of the 28-29 July meeting released 19 Aug: many participants judged further tightening could become necessary if inflation fails to moderate; the record detailed the three dissents for an immediate hike. September 25bp hike probability afterwards sat at roughly 31-32% (Kalshi 32c), versus the ~25-31% benchmark, and the dollar fell to a three-month low that week.",
-        "outcome": "unclear",
-        "note": "The content was widely characterised as hawkish (ING: 'Fed minutes lean hawkish, but we don't expect a hike'), which is directionally consistent with the call, but the benchmark was explicitly pricing-based and pricing barely moved - prediction-market commentary described the minutes as supporting the existing ~31% probability. Since the hawkishness was already discounted and the dollar weakened on the Treasury buyback story instead, the lean cannot honestly be scored a hit."
-      },
-      {
-        "event_id": "USD|President Trump Speaks|2026-08-19T14:30",
-        "actual": "Trump hosted cryptocurrency and finance leaders in the Roosevelt Room, with remarks touching on digital assets, prediction markets, North Korea and interest rates; separately he said the US is not in talks with Iran. No single FX-defining headline emerged from the event itself.",
-        "outcome": "unclear",
-        "note": "Lean was 'no clear lean', which resolves unclear by construction. The topic set skewed to crypto and foreign policy rather than the Canada tariff pause anticipated in the note."
-      },
-      {
-        "event_id": "USD|Philly Fed Manufacturing Index|2026-08-20T08:30",
-        "actual": "47.4 in August versus a 24.1 consensus (Haver cites expectations of 25.0), up from 41.4 in July and a five-year high; the ISM-adjusted index eased to 57.5 from 58.1.",
+        "event_id": "USD|Core PCE Price Index m/m|2026-08-26T08:30",
+        "actual": "Core PCE +0.2% m/m (about +0.25% unrounded per Employ America), core y/y 3.3%, unchanged from June; headline +0.2% m/m and 3.7% y/y",
         "outcome": "hit",
-        "note": "Large beat on the side the lean called, though the call was held at low confidence and the magnitude was far beyond anything the evidence supported."
+        "note": "Lean was 'in line' and core landed exactly on consensus on both m/m and y/y (CNBC/Yahoo: both readings as expected). The caveat: our brief expected core y/y to ease to about 3.2%; it held at 3.3%, and the headline surprised 0.1pp high on energy. Employ America flagged the m/m strength as concentrated in portfolio management fees, healthcare and airfares."
       },
       {
-        "event_id": "USD|Unemployment Claims|2026-08-20T08:30",
-        "actual": "206K for the week ending 15 August versus a 210K consensus; prior week revised up to 212K from 209K; continuing claims 1.799mn.",
-        "outcome": "hit",
-        "note": "Printed below consensus as the lean called, consistent with the low-layoff pattern after July's 189K near-60-year low. The 4-week average still rose to 204K."
-      },
-      {
-        "event_id": "GBP|Retail Sales m/m|2026-08-21T02:00",
-        "actual": "ONS: retail sales volumes fell 0.5% m/m in July 2026, exactly matching the -0.5% consensus; total spend including online fell 0.6% m/m with online sales values down 3.9%, while supermarkets and alcoholic drinks benefited from hot weather.",
+        "event_id": "USD|Prelim GDP q/q",
+        "actual": "Q2 real GDP unrevised at +1.5% annualised (BEA second estimate, 26 Aug; JEC calculation puts it at +1.48%, -0.02pp versus the advance estimate)",
         "outcome": "unclear",
-        "note": "Printed exactly on consensus, so the 'above consensus' lean neither hit nor missed. The hot-weather food and drink support the note relied on was present but offset by a sharp online drop."
+        "note": "Lean was 'below consensus' at low confidence; the print matched the 1.5% consensus to the reported decimal, so this scores as in line rather than a miss. Composition went the other way from our reasoning: consumer spending and business investment were revised up."
       },
       {
-        "event_id": "EUR|French Flash Manufacturing PMI|2026-08-21T03:15",
-        "actual": "HCOB France flash manufacturing PMI 51.5 in August versus a 50.0-50.1 consensus, up from 49.8 in July and back into expansion; the composite nonetheless fell to 48.8 from 49.4 on service-sector weakness.",
-        "outcome": "miss",
-        "note": "Clear miss - the lean called below consensus and manufacturing beat by about 1.4pts. Notably the composite did weaken, so the underlying French growth concern was right but expressed in the wrong sub-index."
+        "event_id": "USD|Fed Chairman Warsh Speaks|2026-08-28T10:00",
+        "actual": "Hawkish keynote. Warsh said inflation's 'underlying trends' had not improved and that summer's better readings 'do not' settle the matter, called price stability 'not self-executing' and inflation the predominant focus, praised real-activity strength and downplayed labour-market risk; September hike odds rose to roughly a coin flip from about a third",
+        "outcome": "unclear",
+        "note": "Our lean was 'no clear lean' at low confidence, so by construction this is unscored. Honest read: the neutral-tone benchmark (roughly 69% of BofA-surveyed managers) was wrong-footed and we did not call the hawkish direction. Bond-market reaction was described as muted despite the repricing."
+      },
+      {
+        "event_id": "USD|Prelim Benchmark Payrolls Revision|2026-08-28T10:00",
+        "actual": "-79,000 (-0.1%) for the March 2026 benchmark level, concentrated in retail and several other major sectors",
+        "outcome": "hit",
+        "note": "Lean was 'above consensus', i.e. a materially smaller downward revision than the -911K March 2025 anchor. -79K is an order of magnitude smaller and among the mildest preliminary revisions on record; Bloomberg reported the median economist projection looked for a larger markdown."
+      },
+      {
+        "event_id": "USD|Treasury Sec Bessent Speaks|2026-08-24T14:00",
+        "actual": "Bessent unveiled 'Operation Economic Outcast', a sustained sanctions campaign against Iran and its 'enablers', and said on secondary targets that 'no one is above the reach of U.S. sanctions'; Iran said it was 'fully prepared'",
+        "outcome": "unclear",
+        "note": "Lean was 'no clear lean' at low confidence; no numeric benchmark existed. The event delivered the pre-trailed sanctions escalation rather than a debt-management surprise, and energy prices remain the transmission channel into G4 inflation prints."
+      },
+      {
+        "event_id": "USD|CB Consumer Confidence|2026-08-25T10:00",
+        "actual": "89.4 in August versus 90.2-90.3 expected; July revised down to 90.2 from 90.8; Expectations 68.2 from 74.0, Present Situation 121.2 from 114.4",
+        "outcome": "hit",
+        "note": "Lean was 'below consensus' and the index printed 0.8-0.9pt below, a seven-month low, with the miss driven entirely by the Expectations component (labour-market and business-conditions pessimism, elevated mentions of energy prices and geopolitics). Market impact was negligible, as expected for this series."
       }
     ],
     "sources": [
       {
-        "title": "Producer Price Index News Release, July 2026 (portfolio management +6.5%, core ex food/energy/trade +0.4%)",
-        "publisher": "US Bureau of Labor Statistics",
-        "url": "https://www.bls.gov/news.release/ppi.nr0.htm"
-      },
-      {
-        "title": "US PCE Estimates following July CPI (Pantheon 0.16%, Oxford 0.2%, Goldman 0.23%)",
-        "publisher": "Newsquawk",
-        "url": "https://www.newsquawk.com/headlines/us-pce-estimates-following-july-cpi"
-      },
-      {
-        "title": "July PPI Flat Headline Hides 0.4% Core Surge Heading Into August 26 PCE (Capital Economics ~0.21% core PCE)",
-        "publisher": "Tech Times",
-        "url": "https://www.techtimes.com/articles/324287/20260813/july-ppi-flat-headline-hides-04-core-surge-heading-august-26-pce.htm"
-      },
-      {
-        "title": "CPI inflation report July 2026: prices rose 0.1%, core 0.2%, annual 3.4%",
-        "publisher": "CNBC",
-        "url": "https://www.cnbc.com/2026/08/12/cpi-inflation-report-july-2026.html"
-      },
-      {
-        "title": "Impact of the BEA Methodological Changes on PCE Inflation (portfolio management, legal services, software)",
-        "publisher": "UnderlyingInflation.com",
-        "url": "https://underlyinginflation.com/impact-of-the-bea-methodological-changes-on-pce/"
-      },
-      {
-        "title": "GDP (Advance Estimate), 2nd Quarter 2026 - 1.5% annualised; next release 26 August",
-        "publisher": "US Bureau of Economic Analysis",
-        "url": "https://www.bea.gov/news/2026/gdp-advance-estimate-2nd-quarter-2026"
-      },
-      {
-        "title": "GDP (Second Estimate) and Corporate Profits, 1st Quarter 2026 - revised down 0.4pp from advance",
-        "publisher": "US Bureau of Economic Analysis",
-        "url": "https://www.bea.gov/news/2026/gdp-second-estimate-and-corporate-profits-1st-quarter-2026"
-      },
-      {
-        "title": "US wholesale inventories revised slightly lower in June (+0.2% vs +0.3% advance)",
-        "publisher": "Reuters via GV Wire",
-        "url": "https://gvwire.com/2026/08/06/us-wholesale-inventories-revised-slightly-lower-in-june/"
-      },
-      {
-        "title": "Jackson Hole 2026: What to Watch When Warsh Steps to the Podium Friday (69% of BofA-surveyed managers expect neutral)",
-        "publisher": "Tech Times",
-        "url": "https://www.techtimes.com/articles/325228/20260821/jackson-hole-2026-what-watch-when-warsh-steps-podium-friday.htm"
-      },
-      {
-        "title": "Jackson Hole hype outruns Warsh playbook of saying as little as possible",
-        "publisher": "InvestingLive",
-        "url": "https://investinglive.com/central-banks/jackson-hole-hype-outruns-warsh-playbook-of-saying-as-little-as-possible/"
-      },
-      {
-        "title": "BLS benchmark revision could erase 200K reported jobs, Pantheon Macro warns",
-        "publisher": "Seeking Alpha",
-        "url": "https://seekingalpha.com/news/4635881-bls-benchmark-revision-could-erase-200k-reported-jobs-pantheon-macro-warns"
-      },
-      {
-        "title": "Employment Situation, July 2026 - preliminary benchmark revision to be published 28 August at 10:00 ET with Q1 2026 QCEW",
-        "publisher": "US Bureau of Labor Statistics",
+        "title": "The Employment Situation \u2014 July 2026",
+        "publisher": "U.S. Bureau of Labor Statistics",
         "url": "https://www.bls.gov/news.release/empsit.nr0.htm"
       },
       {
-        "title": "CES State and Area Benchmark Article - birth-death model ARIMA change effective with January 2026 estimates",
-        "publisher": "US Bureau of Labor Statistics",
-        "url": "https://www.bls.gov/sae/publications/benchmark-article/annual-benchmark-article.htm"
+        "title": "CES Preliminary Benchmark Announcement / preliminary benchmark revision -79K",
+        "publisher": "U.S. Bureau of Labor Statistics / Bloomberg",
+        "url": "https://www.bloomberg.com/news/articles/2026-08-28/us-job-growth-marked-down-79-000-in-preliminary-estimate"
       },
       {
-        "title": "US Consumer Confidence Edged Down in July (90.8; Present Situation 114.9; labour differential +3.1pp)",
-        "publisher": "The Conference Board via PR Newswire",
-        "url": "https://www.prnewswire.com/news-releases/us-consumer-confidence-edged-down-in-july-302836484.html"
+        "title": "Keynote remarks by Chairman Warsh at the 2026 Jackson Hole Economic Policy Symposium",
+        "publisher": "Federal Reserve Board",
+        "url": "https://www.federalreserve.gov/newsevents/speech/warsh20260828a.htm"
       },
       {
-        "title": "University of Michigan Survey of Consumers, August 2026 preliminary - 51.0 vs 55.0 expected",
-        "publisher": "Neil's Newsletter",
-        "url": "https://neilsethi.substack.com/p/university-of-michigan-survey-of-0e4"
-      },
-      {
-        "title": "High Crude Oil Prices Push Up National Average - $4.10/gal, record for the date (20 August 2026)",
-        "publisher": "AAA",
-        "url": "https://gasprices.aaa.com/high-crude-oil-prices-push-up-national-average/"
-      },
-      {
-        "title": "Treasury yields rebound, wiping out the decline following Bessent's intervention (30y 5.248%)",
+        "title": "September Fed decision is now a coin flip as rate hike odds increase post Warsh",
         "publisher": "CNBC",
-        "url": "https://www.cnbc.com/2026/08/20/bond-yields-edge-higher-as-traders-digest-treasury-debt-buyback-plan.html"
+        "url": "https://www.cnbc.com/2026/08/28/-september-fed-decision-now-a-coin-flip-as-rate-hike-odds-increase.html"
       },
       {
-        "title": "Dollar falls to three-month low on Treasury buyback worries",
-        "publisher": "Reuters via Yahoo Finance",
-        "url": "https://finance.yahoo.com/markets/currencies/articles/dollar-falls-as-investors-weigh-us-treasurys-rescue-efforts-053406923.html"
+        "title": "GDP (Second Estimate) and Corporate Profits, 2nd Quarter 2026",
+        "publisher": "U.S. Bureau of Economic Analysis",
+        "url": "https://www.bea.gov/news/2026/gdp-second-estimate-and-corporate-profits-2nd-quarter-2026"
       },
       {
-        "title": "US Treasury Secretary Bessent to Hold Press Conference on Monday (2pm ET, Iran sanctions)",
-        "publisher": "Reuters via US News",
-        "url": "https://www.usnews.com/news/top-news/articles/2026-08-21/us-treasury-secretary-bessent-to-hold-press-conference-on-monday"
+        "title": "July 2026 PCE inflation data: headline above forecast, core in line",
+        "publisher": "Quartz / Yahoo Finance",
+        "url": "https://finance.yahoo.com/economy/policy/articles/july-2026-pce-inflation-data-124921061.html"
       },
       {
-        "title": "Fed decision in September - 32% implied probability of a 25bp hike",
-        "publisher": "Kalshi",
-        "url": "https://kalshi.com/markets/kxfeddecision/fed-meeting/kxfeddecision-26sep"
+        "title": "July 2026 Core-Cast Post PCE",
+        "publisher": "Employ America",
+        "url": "https://www.employamerica.org/core-cast/july-2026-core-cast-post-pce/"
       },
       {
-        "title": "US Philly Fed Manufacturing Index Rose to Five-Year High in August (47.4)",
-        "publisher": "Haver Analytics",
-        "url": "https://www.haver.com/articles/u-s-philly-fed-manufacturing-index-rose-to-five-year-high-in-august"
+        "title": "August 2026 Empire State Manufacturing Survey",
+        "publisher": "Federal Reserve Bank of New York",
+        "url": "https://www.newyorkfed.org/medialibrary/media/survey/empire/empire2026/2026_08_empire-state-manufacturing-survey.pdf"
       },
       {
-        "title": "US initial jobless claims 206K vs 210K expected",
-        "publisher": "InvestingLive",
-        "url": "https://investinglive.com/news/us-initial-jobless-claims-206k-vs-210k-expected/"
+        "title": "Philadelphia Fed factory activity jumped to 47.4 in August versus 25.0 expected",
+        "publisher": "Benzinga",
+        "url": "https://www.benzinga.com/markets/guidance/26/08/61356671/philadelphia-fed-manufacturing-august-2026-optimism-1983-made-etf"
       },
       {
-        "title": "Retail sales, Great Britain: July 2026 (volumes -0.5% m/m)",
-        "publisher": "Office for National Statistics",
-        "url": "https://www.ons.gov.uk/businessindustryandtrade/retailindustry/bulletins/retailsales/july2026"
+        "title": "S&P Global manufacturing PMI flash estimate for August 53.2 versus 53.9 estimate",
+        "publisher": "investingLive",
+        "url": "https://investinglive.com/news/s-p-global-manufacturing-pmi-flash-estimate-for-august-53-2-versus-53-9-estimate/"
       },
       {
-        "title": "France HCOB Manufacturing PMI above expectations (50) in August: actual 51.5",
+        "title": "Chicago PMI Crashes to 47.1, UMich Sentiment 51.7 August 2026",
+        "publisher": "TFTC",
+        "url": "https://www.tftc.io/chicago-pmi-august-2026-umich-consumer-sentiment-stagflation"
+      },
+      {
+        "title": "ISM Manufacturing Survey, 3 August 2026 (July PMI 55.6)",
+        "publisher": "PNC Economics Research",
+        "url": "https://www.pnc.com/content/dam/pnc-com/pdf/aboutpnc/EconomicReports/EconomicUpdates/2026/PNC_Economics_Research_ISM_Manufacturing_3_August_2026.pdf"
+      },
+      {
+        "title": "U.S. Jobless Claims Fall to 203,000 (week ended 22 Aug)",
+        "publisher": "Department of Labor via yournews",
+        "url": "https://yournews.com/2026/08/27/7178667/u-s-jobless-claims-fall-to-203000-as-markets-await-major/"
+      },
+      {
+        "title": "US Jobless Claims Edge Lower in Sign of Steady Job Market (206K, week ended 15 Aug)",
+        "publisher": "Bloomberg",
+        "url": "https://www.bloomberg.com/news/articles/2026-08-20/us-weekly-jobless-claims-edged-lower-to-206-000-in-latest-week"
+      },
+      {
+        "title": "ADP National Employment Report Preliminary Estimate for August 8, 2026",
+        "publisher": "ADP Research",
+        "url": "https://mediacenter.adp.com/2026-08-25-ADP-National-Employment-Report-Preliminary-Estimate-for-August-8,-2026"
+      },
+      {
+        "title": "ADP National Employment Report: private employment +44,000 in July; pay +4.4% y/y",
+        "publisher": "ADP Research / PR Newswire",
+        "url": "https://www.prnewswire.com/news-releases/adp-national-employment-report-private-sector-employment-increased-by-44-000-jobs-in-july-annual-pay-was-up-4-4-302843676.html"
+      },
+      {
+        "title": "U.S. Employment (July 2026) \u2014 unemployment 4.1%, participation 61.4%, AHE +0.1%",
+        "publisher": "TD Economics",
+        "url": "https://economics.td.com/us-employment"
+      },
+      {
+        "title": "Labor Market Recap July 2026 (3m/3m wage growth 2.5%)",
+        "publisher": "Employ America",
+        "url": "https://www.employamerica.org/jobs-day/labor-market-recap-july-2026/"
+      },
+      {
+        "title": "US Employment Report Preview (August payrolls +90K)",
+        "publisher": "Capital Economics",
+        "url": "https://www.capitaleconomics.com/publication-group/us-employment-report-preview"
+      },
+      {
+        "title": "US Conference Board August consumer confidence 89.4 vs 90.2 expected",
+        "publisher": "investingLive",
+        "url": "https://investinglive.com/news/us-conference-board-august-consumer-confidence-89-4-vs-90-2-expected/"
+      },
+      {
+        "title": "Annual inflation up to 2.9% in the euro area (July 2026 final)",
+        "publisher": "Eurostat",
+        "url": "https://ec.europa.eu/eurostat/en/web/products-euro-indicators/w/2-19082026-ap"
+      },
+      {
+        "title": "Germany August preliminary CPI +2.9% y/y, core 2.4%",
+        "publisher": "investingLive / Destatis",
+        "url": "https://investinglive.com/news/germany-august-preliminary-cpi-xx-vs-3-0-y-y-expected/"
+      },
+      {
+        "title": "Germany flash HICP growth remains slower than expected at 2.9% in August",
         "publisher": "FXStreet",
-        "url": "https://www.fxstreet.com/news/france-hcob-manufacturing-pmi-above-expectations-50-in-august-actual-515-202608210715"
+        "url": "https://www.fxstreet.com/news/germany-flash-hicp-growth-remains-slower-than-expected-at-29-in-august-202608311202"
       },
       {
-        "title": "US S&P Global Flash PMI - August 2026 (composite 56.0, services 56.8, manufacturing 53.2)",
-        "publisher": "Neil's Newsletter",
-        "url": "https://neilsethi.substack.com/p/us-s-and-p-flash-pmi-august-2026"
+        "title": "Flash estimate of the CPI and HICP, August 2026 (HICP 4.5%, core 3.2%)",
+        "publisher": "INE (Spain)",
+        "url": "https://www.ine.es/dyngs/Prensa/en/adIPC0826.htm"
       },
       {
-        "title": "Core PCE Inflation at 3.3% in June, monthly core +0.1% vs 0.2% expected",
-        "publisher": "Advisor Perspectives",
-        "url": "https://www.advisorperspectives.com/dshort/updates/2026/07/30/core-pce-inflation-at-3-3-in-june-edging-down-from-may"
+        "title": "France August preliminary CPI +2.4% y/y, HICP +2.7%",
+        "publisher": "investingLive",
+        "url": "https://investinglive.com/news/france-august-preliminary-cpi-xx-vs-2-4-y-y-expected/"
+      },
+      {
+        "title": "ECB set for September rate hike with no appetite for more",
+        "publisher": "RTE / Reuters",
+        "url": "https://www.rte.ie/news/business/2026/0826/1589253-european-cental-bank-preview/"
+      },
+      {
+        "title": "EUR/USD near two-week low: Dollar regains favour with markets",
+        "publisher": "FXStreet",
+        "url": "https://www.fxstreet.com/analysis/eur-usd-near-two-week-low-dollar-regains-favour-with-markets-202608311000"
+      },
+      {
+        "title": "Bank Rate maintained at 3.75% \u2014 July 2026 Monetary Policy Summary and Minutes (6-3)",
+        "publisher": "Bank of England",
+        "url": "https://www.bankofengland.co.uk/monetary-policy-summary-and-minutes/2026/july-2026"
+      },
+      {
+        "title": "Upcoming events \u2014 Andrew Bailey keynote, LSE TRIUM Anniversary Conference, 4 September (9.50am)",
+        "publisher": "Bank of England",
+        "url": "https://www.bankofengland.co.uk/events/upcoming-events"
+      },
+      {
+        "title": "Consumer price inflation, UK: July 2026 (CPI 2.9%)",
+        "publisher": "Office for National Statistics",
+        "url": "https://www.ons.gov.uk/economy/inflationandpriceindices/bulletins/consumerpriceinflation/july2026"
+      },
+      {
+        "title": "British Pound edges higher despite delaying BoE rate hike expectations (under 4bp priced for September)",
+        "publisher": "FXStreet",
+        "url": "https://www.fxstreet.com/news/british-pound-edges-higher-despite-delaying-boe-rate-hike-expectations-202608280140"
+      },
+      {
+        "title": "GBP/USD Gains Face a Fiscal Test as UK Gilt Yields Hold Above 5%",
+        "publisher": "Investing.com",
+        "url": "https://www.investing.com/analysis/gbpusd-gains-face-a-fiscal-test-as-uk-gilt-yields-hold-above-5-200686530"
+      },
+      {
+        "title": "Fed chair Warsh, concerned about inflation, says bank may have 'work to do'",
+        "publisher": "The Washington Post",
+        "url": "https://www.washingtonpost.com/business/2026/08/28/fed-chair-warsh-speaks-jackson-hole-conference/"
+      },
+      {
+        "title": "Treasury Secretary Scott Bessent unveils new U.S. economic sanctions to isolate Iran",
+        "publisher": "NPR",
+        "url": "https://www.npr.org/2026/08/24/g-s1-139743/treasury-secretary-scott-bessent-to-unveil-new-economic-sanctions-on-iran"
+      },
+      {
+        "title": "How to interpret the annual jobs revision",
+        "publisher": "The Budget Lab, Yale",
+        "url": "https://budgetlab.yale.edu/research/how-interpret-annual-jobs-revision"
       }
     ],
     "_usage": {
-      "input_tokens": 1658256,
-      "output_tokens": 33293,
+      "input_tokens": 425215,
+      "output_tokens": 28283,
       "model": "claude-opus-5"
     }
   },
   "forecast_error": null,
   "record": {
-    "scored": 3,
-    "hits": 2,
+    "scored": 6,
+    "hits": 5,
     "misses": 1,
-    "unclear": 3,
-    "pending": 6
+    "unclear": 5,
+    "pending": 7
   },
   "focus": null
 }
