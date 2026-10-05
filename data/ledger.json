@@ -121,9 +121,10 @@
           "at": "2026-08-24T06:52:19+00:00"
         }
       ],
-      "outcome": null,
-      "actual": null,
-      "note": null
+      "outcome": "unclear",
+      "actual": "1.5% q/q annualised (BEA second estimate, 26 Aug 2026; 1.48% unrounded, revised down 0.02pt from the advance estimate)",
+      "note": "Printed exactly in line with the 1.5% consensus, so the 'below consensus' lean neither hit nor missed at the rounded headline \u2014 the unrounded 0.02pt downward revision is not a scoreable surprise. Worth recording that the direction later went the other way: BEA's third estimate on 30 Sep revised Q2 up sharply to 2.2%, with Q1 lifted to 2.5%.",
+      "resolved_at": "2026-10-05T13:10:40+00:00"
     },
     {
       "event_id": "USD|Fed Chairman Warsh Speaks|2026-08-28T10:00",
@@ -225,9 +226,10 @@
           "at": "2026-08-31T12:19:21+00:00"
         }
       ],
-      "outcome": null,
-      "actual": null,
-      "note": null
+      "outcome": "miss",
+      "actual": "54.6 (ISM, 1 Sep 2026) vs 55.2 consensus, down from 55.6",
+      "note": "Our 'above consensus' lean at medium confidence was wrong \u2014 the index fell a full point and undershot consensus by 0.6. New orders fell to 53.7 from 56.7; prices stayed at 71.1. A clear scoring loss.",
+      "resolved_at": "2026-10-05T13:10:40+00:00"
     },
     {
       "event_id": "EUR|Core CPI Flash Estimate y/y|2026-09-01T05:00",
@@ -245,9 +247,10 @@
           "at": "2026-08-31T12:19:21+00:00"
         }
       ],
-      "outcome": null,
-      "actual": null,
-      "note": null
+      "outcome": "miss",
+      "actual": "2.4% y/y core (HICP ex energy, food, alcohol & tobacco), down from 2.5% (Eurostat flash, 1 Sep 2026)",
+      "note": "Consensus was 2.5% and our lean was 'in line'; the flash came in a tenth below. Narrow, but it printed off consensus on the downside, so scoring it as a miss rather than unclear. Headline HICP meanwhile jumped to 3.3% on a 14.3% y/y energy rate.",
+      "resolved_at": "2026-10-05T13:10:40+00:00"
     },
     {
       "event_id": "USD|Non-Farm Employment Change|2026-09-04T08:30",
@@ -265,9 +268,10 @@
           "at": "2026-08-31T12:19:21+00:00"
         }
       ],
-      "outcome": null,
-      "actual": null,
-      "note": null
+      "outcome": "unclear",
+      "actual": "+162K (BLS, 4 Sep 2026) vs +53-58K consensus",
+      "note": "The 'no clear lean' call is unscoreable by construction. For the record the print was a very large upside surprise \u2014 roughly triple consensus \u2014 so the low-confidence agnostic stance cost us a strong signal, even if it was not a wrong call. Note the August figure was subsequently revised down in the 2 Oct report.",
+      "resolved_at": "2026-10-05T13:10:40+00:00"
     },
     {
       "event_id": "USD|Average Hourly Earnings m/m|2026-09-04T08:30",
@@ -285,9 +289,10 @@
           "at": "2026-08-31T12:19:21+00:00"
         }
       ],
-      "outcome": null,
-      "actual": null,
-      "note": null
+      "outcome": "hit",
+      "actual": "+0.3% m/m (BLS; confirmed in the Real Earnings release for August 2026, 11 Sep)",
+      "note": "Consensus 0.3%, lean 'in line', printed 0.3%. Scoring this as a hit because the lean explicitly called an in-line print; real average hourly earnings fell 0.1% m/m as CPI outpaced wages.",
+      "resolved_at": "2026-10-05T13:10:40+00:00"
     },
     {
       "event_id": "USD|Unemployment Rate|2026-09-04T08:30",
@@ -305,9 +310,10 @@
           "at": "2026-08-31T12:19:21+00:00"
         }
       ],
-      "outcome": null,
-      "actual": null,
-      "note": null
+      "outcome": "hit",
+      "actual": "4.1% (BLS household survey, 4 Sep 2026)",
+      "note": "Consensus 4.1%, lean 'in line', printed 4.1% unchanged. Same scoring convention as AHE: an explicit in-line call that printed in line. (It has since risen to 4.2% in the September report.)",
+      "resolved_at": "2026-10-05T13:10:40+00:00"
     },
     {
       "event_id": "GBP|BOE Gov Bailey Speaks|2026-09-04T04:50",
@@ -325,16 +331,137 @@
           "at": "2026-08-31T12:19:21+00:00"
         }
       ],
+      "outcome": "unclear",
+      "actual": "Keynote 'The institutional form of independent central banks: from history to contemporary challenges', LSE TRIUM Anniversary Conference, published 4 Sep 2026",
+      "note": "The speech was exactly the structural, institutional benchmark described \u2014 central bank independence, accountability and legitimacy \u2014 with no near-term policy signal on the 17 September decision. The 'no clear lean' call was unscoreable but the characterisation of the event was correct.",
+      "resolved_at": "2026-10-05T13:10:40+00:00"
+    },
+    {
+      "event_id": "USD|ISM Services PMI|2026-10-05T10:00",
+      "event": "US ISM Services PMI, September 2026 (ISM, 10:00 ET / 14:00 GMT, 5 Oct)",
+      "currency": "USD",
+      "when_utc": "2026-10-05T14:00+00:00",
+      "consensus": "55.1 (previous 55.4)",
+      "lean": "above consensus",
+      "confidence": "low",
+      "called_at": "2026-10-05T13:10:40+00:00",
+      "revisions": [
+        {
+          "lean": "above consensus",
+          "confidence": "low",
+          "at": "2026-10-05T13:10:40+00:00"
+        }
+      ],
+      "outcome": null,
+      "actual": null,
+      "note": null
+    },
+    {
+      "event_id": "JPY|BOJ Gov Ueda Speaks|2026-10-06T02:35",
+      "event": "BoJ Governor Kazuo Ueda speaks (06:35 GMT / 15:35 JST, 6 Oct)",
+      "currency": "JPY",
+      "when_utc": "2026-10-06T06:35+00:00",
+      "consensus": "No numeric consensus. Benchmark: a reiteration of gradual, data-dependent hikes with no commitment on the 30 Oct meeting. Read 'above consensus' as hawkish relative to that (keeping October live / explicitly endorsing that underlying inflation has reached 2%), 'below consensus' as dovish.",
+      "lean": "above consensus",
+      "confidence": "low",
+      "called_at": "2026-10-05T13:10:40+00:00",
+      "revisions": [
+        {
+          "lean": "above consensus",
+          "confidence": "low",
+          "at": "2026-10-05T13:10:40+00:00"
+        }
+      ],
+      "outcome": null,
+      "actual": null,
+      "note": null
+    },
+    {
+      "event_id": "USD|FOMC Meeting Minutes|2026-10-07T14:00",
+      "event": "FOMC minutes of the 15-16 September 2026 meeting (14:00 ET / 18:00 GMT, 7 Oct)",
+      "currency": "USD",
+      "when_utc": "2026-10-07T18:00+00:00",
+      "consensus": "No numeric consensus. Benchmark: minutes consistent with a unanimous 25bp hike to 3.75-4.00%, broad concern about inflation at 3% core PCE and a strong majority seeing one more 2026 hike. 'Above consensus' = more hawkish than that (urgency about back-to-back moves, de-anchoring worries); 'below consensus' = more conditional/patient than the SEP implied.",
+      "lean": "no clear lean",
+      "confidence": "low",
+      "called_at": "2026-10-05T13:10:40+00:00",
+      "revisions": [
+        {
+          "lean": "no clear lean",
+          "confidence": "low",
+          "at": "2026-10-05T13:10:40+00:00"
+        }
+      ],
+      "outcome": null,
+      "actual": null,
+      "note": null
+    },
+    {
+      "event_id": "USD|Unemployment Claims|2026-10-08T08:30",
+      "event": "US initial jobless claims, week ending 3 October 2026 (DoL, 08:30 ET / 12:30 GMT, 8 Oct)",
+      "currency": "USD",
+      "when_utc": "2026-10-08T12:30+00:00",
+      "consensus": "200K (previous 197K)",
+      "lean": "below consensus",
+      "confidence": "low",
+      "called_at": "2026-10-05T13:10:40+00:00",
+      "revisions": [
+        {
+          "lean": "below consensus",
+          "confidence": "low",
+          "at": "2026-10-05T13:10:40+00:00"
+        }
+      ],
+      "outcome": null,
+      "actual": null,
+      "note": null
+    },
+    {
+      "event_id": "USD|Prelim UoM Consumer Sentiment|2026-10-09T10:00",
+      "event": "University of Michigan preliminary consumer sentiment, October 2026 (10:00 ET / 14:00 GMT, 9 Oct)",
+      "currency": "USD",
+      "when_utc": "2026-10-09T14:00+00:00",
+      "consensus": "47.6 (previous 47.8 preliminary; September final was 48.1)",
+      "lean": "no clear lean",
+      "confidence": "low",
+      "called_at": "2026-10-05T13:10:40+00:00",
+      "revisions": [
+        {
+          "lean": "no clear lean",
+          "confidence": "low",
+          "at": "2026-10-05T13:10:40+00:00"
+        }
+      ],
+      "outcome": null,
+      "actual": null,
+      "note": null
+    },
+    {
+      "event_id": "USD|Prelim UoM Inflation Expectations|2026-10-09T10:00",
+      "event": "University of Michigan preliminary year-ahead inflation expectations, October 2026 (10:00 ET / 14:00 GMT, 9 Oct)",
+      "currency": "USD",
+      "when_utc": "2026-10-09T14:00+00:00",
+      "consensus": "No published consensus; benchmark is unchanged at the previous 4.6% (September, the highest since June and up from 3.4% before the Iran conflict)",
+      "lean": "below consensus",
+      "confidence": "low",
+      "called_at": "2026-10-05T13:10:40+00:00",
+      "revisions": [
+        {
+          "lean": "below consensus",
+          "confidence": "low",
+          "at": "2026-10-05T13:10:40+00:00"
+        }
+      ],
       "outcome": null,
       "actual": null,
       "note": null
     }
   ],
   "record": {
-    "scored": 6,
-    "hits": 5,
-    "misses": 1,
-    "unclear": 5,
-    "pending": 7
+    "scored": 10,
+    "hits": 7,
+    "misses": 3,
+    "unclear": 8,
+    "pending": 6
   }
 }
